@@ -184,3 +184,165 @@ export function updateProfile(accessToken: string, name: string): Promise<User> 
     headers: { Authorization: `Bearer ${accessToken}` },
   });
 }
+
+// ---- Admin ----
+
+function authHeaders(accessToken: string) {
+  return { Authorization: `Bearer ${accessToken}` };
+}
+
+export interface AdminStats {
+  totalOrders: number;
+  totalUsers: number;
+  totalProducts: number;
+  totalRevenue: number;
+  ordersByStatus: { status: string; count: number }[];
+  popularProducts: { product: Product; totalSold: number }[];
+}
+
+export function adminGetStats(accessToken: string): Promise<AdminStats> {
+  return apiFetch<AdminStats>("/admin/stats", { headers: authHeaders(accessToken) });
+}
+
+export interface AdminUser extends User {
+  _count: { orders: number };
+}
+
+export function adminGetUsers(accessToken: string): Promise<AdminUser[]> {
+  return apiFetch<AdminUser[]>("/users", { headers: authHeaders(accessToken) });
+}
+
+export function adminGetOrders(accessToken: string): Promise<Order[]> {
+  return apiFetch<Order[]>("/orders", { headers: authHeaders(accessToken) });
+}
+
+export function adminUpdateOrderStatus(
+  accessToken: string,
+  orderId: string,
+  status: string
+): Promise<Order> {
+  return apiFetch<Order>(`/orders/${orderId}/status`, {
+    method: "PATCH",
+    body: JSON.stringify({ status }),
+    headers: authHeaders(accessToken),
+  });
+}
+
+export interface ProductPayload {
+  slug: string;
+  name: string;
+  description: string;
+  composition?: string;
+  price: number;
+  discountPrice?: number;
+  unit: string;
+  emoji: string;
+  categoryId: string;
+  stock?: number;
+  isPopular?: boolean;
+  rating?: number;
+}
+
+export function adminCreateProduct(
+  accessToken: string,
+  payload: ProductPayload
+): Promise<Product> {
+  return apiFetch<Product>("/products", {
+    method: "POST",
+    body: JSON.stringify(payload),
+    headers: authHeaders(accessToken),
+  });
+}
+
+export function adminUpdateProduct(
+  accessToken: string,
+  id: string,
+  payload: Partial<ProductPayload>
+): Promise<Product> {
+  return apiFetch<Product>(`/products/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+    headers: authHeaders(accessToken),
+  });
+}
+
+export function adminDeleteProduct(accessToken: string, id: string): Promise<{ success: boolean }> {
+  return apiFetch(`/products/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(accessToken),
+  });
+}
+
+export interface CategoryPayload {
+  slug: string;
+  name: string;
+  icon: string;
+  parentId?: string;
+}
+
+export function adminCreateCategory(
+  accessToken: string,
+  payload: CategoryPayload
+): Promise<Category> {
+  return apiFetch<Category>("/categories", {
+    method: "POST",
+    body: JSON.stringify(payload),
+    headers: authHeaders(accessToken),
+  });
+}
+
+export function adminUpdateCategory(
+  accessToken: string,
+  id: string,
+  payload: Partial<CategoryPayload>
+): Promise<Category> {
+  return apiFetch<Category>(`/categories/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+    headers: authHeaders(accessToken),
+  });
+}
+
+export function adminDeleteCategory(accessToken: string, id: string): Promise<{ success: boolean }> {
+  return apiFetch(`/categories/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(accessToken),
+  });
+}
+
+export interface BranchPayload {
+  name: string;
+  address: string;
+  lat?: number;
+  lng?: number;
+}
+
+export function adminCreateBranch(
+  accessToken: string,
+  payload: BranchPayload
+): Promise<Branch> {
+  return apiFetch<Branch>("/branches", {
+    method: "POST",
+    body: JSON.stringify(payload),
+    headers: authHeaders(accessToken),
+  });
+}
+
+export function adminUpdateBranch(
+  accessToken: string,
+  id: string,
+  payload: Partial<BranchPayload>
+): Promise<Branch> {
+  return apiFetch<Branch>(`/branches/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+    headers: authHeaders(accessToken),
+  });
+}
+
+export function adminDeleteBranch(accessToken: string, id: string): Promise<{ success: boolean }> {
+  return apiFetch(`/branches/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(accessToken),
+  });
+}

@@ -24,11 +24,14 @@ export interface Product {
   category: Category;
 }
 
+export type Role = "USER" | "ADMIN";
+
 export interface User {
   id: string;
   name: string;
   phone: string | null;
   email: string | null;
+  role: Role;
   createdAt: string;
 }
 
