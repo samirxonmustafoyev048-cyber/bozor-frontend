@@ -1,4 +1,4 @@
-import type { Branch, Category, Order, Product } from "@/types/product";
+import type { AuthResponse, Branch, Category, Order, Product, User } from "@/types/product";
 
 export class ApiError extends Error {
   status: number;
@@ -97,13 +97,80 @@ export interface CreateOrderPayload {
   items: { productId: string; quantity: number }[];
 }
 
-export function createOrder(payload: CreateOrderPayload): Promise<Order> {
+export function createOrder(
+  payload: CreateOrderPayload,
+  accessToken?: string
+): Promise<Order> {
   return apiFetch<Order>("/orders", {
     method: "POST",
     body: JSON.stringify(payload),
+    headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
   });
 }
 
 export function getOrder(idOrNumber: string): Promise<Order> {
   return apiFetch<Order>(`/orders/${idOrNumber}`);
+}
+
+export function getMyOrders(accessToken: string): Promise<Order[]> {
+  return apiFetch<Order[]>("/orders/me", {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+}
+
+export function requestOtp(phone: string): Promise<{ message: string; devCode: string }> {
+  return apiFetch("/auth/otp/request", {
+    method: "POST",
+    body: JSON.stringify({ phone }),
+  });
+}
+
+export function verifyOtp(
+  phone: string,
+  code: string,
+  name?: string
+): Promise<AuthResponse> {
+  return apiFetch<AuthResponse>("/auth/otp/verify", {
+    method: "POST",
+    body: JSON.stringify({ phone, code, name }),
+  });
+}
+
+export function register(
+  name: string,
+  email: string,
+  password: string
+): Promise<AuthResponse> {
+  return apiFetch<AuthResponse>("/auth/register", {
+    method: "POST",
+    body: JSON.stringify({ name, email, password }),
+  });
+}
+
+export function login(email: string, password: string): Promise<AuthResponse> {
+  return apiFetch<AuthResponse>("/auth/login", {
+    method: "POST",
+    body: JSON.stringify({ email, password }),
+  });
+}
+
+export function refreshTokens(refreshToken: string): Promise<AuthResponse> {
+  return apiFetch<AuthResponse>("/auth/refresh", {
+    method: "POST",
+    body: JSON.stringify({ refreshToken }),
+  });
+}
+
+export function getMe(accessToken: string): Promise<User> {
+  return apiFetch<User>("/auth/me", {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+}
+
+export function updateProfile(accessToken: string, name: string): Promise<User> {
+  return apiFetch<User>("/auth/me", {
+    method: "PATCH",
+    body: JSON.stringify({ name }),
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
 }

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import { createOrder, getBranches } from "@/lib/api";
 import { formatSom } from "@/lib/format";
 import type { Branch } from "@/types/product";
@@ -23,11 +24,12 @@ const PAYMENT_METHOD_MAP: Record<PaymentMethod, "NAQD" | "KARTA" | "PAYME" | "CL
 export default function CheckoutPage() {
   const router = useRouter();
   const { lines, subtotal, isLoaded, clear } = useCart();
+  const { auth } = useAuth();
 
   const [branches, setBranches] = useState<Branch[]>([]);
   const [deliveryType, setDeliveryType] = useState<DeliveryType>("yetkazish");
   const [address, setAddress] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState(() => auth?.user.phone ?? "");
   const [branchId, setBranchId] = useState("");
   const [payment, setPayment] = useState<PaymentMethod>("naqd");
   const [submitting, setSubmitting] = useState(false);
@@ -41,6 +43,7 @@ export default function CheckoutPage() {
       })
       .catch(() => setError("Filiallar ro'yxatini yuklab bo'lmadi"));
   }, []);
+
 
   const deliveryFee = deliveryType === "yetkazish" ? DELIVERY_FEE : 0;
   const total = subtotal + deliveryFee;
@@ -57,17 +60,20 @@ export default function CheckoutPage() {
     setError(null);
 
     try {
-      const order = await createOrder({
-        deliveryType: deliveryType === "yetkazish" ? "YETKAZISH" : "OLIB_KETISH",
-        address: deliveryType === "yetkazish" ? address : undefined,
-        branchId: deliveryType === "olib-ketish" ? branchId : undefined,
-        phone,
-        paymentMethod: PAYMENT_METHOD_MAP[payment],
-        items: lines.map((line) => ({
-          productId: line.product.id,
-          quantity: line.quantity,
-        })),
-      });
+      const order = await createOrder(
+        {
+          deliveryType: deliveryType === "yetkazish" ? "YETKAZISH" : "OLIB_KETISH",
+          address: deliveryType === "yetkazish" ? address : undefined,
+          branchId: deliveryType === "olib-ketish" ? branchId : undefined,
+          phone,
+          paymentMethod: PAYMENT_METHOD_MAP[payment],
+          items: lines.map((line) => ({
+            productId: line.product.id,
+            quantity: line.quantity,
+          })),
+        },
+        auth?.accessToken
+      );
       clear();
       router.push(`/buyurtma/tasdiqlandi?order=${order.orderNumber}`);
     } catch {

@@ -24,6 +24,20 @@ export interface Product {
   category: Category;
 }
 
+export interface User {
+  id: string;
+  name: string;
+  phone: string | null;
+  email: string | null;
+  createdAt: string;
+}
+
+export interface AuthResponse {
+  accessToken: string;
+  refreshToken: string;
+  user: User;
+}
+
 export interface Branch {
   id: string;
   name: string;

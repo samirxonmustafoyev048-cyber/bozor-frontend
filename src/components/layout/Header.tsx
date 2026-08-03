@@ -1,5 +1,6 @@
 import Link from "next/link";
 import CartIndicator from "@/components/cart/CartIndicator";
+import ProfileLink from "@/components/layout/ProfileLink";
 
 const categories = [
   { label: "Sut mahsulotlari", href: "/katalog/sut-mahsulotlari" },
@@ -59,15 +60,7 @@ export default function Header() {
         </form>
 
         <div className="flex shrink-0 items-center gap-1 sm:gap-2">
-          <Link
-            href="/profil"
-            className="flex flex-col items-center rounded-lg px-2 py-1 text-xs text-foreground hover:bg-brand-50"
-          >
-            <span aria-hidden className="text-lg">
-              👤
-            </span>
-            <span className="hidden sm:inline">Profil</span>
-          </Link>
+          <ProfileLink />
           <Link
             href="/sevimlilar"
             className="flex flex-col items-center rounded-lg px-2 py-1 text-xs text-foreground hover:bg-brand-50"
