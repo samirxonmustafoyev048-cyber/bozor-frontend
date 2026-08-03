@@ -1,31 +1,46 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
-import { branches } from "@/lib/mock/branches";
+import { createOrder, getBranches } from "@/lib/api";
 import { formatSom } from "@/lib/format";
+import type { Branch } from "@/types/product";
 
 type DeliveryType = "yetkazish" | "olib-ketish";
 type PaymentMethod = "naqd" | "karta" | "payme" | "click";
 
 const DELIVERY_FEE = 15000;
 
-function generateOrderNumber(): string {
-  return `BZR-${Math.floor(100000 + Math.random() * 900000)}`;
-}
+const PAYMENT_METHOD_MAP: Record<PaymentMethod, "NAQD" | "KARTA" | "PAYME" | "CLICK"> = {
+  naqd: "NAQD",
+  karta: "KARTA",
+  payme: "PAYME",
+  click: "CLICK",
+};
 
 export default function CheckoutPage() {
   const router = useRouter();
   const { lines, subtotal, isLoaded, clear } = useCart();
 
+  const [branches, setBranches] = useState<Branch[]>([]);
   const [deliveryType, setDeliveryType] = useState<DeliveryType>("yetkazish");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
-  const [branchId, setBranchId] = useState(branches[0].id);
+  const [branchId, setBranchId] = useState("");
   const [payment, setPayment] = useState<PaymentMethod>("naqd");
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    getBranches()
+      .then((data) => {
+        setBranches(data);
+        setBranchId((current) => current || data[0]?.id || "");
+      })
+      .catch(() => setError("Filiallar ro'yxatini yuklab bo'lmadi"));
+  }, []);
 
   const deliveryFee = deliveryType === "yetkazish" ? DELIVERY_FEE : 0;
   const total = subtotal + deliveryFee;
@@ -33,15 +48,32 @@ export default function CheckoutPage() {
   const canSubmit =
     lines.length > 0 &&
     phone.trim().length > 0 &&
-    (deliveryType === "olib-ketish" || address.trim().length > 0);
+    (deliveryType === "olib-ketish" ? !!branchId : address.trim().length > 0);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!canSubmit) return;
     setSubmitting(true);
-    const orderNumber = generateOrderNumber();
-    clear();
-    router.push(`/buyurtma/tasdiqlandi?order=${orderNumber}`);
+    setError(null);
+
+    try {
+      const order = await createOrder({
+        deliveryType: deliveryType === "yetkazish" ? "YETKAZISH" : "OLIB_KETISH",
+        address: deliveryType === "yetkazish" ? address : undefined,
+        branchId: deliveryType === "olib-ketish" ? branchId : undefined,
+        phone,
+        paymentMethod: PAYMENT_METHOD_MAP[payment],
+        items: lines.map((line) => ({
+          productId: line.product.id,
+          quantity: line.quantity,
+        })),
+      });
+      clear();
+      router.push(`/buyurtma/tasdiqlandi?order=${order.orderNumber}`);
+    } catch {
+      setError("Buyurtmani yuborishda xatolik yuz berdi. Qayta urinib ko'ring.");
+      setSubmitting(false);
+    }
   }
 
   if (isLoaded && lines.length === 0) {
@@ -205,12 +237,16 @@ export default function CheckoutPage() {
             </div>
           </div>
 
+          {error && (
+            <p className="mt-3 text-sm text-danger-600">{error}</p>
+          )}
+
           <button
             type="submit"
             disabled={!canSubmit || submitting}
             className="mt-4 w-full rounded-full bg-brand-600 py-3 text-sm font-semibold text-white hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Buyurtmani tasdiqlash
+            {submitting ? "Yuborilmoqda..." : "Buyurtmani tasdiqlash"}
           </button>
         </aside>
       </form>

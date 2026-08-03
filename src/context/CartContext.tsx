@@ -8,14 +8,13 @@ import {
   useSyncExternalStore,
   type ReactNode,
 } from "react";
-import { getProductBySlug, products } from "@/lib/mock/products";
 import type { Product } from "@/types/product";
 
 const STORAGE_KEY = "bozor_cart";
 const EMPTY: StoredLine[] = [];
 
 interface StoredLine {
-  productId: string;
+  product: Product;
   quantity: number;
 }
 
@@ -30,7 +29,7 @@ interface CartContextValue {
   totalCount: number;
   subtotal: number;
   isLoaded: boolean;
-  addItem: (productId: string, quantity?: number) => void;
+  addItem: (product: Product, quantity?: number) => void;
   removeItem: (productId: string) => void;
   setQuantity: (productId: string, quantity: number) => void;
   clear: () => void;
@@ -101,31 +100,31 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const stored = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const isLoaded = useSyncExternalStore(subscribeNoop, getClientTrue, getClientFalse);
 
-  const addItem = useCallback((productId: string, quantity = 1) => {
+  const addItem = useCallback((product: Product, quantity = 1) => {
     mutate((prev) => {
-      const existing = prev.find((l) => l.productId === productId);
+      const existing = prev.find((l) => l.product.id === product.id);
       if (existing) {
         return prev.map((l) =>
-          l.productId === productId
+          l.product.id === product.id
             ? { ...l, quantity: l.quantity + quantity }
             : l
         );
       }
-      return [...prev, { productId, quantity }];
+      return [...prev, { product, quantity }];
     });
   }, []);
 
   const removeItem = useCallback((productId: string) => {
-    mutate((prev) => prev.filter((l) => l.productId !== productId));
+    mutate((prev) => prev.filter((l) => l.product.id !== productId));
   }, []);
 
   const setQuantity = useCallback((productId: string, quantity: number) => {
     mutate((prev) => {
       if (quantity <= 0) {
-        return prev.filter((l) => l.productId !== productId);
+        return prev.filter((l) => l.product.id !== productId);
       }
       return prev.map((l) =>
-        l.productId === productId ? { ...l, quantity } : l
+        l.product.id === productId ? { ...l, quantity } : l
       );
     });
   }, []);
@@ -133,20 +132,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const clear = useCallback(() => mutate(() => []), []);
 
   const lines = useMemo<CartLine[]>(() => {
-    return stored
-      .map((line) => {
-        const product =
-          products.find((p) => p.id === line.productId) ??
-          getProductBySlug(line.productId);
-        if (!product) return null;
-        const unitPrice = product.discountPrice ?? product.price;
-        return {
-          product,
-          quantity: line.quantity,
-          lineTotal: unitPrice * line.quantity,
-        };
-      })
-      .filter((l): l is CartLine => l !== null);
+    return stored.map((line) => {
+      const unitPrice = line.product.discountPrice ?? line.product.price;
+      return {
+        product: line.product,
+        quantity: line.quantity,
+        lineTotal: unitPrice * line.quantity,
+      };
+    });
   }, [stored]);
 
   const totalCount = useMemo(

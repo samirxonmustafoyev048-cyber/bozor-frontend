@@ -22,7 +22,7 @@ export default function AddToCartButton({
       aria-label={`${product.name} savatga qo'shish`}
       onClick={(e) => {
         e.preventDefault();
-        addItem(product.id, quantity);
+        addItem(product, quantity);
       }}
       className={
         className ??

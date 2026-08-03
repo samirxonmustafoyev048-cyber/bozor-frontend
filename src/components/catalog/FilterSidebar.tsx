@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { categories } from "@/lib/mock/categories";
+import type { Category } from "@/types/product";
 
 export default function FilterSidebar({
+  categories,
   activeCategory,
   minPrice,
   maxPrice,
@@ -10,6 +11,7 @@ export default function FilterSidebar({
   query,
   formAction,
 }: {
+  categories: Category[];
   activeCategory?: string;
   minPrice?: number;
   maxPrice?: number;

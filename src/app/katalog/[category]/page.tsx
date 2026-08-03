@@ -3,13 +3,10 @@ import { notFound } from "next/navigation";
 import FilterSidebar from "@/components/catalog/FilterSidebar";
 import SortDropdown from "@/components/catalog/SortDropdown";
 import ProductCard from "@/components/product/ProductCard";
-import { categories } from "@/lib/mock/categories";
-import { filterProducts } from "@/lib/mock/products";
+import { ApiError, getCategories, getCategoryBySlug, getProducts } from "@/lib/api";
 import { parseCatalogFilters, type CatalogSearchParams } from "@/lib/catalog-params";
 
-export function generateStaticParams() {
-  return categories.map((c) => ({ category: c.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -17,8 +14,12 @@ export async function generateMetadata({
   params: Promise<{ category: string }>;
 }): Promise<Metadata> {
   const { category } = await params;
-  const found = categories.find((c) => c.slug === category);
-  return { title: found ? `${found.name} — Bozor` : "Katalog — Bozor" };
+  try {
+    const found = await getCategoryBySlug(category);
+    return { title: `${found.name} — Bozor` };
+  } catch {
+    return { title: "Katalog — Bozor" };
+  }
 }
 
 export default async function CategoryPage({
@@ -29,18 +30,37 @@ export default async function CategoryPage({
   searchParams: Promise<CatalogSearchParams>;
 }) {
   const { category } = await params;
-  const activeCategory = categories.find((c) => c.slug === category);
-  if (!activeCategory) {
-    notFound();
+
+  let activeCategory;
+  try {
+    activeCategory = await getCategoryBySlug(category);
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 404) {
+      notFound();
+    }
+    throw err;
   }
 
   const resolvedSearchParams = await searchParams;
   const filters = parseCatalogFilters(resolvedSearchParams, category);
-  const result = filterProducts(filters);
+
+  const [categories, result] = await Promise.all([
+    getCategories(),
+    getProducts({
+      category,
+      minPrice: filters.minPrice,
+      maxPrice: filters.maxPrice,
+      discountOnly: filters.discountOnly,
+      q: filters.query,
+      sort: filters.sort,
+      pageSize: 100,
+    }),
+  ]);
 
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-6 sm:flex-row sm:px-6 sm:py-8">
       <FilterSidebar
+        categories={categories}
         formAction={`/katalog/${category}`}
         activeCategory={category}
         minPrice={filters.minPrice}
@@ -56,18 +76,18 @@ export default async function CategoryPage({
             <h1 className="text-lg font-bold text-foreground sm:text-xl">
               {activeCategory.icon} {activeCategory.name}
             </h1>
-            <p className="text-sm text-muted">{result.length} ta mahsulot</p>
+            <p className="text-sm text-muted">{result.total} ta mahsulot</p>
           </div>
           <SortDropdown current={filters.sort ?? "popular"} />
         </div>
 
-        {result.length === 0 ? (
+        {result.items.length === 0 ? (
           <p className="mt-10 text-center text-muted">
             Ushbu kategoriyada hozircha mahsulot yo&apos;q.
           </p>
         ) : (
           <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {result.map((product) => (
+            {result.items.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>

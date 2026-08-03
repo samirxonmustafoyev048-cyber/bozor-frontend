@@ -10,7 +10,7 @@ export default function AddToCartControl({ product }: { product: Product }) {
   const { addItem } = useCart();
 
   function handleAdd() {
-    addItem(product.id, qty);
+    addItem(product, qty);
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
   }

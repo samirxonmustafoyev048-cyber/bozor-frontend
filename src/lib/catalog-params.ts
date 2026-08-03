@@ -1,4 +1,13 @@
-import type { ProductFilters, SortOption } from "@/lib/mock/products";
+export type SortOption = "popular" | "price-asc" | "price-desc" | "new";
+
+export interface ProductFilters {
+  category?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  discountOnly?: boolean;
+  query?: string;
+  sort?: SortOption;
+}
 
 export type CatalogSearchParams = { [key: string]: string | string[] | undefined };
 

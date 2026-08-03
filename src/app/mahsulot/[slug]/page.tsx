@@ -3,12 +3,10 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import ProductCard from "@/components/product/ProductCard";
 import AddToCartControl from "@/components/product/AddToCartControl";
-import { getProductBySlug, getRelatedProducts, products } from "@/lib/mock/products";
+import { ApiError, getProductBySlug, getRelatedProducts } from "@/lib/api";
 import { discountPercent, formatSom } from "@/lib/format";
 
-export function generateStaticParams() {
-  return products.map((p) => ({ slug: p.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -16,8 +14,12 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
-  return { title: product ? `${product.name} — Bozor` : "Mahsulot — Bozor" };
+  try {
+    const product = await getProductBySlug(slug);
+    return { title: `${product.name} — Bozor` };
+  } catch {
+    return { title: "Mahsulot — Bozor" };
+  }
 }
 
 export default async function ProductPage({
@@ -26,12 +28,18 @@ export default async function ProductPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
-  if (!product) {
-    notFound();
+
+  let product;
+  try {
+    product = await getProductBySlug(slug);
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 404) {
+      notFound();
+    }
+    throw err;
   }
 
-  const related = getRelatedProducts(product);
+  const related = await getRelatedProducts(slug);
   const hasDiscount = !!product.discountPrice;
 
   return (
@@ -42,7 +50,7 @@ export default async function ProductPage({
         </Link>{" "}
         /{" "}
         <Link
-          href={`/katalog/${product.categorySlug}`}
+          href={`/katalog/${product.category.slug}`}
           className="hover:text-brand-700"
         >
           Katalog

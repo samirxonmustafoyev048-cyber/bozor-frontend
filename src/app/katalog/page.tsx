@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import FilterSidebar from "@/components/catalog/FilterSidebar";
 import SortDropdown from "@/components/catalog/SortDropdown";
 import ProductCard from "@/components/product/ProductCard";
-import { filterProducts } from "@/lib/mock/products";
+import { getCategories, getProducts } from "@/lib/api";
 import { parseCatalogFilters, type CatalogSearchParams } from "@/lib/catalog-params";
 
 export const metadata: Metadata = {
@@ -16,11 +16,23 @@ export default async function CatalogPage({
 }) {
   const resolvedSearchParams = await searchParams;
   const filters = parseCatalogFilters(resolvedSearchParams);
-  const result = filterProducts(filters);
+
+  const [categories, result] = await Promise.all([
+    getCategories(),
+    getProducts({
+      minPrice: filters.minPrice,
+      maxPrice: filters.maxPrice,
+      discountOnly: filters.discountOnly,
+      q: filters.query,
+      sort: filters.sort,
+      pageSize: 100,
+    }),
+  ]);
 
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-6 sm:flex-row sm:px-6 sm:py-8">
       <FilterSidebar
+        categories={categories}
         formAction="/katalog"
         minPrice={filters.minPrice}
         maxPrice={filters.maxPrice}
@@ -35,18 +47,18 @@ export default async function CatalogPage({
             <h1 className="text-lg font-bold text-foreground sm:text-xl">
               Barcha mahsulotlar
             </h1>
-            <p className="text-sm text-muted">{result.length} ta mahsulot</p>
+            <p className="text-sm text-muted">{result.total} ta mahsulot</p>
           </div>
           <SortDropdown current={filters.sort ?? "popular"} />
         </div>
 
-        {result.length === 0 ? (
+        {result.items.length === 0 ? (
           <p className="mt-10 text-center text-muted">
             Ushbu filtrlar bo&apos;yicha mahsulot topilmadi.
           </p>
         ) : (
           <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {result.map((product) => (
+            {result.items.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
