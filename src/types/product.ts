@@ -15,4 +15,6 @@ export interface Product {
   emoji: string;
   isPopular?: boolean;
   rating?: number;
+  description: string;
+  composition?: string;
 }

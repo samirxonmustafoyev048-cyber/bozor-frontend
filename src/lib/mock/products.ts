@@ -12,6 +12,9 @@ export const products: Product[] = [
     emoji: "🥛",
     isPopular: true,
     rating: 4.8,
+    description:
+      "Tabiiy sigir sutidan tayyorlangan, pasterizatsiyadan o'tgan sut. Kundalik iste'mol uchun qulay qadoqda.",
+    composition: "Pasterizangan sigir suti, yog'lilik 2.5%",
   },
   {
     id: "p2",
@@ -23,6 +26,9 @@ export const products: Product[] = [
     emoji: "🍶",
     isPopular: true,
     rating: 4.6,
+    description:
+      "Foydali bakteriyalarga boy, tabiiy achitqida tayyorlangan qatiq. Ovqat hazm qilishni yaxshilaydi.",
+    composition: "Sut, achitqi kulturasi",
   },
   {
     id: "p3",
@@ -34,6 +40,8 @@ export const products: Product[] = [
     emoji: "🍞",
     isPopular: true,
     rating: 4.9,
+    description: "Har kuni yangi pishiriladigan an'anaviy oq non.",
+    composition: "Un, suv, tuz, achitqi",
   },
   {
     id: "p4",
@@ -45,6 +53,8 @@ export const products: Product[] = [
     unit: "1 kg",
     emoji: "🍗",
     rating: 4.7,
+    description: "Muzlatilgan, sifat nazoratidan o'tgan tovuq ko'krak filesi.",
+    composition: "100% tovuq go'shti",
   },
   {
     id: "p5",
@@ -55,6 +65,8 @@ export const products: Product[] = [
     unit: "1 kg",
     emoji: "🥩",
     rating: 4.5,
+    description: "Yangi, mahalliy fermerlardan yetkazib beriladigan mol go'shti.",
+    composition: "100% mol go'shti",
   },
   {
     id: "p6",
@@ -67,6 +79,7 @@ export const products: Product[] = [
     emoji: "🍅",
     isPopular: true,
     rating: 4.4,
+    description: "Yetilgan, sershira mahalliy pomidorlar.",
   },
   {
     id: "p7",
@@ -78,6 +91,7 @@ export const products: Product[] = [
     emoji: "🍎",
     isPopular: true,
     rating: 4.6,
+    description: "Shirin va sersuv qizil olmalar, bevosita bog'dan.",
   },
   {
     id: "p8",
@@ -89,6 +103,7 @@ export const products: Product[] = [
     unit: "1 kg",
     emoji: "🍌",
     rating: 4.7,
+    description: "Yetilgan, shirin bananlar. Vitamin va kaliyga boy.",
   },
   {
     id: "p9",
@@ -100,6 +115,7 @@ export const products: Product[] = [
     emoji: "🥤",
     isPopular: true,
     rating: 4.8,
+    description: "Gazlangan alkogolsiz ichimlik, 1.5 litrli qadoqda.",
   },
   {
     id: "p10",
@@ -111,6 +127,8 @@ export const products: Product[] = [
     unit: "1 l",
     emoji: "🧃",
     rating: 4.5,
+    description: "100% tabiiy olma sharbati, qo'shimcha shakarsiz.",
+    composition: "Olma sharbati konsentrati, suv",
   },
   {
     id: "p11",
@@ -121,6 +139,7 @@ export const products: Product[] = [
     unit: "500 ml",
     emoji: "🧴",
     rating: 4.3,
+    description: "Yog'ni samarali eritadigan, qo'llarga shikast yetkazmaydigan formula.",
   },
   {
     id: "p12",
@@ -133,6 +152,7 @@ export const products: Product[] = [
     emoji: "🧻",
     isPopular: true,
     rating: 4.6,
+    description: "Yumshoq, 3 qatlamli tualet qog'ozi, 4 donali o'ram.",
   },
   {
     id: "p13",
@@ -143,6 +163,7 @@ export const products: Product[] = [
     unit: "1 dona",
     emoji: "🍫",
     rating: 4.7,
+    description: "Sut shokoladi va yong'oq bilan to'ldirilgan batonchasi.",
   },
   {
     id: "p14",
@@ -155,6 +176,7 @@ export const products: Product[] = [
     emoji: "🍦",
     isPopular: true,
     rating: 4.9,
+    description: "Vafli qadoqdagi klassik plombir muzqaymoq.",
   },
   {
     id: "p15",
@@ -165,6 +187,7 @@ export const products: Product[] = [
     unit: "1 dona",
     emoji: "🍰",
     rating: 4.8,
+    description: "Nyu-York uslubidagi krem-pishloqli tort bo'lagi.",
   },
   {
     id: "p16",
@@ -176,6 +199,7 @@ export const products: Product[] = [
     unit: "1 kg",
     emoji: "🫑",
     rating: 4.4,
+    description: "Rang-barang, xrustli bulg'or qalampiri aralashmasi.",
   },
 ];
 
@@ -185,4 +209,68 @@ export function getDiscountedProducts(limit = 8): Product[] {
 
 export function getPopularProducts(limit = 8): Product[] {
   return products.filter((p) => p.isPopular).slice(0, limit);
+}
+
+export function getProductBySlug(slug: string): Product | undefined {
+  return products.find((p) => p.slug === slug);
+}
+
+export function getRelatedProducts(product: Product, limit = 5): Product[] {
+  return products
+    .filter((p) => p.categorySlug === product.categorySlug && p.id !== product.id)
+    .slice(0, limit);
+}
+
+export type SortOption = "popular" | "price-asc" | "price-desc" | "new";
+
+export interface ProductFilters {
+  category?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  discountOnly?: boolean;
+  query?: string;
+  sort?: SortOption;
+}
+
+function effectivePrice(p: Product): number {
+  return p.discountPrice ?? p.price;
+}
+
+export function filterProducts(filters: ProductFilters): Product[] {
+  let result = [...products];
+
+  if (filters.category) {
+    result = result.filter((p) => p.categorySlug === filters.category);
+  }
+  if (filters.discountOnly) {
+    result = result.filter((p) => !!p.discountPrice);
+  }
+  if (typeof filters.minPrice === "number") {
+    result = result.filter((p) => effectivePrice(p) >= filters.minPrice!);
+  }
+  if (typeof filters.maxPrice === "number") {
+    result = result.filter((p) => effectivePrice(p) <= filters.maxPrice!);
+  }
+  if (filters.query) {
+    const q = filters.query.trim().toLowerCase();
+    result = result.filter((p) => p.name.toLowerCase().includes(q));
+  }
+
+  switch (filters.sort) {
+    case "price-asc":
+      result.sort((a, b) => effectivePrice(a) - effectivePrice(b));
+      break;
+    case "price-desc":
+      result.sort((a, b) => effectivePrice(b) - effectivePrice(a));
+      break;
+    case "new":
+      result.reverse();
+      break;
+    case "popular":
+    default:
+      result.sort((a, b) => (b.isPopular ? 1 : 0) - (a.isPopular ? 1 : 0));
+      break;
+  }
+
+  return result;
 }
