@@ -1,4 +1,5 @@
 import Link from "next/link";
+import CartIndicator from "@/components/cart/CartIndicator";
 
 const categories = [
   { label: "Sut mahsulotlari", href: "/katalog/sut-mahsulotlari" },
@@ -78,12 +79,13 @@ export default function Header() {
           </Link>
           <Link
             href="/savat"
-            className="flex flex-col items-center rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700"
+            className="relative flex flex-col items-center rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700"
           >
             <span aria-hidden className="text-lg">
               🛒
             </span>
             <span className="hidden sm:inline">Savat</span>
+            <CartIndicator />
           </Link>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Product } from "@/types/product";
 import { discountPercent, formatSom } from "@/lib/format";
+import AddToCartButton from "@/components/cart/AddToCartButton";
 
 export default function ProductCard({ product }: { product: Product }) {
   const hasDiscount = !!product.discountPrice;
@@ -47,13 +48,7 @@ export default function ProductCard({ product }: { product: Product }) {
             )}
           </div>
 
-          <button
-            type="button"
-            aria-label={`${product.name} savatga qo'shish`}
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-600 text-white hover:bg-brand-700"
-          >
-            +
-          </button>
+          <AddToCartButton product={product} />
         </div>
       </div>
     </div>

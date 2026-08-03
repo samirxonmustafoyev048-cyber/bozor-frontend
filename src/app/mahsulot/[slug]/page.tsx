@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import ProductCard from "@/components/product/ProductCard";
-import QuantitySelector from "@/components/product/QuantitySelector";
+import AddToCartControl from "@/components/product/AddToCartControl";
 import { getProductBySlug, getRelatedProducts, products } from "@/lib/mock/products";
 import { discountPercent, formatSom } from "@/lib/format";
 
@@ -92,14 +92,7 @@ export default async function ProductPage({
             <span className="text-sm text-muted">/ {product.unit}</span>
           </div>
 
-          <QuantitySelector unit={product.unit} />
-
-          <button
-            type="button"
-            className="w-full rounded-full bg-brand-600 py-3 text-sm font-semibold text-white hover:bg-brand-700 sm:w-auto sm:px-8"
-          >
-            Savatga qo&apos;shish
-          </button>
+          <AddToCartControl product={product} />
 
           <div className="mt-2 border-t border-border pt-4">
             <h2 className="text-sm font-semibold text-foreground">Tavsif</h2>
