@@ -161,6 +161,16 @@ export function refreshTokens(refreshToken: string): Promise<AuthResponse> {
   });
 }
 
+export interface PaymentLinks {
+  paymeUrl: string;
+  clickUrl: string;
+  paid: boolean;
+}
+
+export function getPaymentLinks(orderId: string): Promise<PaymentLinks> {
+  return apiFetch<PaymentLinks>(`/payments/link/${orderId}`);
+}
+
 export function getMe(accessToken: string): Promise<User> {
   return apiFetch<User>("/auth/me", {
     headers: { Authorization: `Bearer ${accessToken}` },
