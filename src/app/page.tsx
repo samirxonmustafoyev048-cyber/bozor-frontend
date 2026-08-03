@@ -12,10 +12,11 @@ export default async function Home() {
   let hasError = false;
 
   try {
+    const revalidate = { revalidate: 60 };
     [categories, discounted, popular] = await Promise.all([
-      getCategories(),
-      getProducts({ discountOnly: true, sort: "popular", pageSize: 8 }),
-      getProducts({ sort: "popular", pageSize: 8 }),
+      getCategories(revalidate),
+      getProducts({ discountOnly: true, sort: "popular", pageSize: 8 }, revalidate),
+      getProducts({ sort: "popular", pageSize: 8 }, revalidate),
     ]);
   } catch {
     hasError = true;

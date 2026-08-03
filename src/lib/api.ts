@@ -16,10 +16,20 @@ function getApiUrl(): string {
   return process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api";
 }
 
-async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
+interface ApiFetchInit extends RequestInit {
+  /** Seconds to cache a GET response for (Next.js ISR). Omit for always-fresh data. */
+  revalidate?: number;
+}
+
+async function apiFetch<T>(path: string, init?: ApiFetchInit): Promise<T> {
+  const { revalidate, ...rest } = init ?? {};
+  const cachingOptions = revalidate
+    ? { next: { revalidate } }
+    : { cache: "no-store" as const };
+
   const res = await fetch(`${getApiUrl()}${path}`, {
-    ...init,
-    cache: "no-store",
+    ...rest,
+    ...cachingOptions,
     headers: { "Content-Type": "application/json", ...init?.headers },
   });
 
@@ -64,28 +74,40 @@ function toQueryString(query: object): string {
   return qs ? `?${qs}` : "";
 }
 
-export function getCategories(): Promise<Category[]> {
-  return apiFetch<Category[]>("/categories");
+export function getCategories(options?: { revalidate?: number }): Promise<Category[]> {
+  return apiFetch<Category[]>("/categories", options);
 }
 
-export function getCategoryBySlug(slug: string): Promise<Category> {
-  return apiFetch<Category>(`/categories/${slug}`);
+export function getCategoryBySlug(
+  slug: string,
+  options?: { revalidate?: number }
+): Promise<Category> {
+  return apiFetch<Category>(`/categories/${slug}`, options);
 }
 
-export function getProducts(query: ProductQuery = {}): Promise<ProductListResult> {
-  return apiFetch<ProductListResult>(`/products${toQueryString(query)}`);
+export function getProducts(
+  query: ProductQuery = {},
+  options?: { revalidate?: number }
+): Promise<ProductListResult> {
+  return apiFetch<ProductListResult>(`/products${toQueryString(query)}`, options);
 }
 
-export function getProductBySlug(slug: string): Promise<Product> {
-  return apiFetch<Product>(`/products/${slug}`);
+export function getProductBySlug(
+  slug: string,
+  options?: { revalidate?: number }
+): Promise<Product> {
+  return apiFetch<Product>(`/products/${slug}`, options);
 }
 
-export function getRelatedProducts(slug: string): Promise<Product[]> {
-  return apiFetch<Product[]>(`/products/${slug}/related`);
+export function getRelatedProducts(
+  slug: string,
+  options?: { revalidate?: number }
+): Promise<Product[]> {
+  return apiFetch<Product[]>(`/products/${slug}/related`, options);
 }
 
-export function getBranches(): Promise<Branch[]> {
-  return apiFetch<Branch[]>("/branches");
+export function getBranches(options?: { revalidate?: number }): Promise<Branch[]> {
+  return apiFetch<Branch[]>("/branches", options);
 }
 
 export interface CreateOrderPayload {

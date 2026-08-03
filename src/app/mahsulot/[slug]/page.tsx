@@ -6,7 +6,7 @@ import AddToCartControl from "@/components/product/AddToCartControl";
 import { ApiError, getProductBySlug, getRelatedProducts } from "@/lib/api";
 import { discountPercent, formatSom } from "@/lib/format";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export async function generateMetadata({
   params,
@@ -15,8 +15,15 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   try {
-    const product = await getProductBySlug(slug);
-    return { title: `${product.name} — Bozor` };
+    const product = await getProductBySlug(slug, { revalidate: 60 });
+    return {
+      title: `${product.name} — Bozor`,
+      description: product.description,
+      openGraph: {
+        title: product.name,
+        description: product.description,
+      },
+    };
   } catch {
     return { title: "Mahsulot — Bozor" };
   }
@@ -31,7 +38,7 @@ export default async function ProductPage({
 
   let product;
   try {
-    product = await getProductBySlug(slug);
+    product = await getProductBySlug(slug, { revalidate: 60 });
   } catch (err) {
     if (err instanceof ApiError && err.status === 404) {
       notFound();
@@ -39,11 +46,41 @@ export default async function ProductPage({
     throw err;
   }
 
-  const related = await getRelatedProducts(slug);
+  const related = await getRelatedProducts(slug, { revalidate: 60 });
   const hasDiscount = !!product.discountPrice;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description,
+    category: product.category.name,
+    offers: {
+      "@type": "Offer",
+      price: product.discountPrice ?? product.price,
+      priceCurrency: "UZS",
+      availability:
+        product.stock > 0
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
+    },
+    ...(product.rating
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: product.rating,
+            bestRating: 5,
+          },
+        }
+      : {}),
+  };
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <nav className="text-sm text-muted">
         <Link href="/" className="hover:text-brand-700">
           Bosh sahifa

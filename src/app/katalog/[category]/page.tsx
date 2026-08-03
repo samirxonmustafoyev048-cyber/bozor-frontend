@@ -6,8 +6,6 @@ import ProductCard from "@/components/product/ProductCard";
 import { ApiError, getCategories, getCategoryBySlug, getProducts } from "@/lib/api";
 import { parseCatalogFilters, type CatalogSearchParams } from "@/lib/catalog-params";
 
-export const dynamic = "force-dynamic";
-
 export async function generateMetadata({
   params,
 }: {
@@ -15,7 +13,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { category } = await params;
   try {
-    const found = await getCategoryBySlug(category);
+    const found = await getCategoryBySlug(category, { revalidate: 300 });
     return { title: `${found.name} — Bozor` };
   } catch {
     return { title: "Katalog — Bozor" };
@@ -33,7 +31,7 @@ export default async function CategoryPage({
 
   let activeCategory;
   try {
-    activeCategory = await getCategoryBySlug(category);
+    activeCategory = await getCategoryBySlug(category, { revalidate: 300 });
   } catch (err) {
     if (err instanceof ApiError && err.status === 404) {
       notFound();
@@ -45,16 +43,19 @@ export default async function CategoryPage({
   const filters = parseCatalogFilters(resolvedSearchParams, category);
 
   const [categories, result] = await Promise.all([
-    getCategories(),
-    getProducts({
-      category,
-      minPrice: filters.minPrice,
-      maxPrice: filters.maxPrice,
-      discountOnly: filters.discountOnly,
-      q: filters.query,
-      sort: filters.sort,
-      pageSize: 100,
-    }),
+    getCategories({ revalidate: 300 }),
+    getProducts(
+      {
+        category,
+        minPrice: filters.minPrice,
+        maxPrice: filters.maxPrice,
+        discountOnly: filters.discountOnly,
+        q: filters.query,
+        sort: filters.sort,
+        pageSize: 100,
+      },
+      { revalidate: 60 }
+    ),
   ]);
 
   return (

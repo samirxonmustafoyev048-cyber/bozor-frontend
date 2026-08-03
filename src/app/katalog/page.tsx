@@ -18,15 +18,18 @@ export default async function CatalogPage({
   const filters = parseCatalogFilters(resolvedSearchParams);
 
   const [categories, result] = await Promise.all([
-    getCategories(),
-    getProducts({
-      minPrice: filters.minPrice,
-      maxPrice: filters.maxPrice,
-      discountOnly: filters.discountOnly,
-      q: filters.query,
-      sort: filters.sort,
-      pageSize: 100,
-    }),
+    getCategories({ revalidate: 300 }),
+    getProducts(
+      {
+        minPrice: filters.minPrice,
+        maxPrice: filters.maxPrice,
+        discountOnly: filters.discountOnly,
+        q: filters.query,
+        sort: filters.sort,
+        pageSize: 100,
+      },
+      { revalidate: 60 }
+    ),
   ]);
 
   return (

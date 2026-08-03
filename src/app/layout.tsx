@@ -17,9 +17,20 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Bozor — onlayn oziq-ovqat do'koni",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
+  ),
+  title: {
+    default: "Bozor — onlayn oziq-ovqat do'koni",
+    template: "%s — Bozor",
+  },
   description:
     "Kundalik oziq-ovqat va maishiy mahsulotlarni onlayn buyurtma qiling, tez va qulay yetkazib berish xizmatidan foydalaning.",
+  openGraph: {
+    type: "website",
+    locale: "uz_UZ",
+    siteName: "Bozor",
+  },
 };
 
 export default function RootLayout({
