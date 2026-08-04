@@ -1,3 +1,4 @@
+import { createElement } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import FilterSidebar from "@/components/catalog/FilterSidebar";
@@ -5,6 +6,7 @@ import SortDropdown from "@/components/catalog/SortDropdown";
 import ProductCard from "@/components/product/ProductCard";
 import { ApiError, getCategories, getCategoryBySlug, getProducts } from "@/lib/api";
 import { parseCatalogFilters, type CatalogSearchParams } from "@/lib/catalog-params";
+import { getCategoryIcon } from "@/lib/category-icons";
 
 export async function generateMetadata({
   params,
@@ -14,9 +16,9 @@ export async function generateMetadata({
   const { category } = await params;
   try {
     const found = await getCategoryBySlug(category, { revalidate: 300 });
-    return { title: `${found.name} — Bozor` };
+    return { title: `${found.name} — Olma Market` };
   } catch {
-    return { title: "Katalog — Bozor" };
+    return { title: "Katalog — Olma Market" };
   }
 }
 
@@ -74,8 +76,12 @@ export default async function CategoryPage({
       <section className="flex-1">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-lg font-bold text-foreground sm:text-xl">
-              {activeCategory.icon} {activeCategory.name}
+            <h1 className="flex items-center gap-2 text-lg font-bold text-foreground sm:text-xl">
+              {createElement(getCategoryIcon(activeCategory.slug), {
+                "aria-hidden": true,
+                className: "h-5 w-5 text-brand-600",
+              })}
+              {activeCategory.name}
             </h1>
             <p className="text-sm text-muted">{result.total} ta mahsulot</p>
           </div>

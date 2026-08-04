@@ -1,10 +1,13 @@
+import { createElement } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { Star } from "lucide-react";
 import ProductCard from "@/components/product/ProductCard";
 import AddToCartControl from "@/components/product/AddToCartControl";
 import { ApiError, getProductBySlug, getRelatedProducts } from "@/lib/api";
 import { discountPercent, formatSom } from "@/lib/format";
+import { getCategoryIcon } from "@/lib/category-icons";
 
 export const revalidate = 60;
 
@@ -17,7 +20,7 @@ export async function generateMetadata({
   try {
     const product = await getProductBySlug(slug, { revalidate: 60 });
     return {
-      title: `${product.name} — Bozor`,
+      title: `${product.name} — Olma Market`,
       description: product.description,
       openGraph: {
         title: product.name,
@@ -25,7 +28,7 @@ export async function generateMetadata({
       },
     };
   } catch {
-    return { title: "Mahsulot — Bozor" };
+    return { title: "Mahsulot — Olma Market" };
   }
 }
 
@@ -96,13 +99,16 @@ export default async function ProductPage({
       </nav>
 
       <div className="mt-4 grid gap-8 md:grid-cols-2">
-        <div className="relative flex aspect-square items-center justify-center rounded-2xl bg-brand-50 text-9xl">
+        <div className="relative flex aspect-square items-center justify-center rounded-2xl bg-brand-50">
           {hasDiscount && (
             <span className="absolute left-4 top-4 rounded-full bg-danger-500 px-3 py-1 text-sm font-semibold text-white">
               -{discountPercent(product.price, product.discountPrice!)}%
             </span>
           )}
-          <span aria-hidden>{product.emoji}</span>
+          {createElement(getCategoryIcon(product.category.slug), {
+            "aria-hidden": true,
+            className: "h-32 w-32 text-brand-500",
+          })}
         </div>
 
         <div className="flex flex-col gap-4">
@@ -112,9 +118,7 @@ export default async function ProductPage({
 
           {product.rating && (
             <div className="flex items-center gap-1 text-sm text-muted">
-              <span aria-hidden className="text-accent-500">
-                ★
-              </span>
+              <Star aria-hidden className="h-4 w-4 fill-current text-accent-500" />
               {product.rating.toFixed(1)}
             </div>
           )}

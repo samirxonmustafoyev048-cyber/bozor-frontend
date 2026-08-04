@@ -21,15 +21,15 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
   ),
   title: {
-    default: "Bozor — onlayn oziq-ovqat do'koni",
-    template: "%s — Bozor",
+    default: "Olma Market — onlayn oziq-ovqat do'koni",
+    template: "%s — Olma Market",
   },
   description:
     "Kundalik oziq-ovqat va maishiy mahsulotlarni onlayn buyurtma qiling, tez va qulay yetkazib berish xizmatidan foydalaning.",
   openGraph: {
     type: "website",
     locale: "uz_UZ",
-    siteName: "Bozor",
+    siteName: "Olma Market",
   },
 };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { createElement, useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import {
   adminCreateProduct,
@@ -11,6 +11,7 @@ import {
   type ProductPayload,
 } from "@/lib/api";
 import { formatSom } from "@/lib/format";
+import { getCategoryIcon } from "@/lib/category-icons";
 import type { Category, Product } from "@/types/product";
 
 const emptyForm: ProductPayload = {
@@ -152,7 +153,7 @@ export default function AdminProductsPage() {
           />
           <input
             required
-            placeholder="Emoji (masalan: 🍅)"
+            placeholder="Emoji (masalan: tomat)"
             value={form.emoji}
             onChange={(e) => setForm({ ...form, emoji: e.target.value })}
             className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
@@ -245,9 +246,10 @@ export default function AdminProductsPage() {
             {products.map((p) => (
               <tr key={p.id}>
                 <td className="px-3 py-2">
-                  <span aria-hidden className="mr-1">
-                    {p.emoji}
-                  </span>
+                  {createElement(getCategoryIcon(p.category.slug), {
+                    "aria-hidden": true,
+                    className: "mr-1 inline h-4 w-4 text-brand-600",
+                  })}
                   {p.name}
                 </td>
                 <td className="px-3 py-2 text-muted">{p.category.name}</td>

@@ -3,12 +3,13 @@
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { CreditCard, CheckCircle2 } from "lucide-react";
 import { getOrder, getPaymentLinks, type PaymentLinks } from "@/lib/api";
 import type { Order } from "@/types/product";
 
 const PAYMENT_LOGOS: Record<string, string> = {
-  PAYME: "💳 Payme",
-  CLICK: "💳 Click",
+  PAYME: "Payme",
+  CLICK: "Click",
 };
 
 function OrderConfirmation() {
@@ -40,9 +41,11 @@ function OrderConfirmation() {
 
   return (
     <div className="mx-auto flex max-w-xl flex-col items-center gap-4 px-4 py-20 text-center sm:px-6">
-      <span aria-hidden className="text-6xl">
-        {needsOnlinePayment ? "💳" : "✅"}
-      </span>
+      {needsOnlinePayment ? (
+        <CreditCard aria-hidden className="h-16 w-16 text-brand-600" />
+      ) : (
+        <CheckCircle2 aria-hidden className="h-16 w-16 text-brand-600" />
+      )}
       <h1 className="text-2xl font-bold text-foreground">
         {needsOnlinePayment
           ? "Buyurtma qabul qilindi — to'lovni yakunlang"

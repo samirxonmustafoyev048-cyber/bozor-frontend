@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Check } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { getMyOrders } from "@/lib/api";
 import { formatSom } from "@/lib/format";
@@ -103,7 +104,16 @@ export default function ProfilePage() {
           disabled={saving}
           className="w-fit rounded-full bg-brand-600 px-6 py-2 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-50"
         >
-          {saved ? "Saqlandi ✓" : saving ? "Saqlanmoqda..." : "Saqlash"}
+          {saved ? (
+            <span className="inline-flex items-center gap-1.5">
+              <Check className="h-4 w-4" />
+              Saqlandi
+            </span>
+          ) : saving ? (
+            "Saqlanmoqda..."
+          ) : (
+            "Saqlash"
+          )}
         </button>
       </form>
 

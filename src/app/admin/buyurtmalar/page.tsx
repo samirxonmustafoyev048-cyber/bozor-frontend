@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Check } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { adminGetOrders, adminUpdateOrderStatus } from "@/lib/api";
 import { formatSom } from "@/lib/format";
@@ -61,7 +62,7 @@ export default function AdminOrdersPage() {
                 <td className="px-3 py-2">{formatSom(o.totalPrice)}</td>
                 <td className="px-3 py-2 text-muted">
                   {o.paymentMethod}
-                  {o.paid ? " ✓" : ""}
+                  {o.paid && <Check aria-hidden className="ml-1 inline h-3.5 w-3.5 text-brand-600" />}
                 </td>
                 <td className="px-3 py-2 text-muted">
                   {new Date(o.createdAt).toLocaleDateString("uz-UZ")}

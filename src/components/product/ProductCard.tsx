@@ -1,6 +1,8 @@
+import { createElement } from "react";
 import Link from "next/link";
 import type { Product } from "@/types/product";
 import { discountPercent, formatSom } from "@/lib/format";
+import { getCategoryIcon } from "@/lib/category-icons";
 import AddToCartButton from "@/components/cart/AddToCartButton";
 
 export default function ProductCard({ product }: { product: Product }) {
@@ -16,9 +18,12 @@ export default function ProductCard({ product }: { product: Product }) {
 
       <Link
         href={`/mahsulot/${product.slug}`}
-        className="flex aspect-square items-center justify-center bg-brand-50 text-5xl"
+        className="flex aspect-square items-center justify-center bg-brand-50"
       >
-        <span aria-hidden>{product.emoji}</span>
+        {createElement(getCategoryIcon(product.category.slug), {
+          "aria-hidden": true,
+          className: "h-12 w-12 text-brand-500",
+        })}
       </Link>
 
       <div className="flex flex-1 flex-col gap-1 p-3">

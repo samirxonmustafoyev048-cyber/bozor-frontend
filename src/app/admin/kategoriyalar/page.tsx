@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { createElement, useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import {
   adminCreateCategory,
@@ -9,6 +9,7 @@ import {
   getCategories,
   type CategoryPayload,
 } from "@/lib/api";
+import { getCategoryIcon } from "@/lib/category-icons";
 import type { Category } from "@/types/product";
 
 const emptyForm: CategoryPayload = { slug: "", name: "", icon: "" };
@@ -135,7 +136,10 @@ export default function AdminCategoriesPage() {
             className="flex items-center justify-between rounded-lg border border-border bg-surface px-4 py-3"
           >
             <span className="flex items-center gap-2 text-sm">
-              <span aria-hidden>{c.icon}</span>
+              {createElement(getCategoryIcon(c.slug), {
+                "aria-hidden": true,
+                className: "h-4 w-4 text-brand-600",
+              })}
               {c.name}{" "}
               <span className="text-xs text-muted">({c.slug})</span>
             </span>

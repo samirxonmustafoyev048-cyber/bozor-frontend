@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Check } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import type { Product } from "@/types/product";
 
@@ -47,7 +48,14 @@ export default function AddToCartControl({ product }: { product: Product }) {
         onClick={handleAdd}
         className="w-full rounded-full bg-brand-600 py-3 text-sm font-semibold text-white hover:bg-brand-700 sm:w-auto sm:px-8"
       >
-        {added ? "Savatga qo'shildi ✓" : "Savatga qo'shish"}
+        {added ? (
+          <span className="inline-flex items-center gap-1.5">
+            <Check className="h-4 w-4" />
+            Savatga qo&apos;shildi
+          </span>
+        ) : (
+          "Savatga qo'shish"
+        )}
       </button>
     </div>
   );

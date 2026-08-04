@@ -1,8 +1,11 @@
 "use client";
 
+import { createElement } from "react";
 import Link from "next/link";
+import { ShoppingCart, X } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { formatSom } from "@/lib/format";
+import { getCategoryIcon } from "@/lib/category-icons";
 
 export default function CartPage() {
   const { lines, subtotal, isLoaded, setQuantity, removeItem } = useCart();
@@ -18,9 +21,7 @@ export default function CartPage() {
   if (lines.length === 0) {
     return (
       <div className="mx-auto flex max-w-4xl flex-col items-center gap-4 px-4 py-20 text-center sm:px-6">
-        <span aria-hidden className="text-5xl">
-          🛒
-        </span>
+        <ShoppingCart aria-hidden className="h-16 w-16 text-brand-500" />
         <h1 className="text-xl font-bold text-foreground">
           Savatingiz bo&apos;sh
         </h1>
@@ -49,9 +50,12 @@ export default function CartPage() {
           >
             <Link
               href={`/mahsulot/${product.slug}`}
-              className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-3xl"
+              className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-brand-50"
             >
-              <span aria-hidden>{product.emoji}</span>
+              {createElement(getCategoryIcon(product.category.slug), {
+                "aria-hidden": true,
+                className: "h-8 w-8 text-brand-500",
+              })}
             </Link>
 
             <div className="min-w-0 flex-1">
@@ -96,7 +100,7 @@ export default function CartPage() {
               onClick={() => removeItem(product.id)}
               className="shrink-0 text-muted hover:text-danger-600"
             >
-              ✕
+              <X aria-hidden className="h-4 w-4" />
             </button>
           </div>
         ))}
