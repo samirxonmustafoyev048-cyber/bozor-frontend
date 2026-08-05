@@ -58,7 +58,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <PromoGrid />
+      <PromoGrid discounted={discounted.items} />
 
       <ProductTabs
         discounted={discounted.items}

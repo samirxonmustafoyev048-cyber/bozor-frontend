@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { Flame, ShoppingBasket, Truck, ShieldCheck, CreditCard } from "lucide-react";
 import CountdownTimer from "@/components/home/CountdownTimer";
+import PromoProductShowcase from "@/components/home/PromoProductShowcase";
+import type { Product } from "@/types/product";
 
-export default function PromoGrid() {
+export default function PromoGrid({ discounted = [] }: { discounted?: Product[] }) {
   return (
     <div className="grid gap-4 lg:grid-cols-3">
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand-800 to-brand-900 p-6 text-white sm:p-8 lg:col-span-2 lg:row-span-2">
@@ -28,6 +30,7 @@ export default function PromoGrid() {
           aria-hidden
           className="pointer-events-none absolute -right-6 bottom-0 h-40 w-40 text-white/10 sm:h-56 sm:w-56"
         />
+        <PromoProductShowcase products={discounted} />
       </div>
 
       <Link
