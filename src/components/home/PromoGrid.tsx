@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Flame, ShoppingBasket, Truck, ShieldCheck, CreditCard } from "lucide-react";
+import { Flame, Truck, ShieldCheck, CreditCard } from "lucide-react";
 import CountdownTimer from "@/components/home/CountdownTimer";
 import PromoProductShowcase from "@/components/home/PromoProductShowcase";
 import type { Product } from "@/types/product";
@@ -8,29 +8,27 @@ export default function PromoGrid({ discounted = [] }: { discounted?: Product[] 
   return (
     <div className="grid gap-4 lg:grid-cols-3">
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand-800 to-brand-900 p-6 text-white sm:p-8 lg:col-span-2 lg:row-span-2">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold">
-          <Flame aria-hidden className="h-3.5 w-3.5" />
-          Kun aksiyasi
-        </span>
-        <h2 className="mt-4 max-w-xs text-2xl font-extrabold leading-tight sm:max-w-sm sm:text-4xl">
-          Bugungi chegirmalar siz uchun!
-        </h2>
-        <p className="mt-3 max-w-xs text-sm text-white/85 sm:text-base">
-          Eng sifatli mahsulotlarga 50% gacha chegirma!
-        </p>
-
-        <div className="mt-6">
-          <p className="mb-2 text-xs font-medium text-white/70">
-            Aksiya tugashiga:
-          </p>
-          <CountdownTimer />
-        </div>
-
-        <ShoppingBasket
-          aria-hidden
-          className="pointer-events-none absolute -right-6 bottom-0 h-40 w-40 text-white/10 sm:h-56 sm:w-56"
-        />
         <PromoProductShowcase products={discounted} />
+
+        <div className="relative z-10">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold">
+            <Flame aria-hidden className="h-3.5 w-3.5" />
+            Kun aksiyasi
+          </span>
+          <h2 className="mt-4 max-w-xs text-2xl font-extrabold leading-tight sm:max-w-sm sm:text-4xl">
+            Bugungi chegirmalar siz uchun!
+          </h2>
+          <p className="mt-3 max-w-xs text-sm text-white/85 sm:text-base">
+            Eng sifatli mahsulotlarga 50% gacha chegirma!
+          </p>
+
+          <div className="mt-6">
+            <p className="mb-2 text-xs font-medium text-white/70">
+              Aksiya tugashiga:
+            </p>
+            <CountdownTimer />
+          </div>
+        </div>
       </div>
 
       <Link
