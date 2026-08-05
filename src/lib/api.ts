@@ -1,4 +1,4 @@
-import type { AuthResponse, Branch, Category, Order, Product, User } from "@/types/product";
+import type { AuthResponse, Branch, Category, Order, OrderStatus, Product, User } from "@/types/product";
 
 export class ApiError extends Error {
   status: number;
@@ -218,8 +218,38 @@ export interface AdminStats {
   totalUsers: number;
   totalProducts: number;
   totalRevenue: number;
-  ordersByStatus: { status: string; count: number }[];
+  ordersByStatus: { status: OrderStatus; count: number }[];
   popularProducts: { product: Product; totalSold: number }[];
+  dailySales: { day: number; current: number; previous: number }[];
+  recentOrders: {
+    id: string;
+    orderNumber: string;
+    customerName: string;
+    itemCount: number;
+    totalPrice: number;
+    status: OrderStatus;
+    createdAt: string;
+  }[];
+  lowStockProducts: {
+    id: string;
+    name: string;
+    slug: string;
+    stock: number;
+    imageUrl: string | null;
+    category: Category;
+  }[];
+  trends: {
+    orders: number;
+    revenue: number;
+    users: number;
+    products: number;
+  };
+  sparklines: {
+    orders: number[];
+    revenue: number[];
+    users: number[];
+    products: number[];
+  };
 }
 
 export function adminGetStats(accessToken: string): Promise<AdminStats> {

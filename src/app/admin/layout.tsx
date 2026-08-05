@@ -1,21 +1,28 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-
-const navItems = [
-  { href: "/admin", label: "Bosh sahifa" },
-  { href: "/admin/mahsulotlar", label: "Mahsulotlar" },
-  { href: "/admin/kategoriyalar", label: "Kategoriyalar" },
-  { href: "/admin/buyurtmalar", label: "Buyurtmalar" },
-  { href: "/admin/filiallar", label: "Filiallar" },
-  { href: "/admin/foydalanuvchilar", label: "Foydalanuvchilar" },
-];
+import { adminGetStats } from "@/lib/api";
+import AdminSidebar from "@/components/admin/AdminSidebar";
+import AdminTopbar from "@/components/admin/AdminTopbar";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { auth, isLoaded } = useAuth();
-  const pathname = usePathname();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [pendingOrders, setPendingOrders] = useState(0);
+
+  useEffect(() => {
+    if (!auth) return;
+    adminGetStats(auth.accessToken)
+      .then((stats) => {
+        const pending = stats.ordersByStatus.find(
+          (s) => s.status === "QABUL_QILINDI"
+        );
+        setPendingOrders(pending?.count ?? 0);
+      })
+      .catch(() => {});
+  }, [auth]);
 
   if (!isLoaded) {
     return null;
@@ -38,33 +45,26 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-6 sm:flex-row sm:px-6 sm:py-8">
-      <aside className="w-full shrink-0 sm:w-48">
-        <h2 className="text-lg font-bold text-foreground">Admin panel</h2>
-        <nav className="mt-4 flex flex-row flex-wrap gap-1 sm:flex-col">
-          {navItems.map((item) => {
-            const active =
-              item.href === "/admin"
-                ? pathname === "/admin"
-                : pathname.startsWith(item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`rounded-md px-3 py-2 text-sm ${
-                  active
-                    ? "bg-brand-100 font-medium text-brand-800"
-                    : "text-foreground/80 hover:bg-brand-50"
-                }`}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
-      </aside>
+    <div className="flex min-h-screen bg-background">
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-30 bg-black/40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+      <AdminSidebar
+        pendingOrders={pendingOrders}
+        open={sidebarOpen}
+        onNavigate={() => setSidebarOpen(false)}
+      />
 
-      <main className="min-w-0 flex-1">{children}</main>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <AdminTopbar
+          pendingOrders={pendingOrders}
+          onMenuClick={() => setSidebarOpen((v) => !v)}
+        />
+        <main className="min-w-0 flex-1 p-4 sm:p-6">{children}</main>
+      </div>
     </div>
   );
 }

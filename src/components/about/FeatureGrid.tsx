@@ -1,47 +1,50 @@
 import { BadgeCheck, Truck, ShieldCheck, Headset } from "lucide-react";
+import { STOCK_PHOTOS } from "@/lib/stock-photos";
 
 const features = [
   {
     icon: BadgeCheck,
     title: "Sifat kafolati",
     description: "Mahsulotlarimiz sifati muntazam tekshiriladi va nazorat qilinadi.",
-    bg: "bg-emerald-50",
-    fg: "text-emerald-600",
+    image: STOCK_PHOTOS.qualityProduce,
   },
   {
     icon: Truck,
     title: "Tez yetkazib berish",
     description: "Buyurtmangizni qisqa vaqt ichida esigingizgacha yetkazib beramiz.",
-    bg: "bg-blue-50",
-    fg: "text-blue-600",
+    image: STOCK_PHOTOS.fastDelivery,
   },
   {
     icon: ShieldCheck,
     title: "Xavfsiz to'lov",
     description: "To'lov ma'lumotlaringiz 100% himoyalangan va xavfsiz tizim orqali amalga oshiriladi.",
-    bg: "bg-amber-50",
-    fg: "text-amber-600",
+    image: STOCK_PHOTOS.securePayment,
   },
   {
     icon: Headset,
     title: "Mijozlar uchun xizmat",
     description: "Savollaringiz bormi? Bizning qo'llab-quvvatlash jamoamiz doim siz bilan.",
-    bg: "bg-purple-50",
-    fg: "text-purple-600",
+    image: STOCK_PHOTOS.customerService,
   },
 ];
 
 export default function FeatureGrid() {
   return (
-    <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <section className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
       {features.map((f) => (
         <div
           key={f.title}
           className="overflow-hidden rounded-2xl border border-border bg-surface"
         >
-          <div className={`flex h-28 items-center justify-center ${f.bg}`}>
-            <span className={`flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-sm ${f.fg}`}>
-              <f.icon aria-hidden className="h-7 w-7" />
+          <div className="relative aspect-[4/3]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={f.image}
+              alt={f.title}
+              className="h-full w-full object-cover"
+            />
+            <span className="absolute bottom-3 left-3 flex h-9 w-9 items-center justify-center rounded-full bg-white text-brand-600 shadow-md">
+              <f.icon aria-hidden className="h-5 w-5" />
             </span>
           </div>
           <div className="p-4">
