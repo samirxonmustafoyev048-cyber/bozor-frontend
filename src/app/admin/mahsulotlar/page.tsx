@@ -1,6 +1,6 @@
 "use client";
 
-import { createElement, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import {
   adminCreateProduct,
@@ -11,7 +11,7 @@ import {
   type ProductPayload,
 } from "@/lib/api";
 import { formatSom } from "@/lib/format";
-import { getCategoryIcon } from "@/lib/category-icons";
+import ProductImage from "@/components/product/ProductImage";
 import type { Category, Product } from "@/types/product";
 
 const emptyForm: ProductPayload = {
@@ -61,6 +61,7 @@ export default function AdminProductsPage() {
       discountPrice: p.discountPrice ?? undefined,
       unit: p.unit,
       emoji: p.emoji,
+      imageUrl: p.imageUrl ?? undefined,
       categoryId: p.categoryId,
       stock: p.stock,
       isPopular: p.isPopular,
@@ -159,6 +160,15 @@ export default function AdminProductsPage() {
             className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
           />
           <input
+            type="url"
+            placeholder="Rasm URL manzili (ixtiyoriy)"
+            value={form.imageUrl ?? ""}
+            onChange={(e) =>
+              setForm({ ...form, imageUrl: e.target.value || undefined })
+            }
+            className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500 sm:col-span-2"
+          />
+          <input
             required
             type="number"
             placeholder="Narxi (so'm)"
@@ -246,11 +256,15 @@ export default function AdminProductsPage() {
             {products.map((p) => (
               <tr key={p.id}>
                 <td className="px-3 py-2">
-                  {createElement(getCategoryIcon(p.category.slug), {
-                    "aria-hidden": true,
-                    className: "mr-1 inline h-4 w-4 text-brand-600",
-                  })}
-                  {p.name}
+                  <span className="flex items-center gap-2">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-md bg-brand-50">
+                      <ProductImage
+                        product={p}
+                        iconClassName="h-4 w-4 text-brand-600"
+                      />
+                    </span>
+                    {p.name}
+                  </span>
                 </td>
                 <td className="px-3 py-2 text-muted">{p.category.name}</td>
                 <td className="px-3 py-2">

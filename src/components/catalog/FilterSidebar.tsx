@@ -1,5 +1,7 @@
+import { createElement } from "react";
 import Link from "next/link";
 import type { Category } from "@/types/product";
+import { getCategoryIcon } from "@/lib/category-icons";
 
 export default function FilterSidebar({
   categories,
@@ -49,7 +51,10 @@ export default function FilterSidebar({
                     : "text-foreground/80 hover:bg-brand-50"
                 }`}
               >
-                <span aria-hidden>{cat.icon}</span>
+                {createElement(getCategoryIcon(cat.slug, cat.name), {
+                  "aria-hidden": true,
+                  className: "h-4 w-4",
+                })}
                 {cat.name}
               </Link>
             </li>

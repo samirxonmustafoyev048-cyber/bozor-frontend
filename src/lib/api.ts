@@ -259,6 +259,7 @@ export interface ProductPayload {
   discountPrice?: number;
   unit: string;
   emoji: string;
+  imageUrl?: string;
   categoryId: string;
   stock?: number;
   isPopular?: boolean;

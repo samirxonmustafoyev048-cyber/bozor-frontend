@@ -1,10 +1,10 @@
 "use client";
 
-import { createElement, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { adminGetStats, type AdminStats } from "@/lib/api";
 import { formatSom } from "@/lib/format";
-import { getCategoryIcon } from "@/lib/category-icons";
+import ProductImage from "@/components/product/ProductImage";
 
 const STATUS_LABELS: Record<string, string> = {
   QABUL_QILINDI: "Qabul qilindi",
@@ -98,10 +98,9 @@ export default function AdminDashboardPage() {
               className="flex items-center justify-between rounded-lg border border-border bg-surface px-4 py-2 text-sm"
             >
               <span className="flex items-center gap-2">
-                {createElement(getCategoryIcon(p.product.category.slug), {
-                  "aria-hidden": true,
-                  className: "h-4 w-4 text-brand-600",
-                })}
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-md bg-brand-50">
+                  <ProductImage product={p.product} iconClassName="h-3.5 w-3.5 text-brand-600" />
+                </span>
                 {p.product.name}
               </span>
               <span className="font-semibold text-foreground">

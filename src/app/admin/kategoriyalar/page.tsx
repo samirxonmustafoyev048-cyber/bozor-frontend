@@ -136,7 +136,7 @@ export default function AdminCategoriesPage() {
             className="flex items-center justify-between rounded-lg border border-border bg-surface px-4 py-3"
           >
             <span className="flex items-center gap-2 text-sm">
-              {createElement(getCategoryIcon(c.slug), {
+              {createElement(getCategoryIcon(c.slug, c.name), {
                 "aria-hidden": true,
                 className: "h-4 w-4 text-brand-600",
               })}

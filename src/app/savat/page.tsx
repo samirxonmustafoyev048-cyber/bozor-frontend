@@ -1,11 +1,10 @@
 "use client";
 
-import { createElement } from "react";
 import Link from "next/link";
 import { ShoppingCart, X } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { formatSom } from "@/lib/format";
-import { getCategoryIcon } from "@/lib/category-icons";
+import ProductImage from "@/components/product/ProductImage";
 
 export default function CartPage() {
   const { lines, subtotal, isLoaded, setQuantity, removeItem } = useCart();
@@ -50,12 +49,9 @@ export default function CartPage() {
           >
             <Link
               href={`/mahsulot/${product.slug}`}
-              className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-brand-50"
+              className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-brand-50"
             >
-              {createElement(getCategoryIcon(product.category.slug), {
-                "aria-hidden": true,
-                className: "h-8 w-8 text-brand-500",
-              })}
+              <ProductImage product={product} iconClassName="h-8 w-8 text-brand-500" />
             </Link>
 
             <div className="min-w-0 flex-1">

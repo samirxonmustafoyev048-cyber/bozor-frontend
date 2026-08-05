@@ -1,7 +1,9 @@
 import HeroBanner from "@/components/home/HeroBanner";
-import CategoryGrid from "@/components/home/CategoryGrid";
-import ProductSection from "@/components/home/ProductSection";
-import TrustBlock from "@/components/home/TrustBlock";
+import FeatureStrip from "@/components/home/FeatureStrip";
+import CategoryPills from "@/components/home/CategoryPills";
+import PromoGrid from "@/components/home/PromoGrid";
+import ProductTabs from "@/components/home/ProductTabs";
+import TrustBar from "@/components/home/TrustBar";
 import { getCategories, getProducts, type ProductListResult } from "@/lib/api";
 import type { Category } from "@/types/product";
 
@@ -9,14 +11,16 @@ export default async function Home() {
   let categories: Category[] = [];
   let discounted: ProductListResult = { items: [], total: 0, page: 1, pageSize: 0 };
   let popular: ProductListResult = { items: [], total: 0, page: 1, pageSize: 0 };
+  let newest: ProductListResult = { items: [], total: 0, page: 1, pageSize: 0 };
   let hasError = false;
 
   try {
     const revalidate = { revalidate: 60 };
-    [categories, discounted, popular] = await Promise.all([
+    [categories, discounted, popular, newest] = await Promise.all([
       getCategories(revalidate),
-      getProducts({ discountOnly: true, sort: "popular", pageSize: 8 }, revalidate),
-      getProducts({ sort: "popular", pageSize: 8 }, revalidate),
+      getProducts({ discountOnly: true, sort: "popular", pageSize: 12 }, revalidate),
+      getProducts({ sort: "popular", pageSize: 12 }, revalidate),
+      getProducts({ sort: "new", pageSize: 12 }, revalidate),
     ]);
   } catch {
     hasError = true;
@@ -40,18 +44,29 @@ export default async function Home() {
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-10 px-4 py-6 sm:px-6 sm:py-8">
       <HeroBanner />
-      <CategoryGrid categories={categories} />
-      <ProductSection
-        title="Kunning aksiyasi"
-        viewAllHref="/katalog?chegirma=true"
-        products={discounted.items}
+      <FeatureStrip />
+
+      <section>
+        <h2 className="flex items-center gap-2 text-xl font-bold text-foreground sm:text-2xl">
+          🍃 Mahsulotlar
+        </h2>
+        <p className="mt-1 text-sm text-muted">
+          Sifatli mahsulotlar, qulay narxlar va tez yetkazib berish
+        </p>
+        <div className="mt-5">
+          <CategoryPills categories={categories} />
+        </div>
+      </section>
+
+      <PromoGrid />
+
+      <ProductTabs
+        discounted={discounted.items}
+        popular={popular.items}
+        newest={newest.items}
       />
-      <ProductSection
-        title="Ommabop mahsulotlar"
-        viewAllHref="/katalog?saralash=popular"
-        products={popular.items}
-      />
-      <TrustBlock />
+
+      <TrustBar />
     </div>
   );
 }

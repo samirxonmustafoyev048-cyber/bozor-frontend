@@ -1,13 +1,12 @@
-import { createElement } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Star } from "lucide-react";
 import ProductCard from "@/components/product/ProductCard";
 import AddToCartControl from "@/components/product/AddToCartControl";
+import ProductImage from "@/components/product/ProductImage";
 import { ApiError, getProductBySlug, getRelatedProducts } from "@/lib/api";
 import { discountPercent, formatSom } from "@/lib/format";
-import { getCategoryIcon } from "@/lib/category-icons";
 
 export const revalidate = 60;
 
@@ -99,16 +98,13 @@ export default async function ProductPage({
       </nav>
 
       <div className="mt-4 grid gap-8 md:grid-cols-2">
-        <div className="relative flex aspect-square items-center justify-center rounded-2xl bg-brand-50">
+        <div className="relative flex aspect-square items-center justify-center overflow-hidden rounded-2xl bg-brand-50">
           {hasDiscount && (
             <span className="absolute left-4 top-4 rounded-full bg-danger-500 px-3 py-1 text-sm font-semibold text-white">
               -{discountPercent(product.price, product.discountPrice!)}%
             </span>
           )}
-          {createElement(getCategoryIcon(product.category.slug), {
-            "aria-hidden": true,
-            className: "h-32 w-32 text-brand-500",
-          })}
+          <ProductImage product={product} iconClassName="h-32 w-32 text-brand-500" />
         </div>
 
         <div className="flex flex-col gap-4">

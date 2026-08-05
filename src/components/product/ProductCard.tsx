@@ -1,9 +1,10 @@
-import { createElement } from "react";
 import Link from "next/link";
+import { Star } from "lucide-react";
 import type { Product } from "@/types/product";
 import { discountPercent, formatSom } from "@/lib/format";
-import { getCategoryIcon } from "@/lib/category-icons";
-import AddToCartButton from "@/components/cart/AddToCartButton";
+import ProductImage from "@/components/product/ProductImage";
+import ProductQuantityStepper from "@/components/product/ProductQuantityStepper";
+import WishlistButton from "@/components/product/WishlistButton";
 
 export default function ProductCard({ product }: { product: Product }) {
   const hasDiscount = !!product.discountPrice;
@@ -15,15 +16,13 @@ export default function ProductCard({ product }: { product: Product }) {
           -{discountPercent(product.price, product.discountPrice!)}%
         </span>
       )}
+      <WishlistButton productName={product.name} />
 
       <Link
         href={`/mahsulot/${product.slug}`}
-        className="flex aspect-square items-center justify-center bg-brand-50"
+        className="flex aspect-square items-center justify-center overflow-hidden bg-brand-50"
       >
-        {createElement(getCategoryIcon(product.category.slug), {
-          "aria-hidden": true,
-          className: "h-12 w-12 text-brand-500",
-        })}
+        <ProductImage product={product} iconClassName="h-12 w-12 text-brand-500" />
       </Link>
 
       <div className="flex flex-1 flex-col gap-1 p-3">
@@ -35,7 +34,14 @@ export default function ProductCard({ product }: { product: Product }) {
         </Link>
         <span className="text-xs text-muted">{product.unit}</span>
 
-        <div className="mt-auto flex items-end justify-between gap-2 pt-2">
+        {product.rating && (
+          <span className="flex items-center gap-1 text-xs text-muted">
+            <Star aria-hidden className="h-3 w-3 fill-current text-accent-500" />
+            {product.rating.toFixed(1)}
+          </span>
+        )}
+
+        <div className="mt-auto flex flex-col gap-2 pt-2">
           <div className="flex flex-col">
             {hasDiscount ? (
               <>
@@ -53,7 +59,7 @@ export default function ProductCard({ product }: { product: Product }) {
             )}
           </div>
 
-          <AddToCartButton product={product} />
+          <ProductQuantityStepper product={product} />
         </div>
       </div>
     </div>

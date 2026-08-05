@@ -16,6 +16,7 @@ export interface Product {
   discountPrice: number | null;
   unit: string;
   emoji: string;
+  imageUrl: string | null;
   stock: number;
   isPopular: boolean;
   rating: number | null;

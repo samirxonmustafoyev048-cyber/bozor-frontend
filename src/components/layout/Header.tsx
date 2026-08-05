@@ -1,10 +1,10 @@
 import Link from "next/link";
 import {
-  Leaf,
+  Apple,
   Search,
   Heart,
   ShoppingCart,
-  BookOpen,
+  LayoutGrid,
   BadgePercent,
   Truck,
   Briefcase,
@@ -26,7 +26,6 @@ const categories = [
 ];
 
 const navItems = [
-  { label: "Katalog", href: "/katalog", icon: BookOpen },
   { label: "Aksiyalar", href: "/katalog?chegirma=true", icon: BadgePercent },
   { label: "Yetkazib berish", href: "/yetkazib-berish", icon: Truck },
   { label: "Karyera", href: "/karyera", icon: Briefcase },
@@ -39,67 +38,57 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-surface">
       {/* Main bar */}
-      <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 sm:px-6">
+      <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:gap-4 sm:px-6">
         <Link href="/" className="flex shrink-0 items-center gap-2">
           <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-600 text-white">
-            <Leaf aria-hidden className="h-5 w-5" />
+            <Apple aria-hidden className="h-5 w-5" />
           </span>
-          <span className="text-lg font-extrabold tracking-tight text-brand-700 sm:text-xl">
-            Olma Market
+          <span className="text-lg font-extrabold tracking-tight sm:text-xl">
+            <span className="text-brand-600">Olma</span>{" "}
+            <span className="text-sky-600">Market</span>
           </span>
         </Link>
 
-        <nav className="hidden flex-1 items-center justify-center gap-1 lg:flex">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="flex flex-col items-center gap-0.5 rounded-lg px-2.5 py-1.5 text-center text-[11px] font-medium text-foreground/80 hover:bg-brand-50 hover:text-brand-700"
-            >
-              <item.icon aria-hidden className="h-5 w-5" />
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+        <Link
+          href="/katalog"
+          className="hidden shrink-0 items-center gap-1.5 rounded-full bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 sm:flex"
+        >
+          <LayoutGrid aria-hidden className="h-4 w-4" />
+          Katalog
+        </Link>
 
-        <div className="flex flex-1 items-center gap-2 lg:hidden">
-          <form
-            action="/katalog"
-            className="flex min-w-0 flex-1 items-center rounded-full border border-border bg-background px-3 py-2 focus-within:border-brand-500"
-          >
-            <Search aria-hidden className="h-4 w-4 text-muted" />
-            <input
-              type="search"
-              name="q"
-              placeholder="Mahsulot qidirish..."
-              className="w-full min-w-0 bg-transparent px-2 text-sm outline-none placeholder:text-muted"
-            />
-          </form>
-        </div>
-
-        <div className="hidden shrink-0 lg:block">
-          <Link
-            href="/katalog"
+        <form
+          action="/katalog"
+          className="flex min-w-0 flex-1 items-center rounded-full border border-border bg-background px-3 py-2 focus-within:border-brand-500"
+        >
+          <input
+            type="search"
+            name="q"
+            placeholder="Mahsulotlarni qidirish..."
+            className="w-full min-w-0 bg-transparent px-2 text-sm outline-none placeholder:text-muted"
+          />
+          <button
+            type="submit"
             aria-label="Qidirish"
-            className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-brand-50"
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-muted hover:bg-brand-50 hover:text-brand-700"
           >
-            <Search aria-hidden className="h-5 w-5 text-foreground" />
-          </Link>
-        </div>
+            <Search aria-hidden className="h-4 w-4" />
+          </button>
+        </form>
 
         <div className="flex shrink-0 items-center gap-1 sm:gap-2">
           <AdminLink />
           <ProfileLink />
           <Link
             href="/sevimlilar"
-            className="flex flex-col items-center rounded-lg px-2 py-1 text-xs text-foreground hover:bg-brand-50"
+            className="hidden flex-col items-center rounded-lg px-2 py-1 text-xs text-foreground hover:bg-brand-50 sm:flex"
           >
             <Heart aria-hidden className="h-5 w-5" />
-            <span className="hidden sm:inline">Sevimli</span>
+            Sevimli
           </Link>
           <Link
             href="/savat"
-            className="relative flex flex-col items-center rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700"
+            className="relative flex flex-col items-center rounded-lg px-2 py-1 text-xs text-foreground hover:bg-brand-50"
           >
             <ShoppingCart aria-hidden className="h-5 w-5" />
             <span className="hidden sm:inline">Savat</span>
@@ -111,6 +100,17 @@ export default function Header() {
       {/* Category nav */}
       <nav className="hidden border-t border-border md:block">
         <div className="mx-auto flex max-w-7xl items-center gap-6 overflow-x-auto px-4 py-2 text-sm sm:px-6">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="flex items-center gap-1.5 whitespace-nowrap text-foreground/80 hover:text-brand-700"
+            >
+              <item.icon aria-hidden className="h-3.5 w-3.5" />
+              {item.label}
+            </Link>
+          ))}
+          <span className="h-4 w-px shrink-0 bg-border" />
           {categories.map((cat) => (
             <Link
               key={cat.href}
