@@ -16,7 +16,7 @@ export default function ProductCard({ product }: { product: Product }) {
           -{discountPercent(product.price, product.discountPrice!)}%
         </span>
       )}
-      <WishlistButton productName={product.name} />
+      <WishlistButton product={product} />
 
       <Link
         href={`/mahsulot/${product.slug}`}

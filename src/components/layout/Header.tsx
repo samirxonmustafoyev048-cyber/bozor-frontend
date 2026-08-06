@@ -13,6 +13,7 @@ import {
   Newspaper,
 } from "lucide-react";
 import CartIndicator from "@/components/cart/CartIndicator";
+import WishlistIndicator from "@/components/product/WishlistIndicator";
 import ProfileLink from "@/components/layout/ProfileLink";
 import AdminLink from "@/components/layout/AdminLink";
 
@@ -81,10 +82,11 @@ export default function Header() {
           <ProfileLink />
           <Link
             href="/sevimlilar"
-            className="hidden flex-col items-center rounded-lg px-2 py-1 text-xs text-foreground hover:bg-brand-50 sm:flex"
+            className="relative hidden flex-col items-center rounded-lg px-2 py-1 text-xs text-foreground hover:bg-brand-50 sm:flex"
           >
             <Heart aria-hidden className="h-5 w-5" />
             Sevimli
+            <WishlistIndicator />
           </Link>
           <Link
             href="/savat"

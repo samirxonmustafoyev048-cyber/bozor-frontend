@@ -13,4 +13,8 @@ export const STOCK_PHOTOS = {
   customerService: unsplash("1596524430615-b46475ddff6e", 500),
   teamMeeting: unsplash("1543269865-cbf427effbad", 900),
   teamPortrait: unsplash("1580489944761-15a19d654956", 200),
+  deliveryTruck: unsplash("1601584115197-04ecc0da31d7", 700),
+  treePlanting: unsplash("1542601906990-b4d3fb778b09", 700),
+  mobileCheckout: unsplash("1556742049-0cfed4f6a45d", 700),
+  partnershipHandshake: unsplash("1521791136064-7986c2920216", 700),
 };
