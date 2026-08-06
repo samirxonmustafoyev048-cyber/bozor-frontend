@@ -52,7 +52,7 @@ export default function AdminSidebar({
       badge: pendingOrders || undefined,
     },
     { label: "Filiallar", href: "/admin/filiallar", icon: Store },
-    { label: "Yetkazib berish", icon: Truck },
+    { label: "Yetkazib berish", href: "/admin/yetkazib-berish", icon: Truck },
     { label: "To'lovlar", icon: Wallet },
     { label: "Chegirmalar", icon: Tag },
     { label: "Bannerlar", icon: ImageIcon },

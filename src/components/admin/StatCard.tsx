@@ -17,8 +17,8 @@ export default function StatCard({
   label: string;
   value: string;
   trend: number;
-  sparkline: number[];
-  sparklineColor: string;
+  sparkline?: number[];
+  sparklineColor?: string;
 }) {
   const isUp = trend >= 0;
   const TrendIcon = isUp ? TrendingUp : TrendingDown;
@@ -44,7 +44,9 @@ export default function StatCard({
           {Math.abs(trend)}%
           <span className="font-normal text-muted">oldingi 14 kunga nisbatan</span>
         </span>
-        <Sparkline data={sparkline} color={sparklineColor} className="h-8 w-16 shrink-0" />
+        {sparkline && (
+          <Sparkline data={sparkline} color={sparklineColor} className="h-8 w-16 shrink-0" />
+        )}
       </div>
     </div>
   );

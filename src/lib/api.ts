@@ -256,6 +256,61 @@ export function adminGetStats(accessToken: string): Promise<AdminStats> {
   return apiFetch<AdminStats>("/admin/stats", { headers: authHeaders(accessToken) });
 }
 
+export type CourierStatus = "ONLINE" | "OFFLINE";
+
+export interface DeliveryStats {
+  totalOrders: number;
+  totalRevenue: number;
+  statusCounts: {
+    kuryerda: number;
+    yetkazilmoqda: number;
+    yetkazildi: number;
+    bekorQilingan: number;
+  };
+  trends: {
+    totalOrders: number;
+    delivering: number;
+    delivered: number;
+    cancelled: number;
+    revenue: number;
+  };
+  activeCouriers: {
+    id: string;
+    name: string;
+    status: CourierStatus;
+    efficiencyPercent: number;
+    activeOrders: number;
+  }[];
+  onlineCourierCount: number;
+  avgDeliveryMinutes: number;
+  avgCourierEfficiency: number;
+  deliveryTrend: { date: string; count: number }[];
+  recentOrders: {
+    id: string;
+    orderNumber: string;
+    customerName: string;
+    address: string | null;
+    courierName: string | null;
+    itemCount: number;
+    totalPrice: number;
+    status: OrderStatus;
+    createdAt: string;
+  }[];
+  branches: {
+    id: string;
+    name: string;
+    address: string;
+    lat: number | null;
+    lng: number | null;
+  }[];
+}
+
+export function adminGetDeliveryStats(accessToken: string): Promise<DeliveryStats> {
+  return apiFetch<DeliveryStats>("/admin/delivery-stats", {
+    headers: authHeaders(accessToken),
+  });
+}
+
 export interface AdminUser extends User {
   _count: { orders: number };
 }
