@@ -9,6 +9,7 @@ import {
   Leaf,
   ArrowRight,
   ShoppingCart,
+  Truck,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { getBranches, getSettings } from "@/lib/api";
@@ -56,12 +57,28 @@ export default function DeliveryInfoPage() {
     <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
       <DeliveryHero />
 
+      <div className="mt-8 flex items-start gap-4">
+        <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-brand-50 text-brand-600">
+          <Truck aria-hidden className="h-7 w-7" />
+        </span>
+        <div>
+          <h2 className="text-xl font-extrabold text-foreground">
+            Yetkazib berish
+          </h2>
+          <p className="mt-1 text-sm text-muted">
+            Buyurtmangizni qulay usulda oling — manzilga yetkazib berish
+            yoki filialdan olib ketish.
+          </p>
+        </div>
+      </div>
+
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_340px]">
         <div className="flex flex-col gap-5">
           <DeliveryMethodCards
             value={deliveryType}
             onChange={setDeliveryType}
             deliveryFee={deliveryFeeSetting}
+            branchesCount={branches.length}
           />
 
           {deliveryType === "olib-ketish" && (

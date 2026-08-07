@@ -130,6 +130,7 @@ export default function CheckoutPage() {
             value={deliveryType}
             onChange={setDeliveryType}
             deliveryFee={deliveryFeeSetting}
+            branchesCount={branches.length}
           />
 
           {deliveryType === "yetkazish" ? (
