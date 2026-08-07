@@ -15,7 +15,6 @@ import {
 import CartIndicator from "@/components/cart/CartIndicator";
 import WishlistIndicator from "@/components/product/WishlistIndicator";
 import ProfileLink from "@/components/layout/ProfileLink";
-import AdminLink from "@/components/layout/AdminLink";
 
 const categories = [
   { label: "Sut mahsulotlari", href: "/katalog/sut-mahsulotlari" },
@@ -78,7 +77,6 @@ export default function Header() {
         </form>
 
         <div className="flex shrink-0 items-center gap-1 sm:gap-2">
-          <AdminLink />
           <ProfileLink />
           <Link
             href="/sevimlilar"

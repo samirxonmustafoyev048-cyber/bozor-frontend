@@ -37,6 +37,49 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 let authState: AuthState | null = null;
 let hydrated = false;
 const listeners = new Set<() => void>();
+let refreshTimer: ReturnType<typeof setTimeout> | null = null;
+
+function decodeExpiryMs(token: string): number | null {
+  try {
+    const base64 = token
+      .split(".")[1]
+      .replace(/-/g, "+")
+      .replace(/_/g, "/");
+    const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), "=");
+    const payload = JSON.parse(atob(padded));
+    return typeof payload.exp === "number" ? payload.exp * 1000 : null;
+  } catch {
+    return null;
+  }
+}
+
+async function performRefresh() {
+  if (!authState) return;
+  try {
+    const res = await api.refreshTokens(authState.refreshToken);
+    setAuthState(fromAuthResponse(res));
+  } catch {
+    setAuthState(null);
+  }
+}
+
+function scheduleRefresh() {
+  if (refreshTimer) {
+    clearTimeout(refreshTimer);
+    refreshTimer = null;
+  }
+  if (!authState) return;
+
+  const expiryMs = decodeExpiryMs(authState.accessToken);
+  const bufferMs = 30_000;
+  const delay = expiryMs ? expiryMs - Date.now() - bufferMs : 0;
+
+  if (delay <= 0) {
+    performRefresh();
+  } else {
+    refreshTimer = setTimeout(performRefresh, delay);
+  }
+}
 
 function loadFromStorage(): AuthState | null {
   try {
@@ -51,6 +94,7 @@ function ensureHydrated() {
   if (!hydrated) {
     authState = loadFromStorage();
     hydrated = true;
+    scheduleRefresh();
   }
 }
 
@@ -66,6 +110,7 @@ function setAuthState(next: AuthState | null) {
   } else {
     window.localStorage.removeItem(STORAGE_KEY);
   }
+  scheduleRefresh();
   emit();
 }
 
