@@ -311,6 +311,30 @@ export function adminGetDeliveryStats(accessToken: string): Promise<DeliveryStat
   });
 }
 
+export interface AdminPayments {
+  totalCollected: number;
+  pendingCount: number;
+  cancelledCount: number;
+  totalCount: number;
+  payments: {
+    id: string;
+    provider: "PAYME" | "CLICK";
+    amount: number;
+    state: number;
+    orderNumber: string;
+    customerName: string;
+    createTime: string;
+    performTime: string | null;
+    cancelTime: string | null;
+  }[];
+}
+
+export function adminGetPayments(accessToken: string): Promise<AdminPayments> {
+  return apiFetch<AdminPayments>("/admin/payments", {
+    headers: authHeaders(accessToken),
+  });
+}
+
 export interface StoreSettings {
   id: string;
   storeName: string;

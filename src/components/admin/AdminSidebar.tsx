@@ -53,7 +53,7 @@ export default function AdminSidebar({
     },
     { label: "Filiallar", href: "/admin/filiallar", icon: Store },
     { label: "Yetkazib berish", href: "/admin/yetkazib-berish", icon: Truck },
-    { label: "To'lovlar", icon: Wallet },
+    { label: "To'lovlar", href: "/admin/tolovlar", icon: Wallet },
     { label: "Chegirmalar", icon: Tag },
     { label: "Bannerlar", icon: ImageIcon },
   ];
