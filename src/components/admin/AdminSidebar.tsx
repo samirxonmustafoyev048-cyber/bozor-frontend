@@ -61,7 +61,7 @@ export default function AdminSidebar({
   const tizim: NavItem[] = [
     { label: "Foydalanuvchilar", href: "/admin/foydalanuvchilar", icon: UserCog },
     { label: "Rollar va ruxsatlar", icon: Shield },
-    { label: "Sozlamalar", icon: Settings },
+    { label: "Sozlamalar", href: "/admin/sozlamalar", icon: Settings },
     { label: "Xabarnomalar", icon: Bell },
     { label: "Tizim loglari", icon: History },
   ];

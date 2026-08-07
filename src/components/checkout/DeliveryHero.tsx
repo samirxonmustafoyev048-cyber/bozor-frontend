@@ -74,25 +74,47 @@ export default function DeliveryHero() {
           <div className="absolute bottom-8 left-12 h-8 w-8 rotate-3 rounded-sm border border-amber-300 bg-amber-100 shadow-sm" />
 
           {/* Van */}
-          <div className="absolute bottom-8 left-1/2 h-20 w-52 -translate-x-1/2">
-            <div className="absolute bottom-3 left-0 flex h-16 w-40 flex-col items-center justify-center rounded-xl border border-border bg-white shadow-lg">
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-600 text-white">
+          <div className="absolute bottom-6 left-1/2 h-24 w-64 -translate-x-1/2 drop-shadow-lg">
+            <svg
+              aria-hidden
+              viewBox="0 0 300 120"
+              className="absolute inset-0 h-full w-full overflow-visible"
+            >
+              {/* Body */}
+              <path
+                d="M25,15 L180,15 L180,35 L212,35 L244,66 L262,66 Q271,66 271,75 L271,88 Q271,92 267,92 L15,92 L15,25 Q15,15 25,15 Z"
+                className="fill-white stroke-neutral-300"
+                strokeWidth="1.5"
+              />
+              {/* Windshield */}
+              <path
+                d="M183,38 L209,38 L237,64 L183,64 Z"
+                className="fill-sky-100 stroke-neutral-300"
+                strokeWidth="1"
+              />
+              {/* Green stripe */}
+              <rect x="15" y="76" width="256" height="7" className="fill-brand-500" />
+              {/* Grille + headlight */}
+              <rect x="252" y="70" width="10" height="5" rx="1" className="fill-neutral-700" />
+              <circle cx="264" cy="80" r="3.5" className="fill-amber-300 stroke-neutral-400" strokeWidth="0.5" />
+              {/* Door line */}
+              <line x1="150" y1="35" x2="150" y2="76" className="stroke-neutral-200" strokeWidth="1.5" />
+              <line x1="15" y1="55" x2="271" y2="55" className="stroke-neutral-200" strokeWidth="1" />
+              {/* Wheels */}
+              <circle cx="62" cy="92" r="17" className="fill-neutral-800" />
+              <circle cx="62" cy="92" r="7" className="fill-neutral-300" />
+              <circle cx="228" cy="92" r="17" className="fill-neutral-800" />
+              <circle cx="228" cy="92" r="7" className="fill-neutral-300" />
+            </svg>
+
+            <div className="absolute left-[7%] top-[42%] flex w-[43%] -translate-y-1/2 flex-col items-center">
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-600 text-white shadow-sm">
                 <Leaf aria-hidden className="h-4 w-4" />
               </span>
-              <span className="mt-1 text-xs font-extrabold text-brand-700">
+              <span className="mt-1 whitespace-nowrap text-xs font-extrabold text-brand-700">
                 Olma Market
               </span>
             </div>
-            <div className="absolute bottom-3 right-0 h-14 w-14 rounded-r-xl rounded-l-md bg-brand-600 shadow-lg">
-              <div className="absolute left-2 top-2 h-5 w-8 rounded-sm bg-sky-100/90" />
-            </div>
-            <span className="absolute bottom-4 left-0 h-1.5 w-40 rounded-full bg-brand-500" />
-            <span className="absolute -bottom-1 left-7 h-6 w-6 rounded-full bg-neutral-800">
-              <span className="absolute inset-1.5 rounded-full bg-neutral-300" />
-            </span>
-            <span className="absolute -bottom-1 right-6 h-6 w-6 rounded-full bg-neutral-800">
-              <span className="absolute inset-1.5 rounded-full bg-neutral-300" />
-            </span>
           </div>
 
           <span className="absolute right-4 top-4 flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-brand-700 shadow-lg">

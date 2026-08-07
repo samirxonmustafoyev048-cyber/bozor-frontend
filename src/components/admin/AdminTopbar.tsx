@@ -13,6 +13,7 @@ const TITLES: Record<string, string> = {
   "/admin/filiallar": "Filiallar",
   "/admin/foydalanuvchilar": "Foydalanuvchilar",
   "/admin/yetkazib-berish": "Yetkazib berish",
+  "/admin/sozlamalar": "Sozlamalar",
 };
 
 export default function AdminTopbar({

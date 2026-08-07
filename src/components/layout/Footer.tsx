@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Send, Camera, ThumbsUp, Heart } from "lucide-react";
+import { getSettings } from "@/lib/api";
 
 const columns = [
   {
@@ -28,7 +29,9 @@ const columns = [
   },
 ];
 
-export default function Footer() {
+export default async function Footer() {
+  const settings = await getSettings({ revalidate: 300 }).catch(() => null);
+
   return (
     <footer className="mt-auto border-t border-border bg-surface">
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-4 py-10 sm:px-6 md:grid-cols-5">
@@ -41,27 +44,39 @@ export default function Footer() {
             yetkazib berish xizmati.
           </p>
           <div className="mt-4 flex gap-3 text-sm">
-            <a
-              href="#"
-              aria-label="Telegram"
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-50 hover:bg-brand-100"
-            >
-              <Send className="h-4 w-4" />
-            </a>
-            <a
-              href="#"
-              aria-label="Instagram"
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-50 hover:bg-brand-100"
-            >
-              <Camera className="h-4 w-4" />
-            </a>
-            <a
-              href="#"
-              aria-label="Facebook"
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-50 hover:bg-brand-100"
-            >
-              <ThumbsUp className="h-4 w-4" />
-            </a>
+            {settings?.telegramUrl && (
+              <a
+                href={settings.telegramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Telegram"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-50 hover:bg-brand-100"
+              >
+                <Send className="h-4 w-4" />
+              </a>
+            )}
+            {settings?.instagramUrl && (
+              <a
+                href={settings.instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-50 hover:bg-brand-100"
+              >
+                <Camera className="h-4 w-4" />
+              </a>
+            )}
+            {settings?.facebookUrl && (
+              <a
+                href={settings.facebookUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-50 hover:bg-brand-100"
+              >
+                <ThumbsUp className="h-4 w-4" />
+              </a>
+            )}
           </div>
         </div>
 

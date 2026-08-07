@@ -311,6 +311,44 @@ export function adminGetDeliveryStats(accessToken: string): Promise<DeliveryStat
   });
 }
 
+export interface StoreSettings {
+  id: string;
+  storeName: string;
+  contactPhone: string;
+  contactEmail: string;
+  deliveryFee: number;
+  telegramUrl: string | null;
+  instagramUrl: string | null;
+  facebookUrl: string | null;
+  updatedAt: string;
+}
+
+export function getSettings(options?: { revalidate?: number }): Promise<StoreSettings> {
+  return apiFetch<StoreSettings>("/settings", options);
+}
+
+export function adminUpdateSettings(
+  accessToken: string,
+  payload: Partial<
+    Pick<
+      StoreSettings,
+      | "storeName"
+      | "contactPhone"
+      | "contactEmail"
+      | "deliveryFee"
+      | "telegramUrl"
+      | "instagramUrl"
+      | "facebookUrl"
+    >
+  >
+): Promise<StoreSettings> {
+  return apiFetch<StoreSettings>("/settings", {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+    headers: authHeaders(accessToken),
+  });
+}
+
 export interface AdminUser extends User {
   _count: { orders: number };
 }

@@ -14,11 +14,10 @@ import {
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
-import { createOrder, getBranches } from "@/lib/api";
+import { createOrder, getBranches, getSettings } from "@/lib/api";
 import { formatSom } from "@/lib/format";
 import DeliveryHero from "@/components/checkout/DeliveryHero";
 import DeliveryMethodCards, {
-  DELIVERY_FEE,
   type DeliveryType,
 } from "@/components/checkout/DeliveryMethodCards";
 import PaymentMethodGrid, { type PaymentMethod } from "@/components/checkout/PaymentMethodGrid";
@@ -51,6 +50,7 @@ export default function CheckoutPage() {
   const [payment, setPayment] = useState<PaymentMethod>("naqd");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [deliveryFeeSetting, setDeliveryFeeSetting] = useState(15000);
 
   useEffect(() => {
     getBranches()
@@ -59,9 +59,12 @@ export default function CheckoutPage() {
         setBranchId((current) => current || data[0]?.id || "");
       })
       .catch(() => setError("Filiallar ro'yxatini yuklab bo'lmadi"));
+    getSettings()
+      .then((s) => setDeliveryFeeSetting(s.deliveryFee))
+      .catch(() => {});
   }, []);
 
-  const deliveryFee = deliveryType === "yetkazish" ? DELIVERY_FEE : 0;
+  const deliveryFee = deliveryType === "yetkazish" ? deliveryFeeSetting : 0;
   const total = subtotal + deliveryFee;
 
   const canSubmit =
@@ -123,7 +126,11 @@ export default function CheckoutPage() {
 
       <form onSubmit={handleSubmit} className="mt-6 grid gap-6 lg:grid-cols-[1fr_340px]">
         <div className="flex flex-col gap-5">
-          <DeliveryMethodCards value={deliveryType} onChange={setDeliveryType} />
+          <DeliveryMethodCards
+            value={deliveryType}
+            onChange={setDeliveryType}
+            deliveryFee={deliveryFeeSetting}
+          />
 
           {deliveryType === "yetkazish" ? (
             <div className="rounded-2xl border border-border bg-surface p-4">

@@ -5,14 +5,14 @@ import { formatSom } from "@/lib/format";
 
 export type DeliveryType = "yetkazish" | "olib-ketish";
 
-export const DELIVERY_FEE = 15000;
-
 export default function DeliveryMethodCards({
   value,
   onChange,
+  deliveryFee,
 }: {
   value: DeliveryType;
   onChange: (value: DeliveryType) => void;
+  deliveryFee: number;
 }) {
   return (
     <div className="grid gap-4 sm:grid-cols-2">
@@ -48,7 +48,7 @@ export default function DeliveryMethodCards({
             <Clock aria-hidden className="h-3.5 w-3.5" />
             Taxminiy vaqt: <span className="font-semibold text-foreground">1-3 soat</span>
           </span>
-          <span className="font-bold text-brand-700">{formatSom(DELIVERY_FEE)}</span>
+          <span className="font-bold text-brand-700">{formatSom(deliveryFee)}</span>
         </div>
       </button>
 
