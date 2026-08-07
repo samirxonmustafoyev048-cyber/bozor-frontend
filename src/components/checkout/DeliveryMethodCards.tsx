@@ -2,8 +2,7 @@
 
 import { Clock, Tag, MapPin } from "lucide-react";
 import { formatSom } from "@/lib/format";
-import ScooterIllustration from "@/components/checkout/ScooterIllustration";
-import ShopIllustration from "@/components/checkout/ShopIllustration";
+import { STOCK_PHOTOS } from "@/lib/stock-photos";
 
 export type DeliveryType = "yetkazish" | "olib-ketish";
 
@@ -58,8 +57,13 @@ export default function DeliveryMethodCards({
         )}
 
         <div className="flex items-start gap-4">
-          <span className="flex h-24 w-28 shrink-0 items-center justify-center rounded-2xl bg-brand-50">
-            <ScooterIllustration className="h-16 w-20" />
+          <span className="h-24 w-28 shrink-0 overflow-hidden rounded-2xl bg-brand-50">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={STOCK_PHOTOS.courierBike}
+              alt="Kuryer yetkazib berish"
+              className="h-full w-full object-cover"
+            />
           </span>
 
           <div className="min-w-0 pt-1">
@@ -103,8 +107,13 @@ export default function DeliveryMethodCards({
         )}
 
         <div className="flex items-start gap-4">
-          <span className="flex h-24 w-28 shrink-0 items-center justify-center rounded-2xl bg-blue-50">
-            <ShopIllustration className="h-16 w-20" />
+          <span className="h-24 w-28 shrink-0 overflow-hidden rounded-2xl bg-blue-50">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={STOCK_PHOTOS.groceryAisle}
+              alt="Filialdan olib ketish"
+              className="h-full w-full object-cover"
+            />
           </span>
 
           <div className="min-w-0 pt-1">
