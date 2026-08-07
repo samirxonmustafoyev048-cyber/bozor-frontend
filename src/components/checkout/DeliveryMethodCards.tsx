@@ -1,7 +1,9 @@
 "use client";
 
-import { Scooter, Store, TreePine, Package, Clock, Tag, MapPin } from "lucide-react";
+import { Clock, Tag, MapPin } from "lucide-react";
 import { formatSom } from "@/lib/format";
+import ScooterIllustration from "@/components/checkout/ScooterIllustration";
+import ShopIllustration from "@/components/checkout/ShopIllustration";
 
 export type DeliveryType = "yetkazish" | "olib-ketish";
 
@@ -50,15 +52,14 @@ export default function DeliveryMethodCards({
         }`}
       >
         {value === "yetkazish" && (
-          <span className="absolute left-5 top-5 h-3 w-3 rounded-full bg-brand-600 ring-4 ring-brand-100" />
+          <span className="absolute left-5 top-5 flex h-5 w-5 items-center justify-center rounded-full border-2 border-brand-500">
+            <span className="h-2 w-2 rounded-full bg-brand-500" />
+          </span>
         )}
 
         <div className="flex items-start gap-4">
-          <span className="relative flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-brand-50">
-            <Scooter aria-hidden className="h-9 w-9 text-brand-600" />
-            <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-md bg-amber-200 text-amber-800">
-              <Package aria-hidden className="h-3 w-3" />
-            </span>
+          <span className="flex h-24 w-28 shrink-0 items-center justify-center rounded-2xl bg-brand-50">
+            <ScooterIllustration className="h-16 w-20" />
           </span>
 
           <div className="min-w-0 pt-1">
@@ -96,15 +97,14 @@ export default function DeliveryMethodCards({
         }`}
       >
         {value === "olib-ketish" && (
-          <span className="absolute left-5 top-5 h-3 w-3 rounded-full bg-brand-600 ring-4 ring-brand-100" />
+          <span className="absolute left-5 top-5 flex h-5 w-5 items-center justify-center rounded-full border-2 border-brand-500">
+            <span className="h-2 w-2 rounded-full bg-brand-500" />
+          </span>
         )}
 
         <div className="flex items-start gap-4">
-          <span className="relative flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-blue-50">
-            <Store aria-hidden className="h-9 w-9 text-blue-600" />
-            <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-md bg-emerald-200 text-emerald-800">
-              <TreePine aria-hidden className="h-3 w-3" />
-            </span>
+          <span className="flex h-24 w-28 shrink-0 items-center justify-center rounded-2xl bg-blue-50">
+            <ShopIllustration className="h-16 w-20" />
           </span>
 
           <div className="min-w-0 pt-1">
