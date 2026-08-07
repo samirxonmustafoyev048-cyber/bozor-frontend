@@ -8,13 +8,14 @@ const badges = [
 ];
 
 // Cropped from the full reference mockup (public/yetkazib-berish-hero.png,
-// 1536x1024) — keeping just the van/city/pin slice of the banner.
+// 1536x1024) — just the banner's photo scene (van, city, boxes, pin),
+// excluding the page header above it and the cards below it.
 const SOURCE_W = 1536;
 const SOURCE_H = 1024;
 const CROP_X = 780;
-const CROP_Y = 0;
+const CROP_Y = 95;
 const CROP_W = 756;
-const CROP_H = 345;
+const CROP_H = 235;
 const DISPLAY_W = 480;
 const SCALE = DISPLAY_W / CROP_W;
 const DISPLAY_H = Math.round(CROP_H * SCALE);
