@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
-import { adminGetStats } from "@/lib/api";
+import { adminGetStats, adminGetUnreadCount } from "@/lib/api";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminTopbar from "@/components/admin/AdminTopbar";
 
@@ -11,6 +11,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const { auth, isLoaded } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [pendingOrders, setPendingOrders] = useState(0);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
 
   useEffect(() => {
     if (!auth) return;
@@ -21,6 +22,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         );
         setPendingOrders(pending?.count ?? 0);
       })
+      .catch(() => {});
+    adminGetUnreadCount(auth.accessToken)
+      .then(setUnreadNotifications)
       .catch(() => {});
   }, [auth]);
 
@@ -54,6 +58,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       )}
       <AdminSidebar
         pendingOrders={pendingOrders}
+        unreadNotifications={unreadNotifications}
         open={sidebarOpen}
         onNavigate={() => setSidebarOpen(false)}
       />

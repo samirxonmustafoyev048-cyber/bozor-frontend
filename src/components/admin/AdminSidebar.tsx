@@ -24,17 +24,19 @@ import { useAuth } from "@/context/AuthContext";
 
 interface NavItem {
   label: string;
-  href?: string;
+  href: string;
   icon: LucideIcon;
   badge?: number;
 }
 
 export default function AdminSidebar({
   pendingOrders,
+  unreadNotifications,
   open,
   onNavigate,
 }: {
   pendingOrders: number;
+  unreadNotifications: number;
   open: boolean;
   onNavigate?: () => void;
 }) {
@@ -54,51 +56,28 @@ export default function AdminSidebar({
     { label: "Filiallar", href: "/admin/filiallar", icon: Store },
     { label: "Yetkazib berish", href: "/admin/yetkazib-berish", icon: Truck },
     { label: "To'lovlar", href: "/admin/tolovlar", icon: Wallet },
-    { label: "Chegirmalar", icon: Tag },
-    { label: "Bannerlar", icon: ImageIcon },
+    { label: "Chegirmalar", href: "/admin/chegirmalar", icon: Tag },
+    { label: "Bannerlar", href: "/admin/bannerlar", icon: ImageIcon },
   ];
 
   const tizim: NavItem[] = [
     { label: "Foydalanuvchilar", href: "/admin/foydalanuvchilar", icon: UserCog },
-    { label: "Rollar va ruxsatlar", icon: Shield },
+    { label: "Rollar va ruxsatlar", href: "/admin/rollar", icon: Shield },
     { label: "Sozlamalar", href: "/admin/sozlamalar", icon: Settings },
-    { label: "Xabarnomalar", icon: Bell },
-    { label: "Tizim loglari", icon: History },
+    {
+      label: "Xabarnomalar",
+      href: "/admin/xabarnomalar",
+      icon: Bell,
+      badge: unreadNotifications || undefined,
+    },
+    { label: "Tizim loglari", href: "/admin/loglar", icon: History },
   ];
 
   function renderItem(item: NavItem) {
-    const active = item.href
-      ? item.href === "/admin"
+    const active =
+      item.href === "/admin"
         ? pathname === "/admin"
-        : pathname.startsWith(item.href)
-      : false;
-
-    const content = (
-      <>
-        <item.icon aria-hidden className="h-4 w-4 shrink-0" />
-        <span className="flex-1 truncate">{item.label}</span>
-        {item.badge ? (
-          <span className="rounded-full bg-danger-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
-            {item.badge}
-          </span>
-        ) : !item.href ? (
-          <span className="rounded-full bg-neutral-100 px-1.5 py-0.5 text-[9px] font-medium text-muted">
-            Tez orada
-          </span>
-        ) : null}
-      </>
-    );
-
-    if (!item.href) {
-      return (
-        <span
-          key={item.label}
-          className="flex cursor-not-allowed items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-muted/60"
-        >
-          {content}
-        </span>
-      );
-    }
+        : pathname.startsWith(item.href);
 
     return (
       <Link
@@ -111,7 +90,13 @@ export default function AdminSidebar({
             : "text-foreground/80 hover:bg-brand-50 hover:text-brand-700"
         }`}
       >
-        {content}
+        <item.icon aria-hidden className="h-4 w-4 shrink-0" />
+        <span className="flex-1 truncate">{item.label}</span>
+        {item.badge ? (
+          <span className="rounded-full bg-danger-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
+            {item.badge}
+          </span>
+        ) : null}
       </Link>
     );
   }

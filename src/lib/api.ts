@@ -516,3 +516,243 @@ export function adminDeleteBranch(accessToken: string, id: string): Promise<{ su
     headers: authHeaders(accessToken),
   });
 }
+
+export type PromoCodeType = "PERCENT" | "AMOUNT";
+
+export interface PromoCode {
+  id: string;
+  code: string;
+  type: PromoCodeType;
+  value: number;
+  minOrderAmount: number;
+  maxUses: number | null;
+  usedCount: number;
+  active: boolean;
+  expiresAt: string | null;
+  createdAt: string;
+}
+
+export interface PromoCodePayload {
+  code: string;
+  type: PromoCodeType;
+  value: number;
+  minOrderAmount?: number;
+  maxUses?: number;
+  active?: boolean;
+  expiresAt?: string;
+}
+
+export function adminGetPromoCodes(accessToken: string): Promise<PromoCode[]> {
+  return apiFetch<PromoCode[]>("/promo-codes", { headers: authHeaders(accessToken) });
+}
+
+export function adminCreatePromoCode(
+  accessToken: string,
+  payload: PromoCodePayload
+): Promise<PromoCode> {
+  return apiFetch<PromoCode>("/promo-codes", {
+    method: "POST",
+    body: JSON.stringify(payload),
+    headers: authHeaders(accessToken),
+  });
+}
+
+export function adminUpdatePromoCode(
+  accessToken: string,
+  id: string,
+  payload: Partial<PromoCodePayload>
+): Promise<PromoCode> {
+  return apiFetch<PromoCode>(`/promo-codes/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+    headers: authHeaders(accessToken),
+  });
+}
+
+export function adminDeletePromoCode(
+  accessToken: string,
+  id: string
+): Promise<{ success: boolean }> {
+  return apiFetch(`/promo-codes/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(accessToken),
+  });
+}
+
+export interface Banner {
+  id: string;
+  title: string;
+  subtitle: string | null;
+  imageUrl: string;
+  linkUrl: string | null;
+  active: boolean;
+  sortOrder: number;
+  createdAt: string;
+}
+
+export interface BannerPayload {
+  title: string;
+  subtitle?: string;
+  imageUrl: string;
+  linkUrl?: string;
+  active?: boolean;
+  sortOrder?: number;
+}
+
+/** Public callers get only active banners; admins pass `all` for the full list. */
+export function getBanners(options?: { all?: boolean; revalidate?: number }): Promise<Banner[]> {
+  return apiFetch<Banner[]>(`/banners${options?.all ? "?all=true" : ""}`, {
+    revalidate: options?.revalidate,
+  });
+}
+
+export function adminCreateBanner(
+  accessToken: string,
+  payload: BannerPayload
+): Promise<Banner> {
+  return apiFetch<Banner>("/banners", {
+    method: "POST",
+    body: JSON.stringify(payload),
+    headers: authHeaders(accessToken),
+  });
+}
+
+export function adminUpdateBanner(
+  accessToken: string,
+  id: string,
+  payload: Partial<BannerPayload>
+): Promise<Banner> {
+  return apiFetch<Banner>(`/banners/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+    headers: authHeaders(accessToken),
+  });
+}
+
+export function adminDeleteBanner(
+  accessToken: string,
+  id: string
+): Promise<{ success: boolean }> {
+  return apiFetch(`/banners/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(accessToken),
+  });
+}
+
+export interface Notification {
+  id: string;
+  title: string;
+  body: string;
+  read: boolean;
+  createdAt: string;
+}
+
+export function adminGetNotifications(
+  accessToken: string,
+  options?: { unreadOnly?: boolean }
+): Promise<Notification[]> {
+  return apiFetch<Notification[]>(
+    `/notifications${options?.unreadOnly ? "?unread=true" : ""}`,
+    { headers: authHeaders(accessToken) }
+  );
+}
+
+export function adminGetUnreadCount(accessToken: string): Promise<number> {
+  return apiFetch<number>("/notifications/unread-count", {
+    headers: authHeaders(accessToken),
+  });
+}
+
+export function adminCreateNotification(
+  accessToken: string,
+  payload: { title: string; body: string }
+): Promise<Notification> {
+  return apiFetch<Notification>("/notifications", {
+    method: "POST",
+    body: JSON.stringify(payload),
+    headers: authHeaders(accessToken),
+  });
+}
+
+export function adminMarkNotificationRead(
+  accessToken: string,
+  id: string
+): Promise<Notification> {
+  return apiFetch<Notification>(`/notifications/${id}/read`, {
+    method: "PATCH",
+    headers: authHeaders(accessToken),
+  });
+}
+
+export function adminMarkAllNotificationsRead(
+  accessToken: string
+): Promise<{ success: boolean; count: number }> {
+  return apiFetch("/notifications/read-all", {
+    method: "PATCH",
+    headers: authHeaders(accessToken),
+  });
+}
+
+export function adminDeleteNotification(
+  accessToken: string,
+  id: string
+): Promise<{ success: boolean }> {
+  return apiFetch(`/notifications/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(accessToken),
+  });
+}
+
+export function adminDeleteReadNotifications(
+  accessToken: string
+): Promise<{ success: boolean; count: number }> {
+  return apiFetch("/notifications/read", {
+    method: "DELETE",
+    headers: authHeaders(accessToken),
+  });
+}
+
+export interface AuditLogEntry {
+  id: string;
+  action: string;
+  entity: string;
+  entityId: string | null;
+  actorName: string;
+  createdAt: string;
+}
+
+export function adminGetAuditLogs(
+  accessToken: string,
+  filters?: { entity?: string; action?: string }
+): Promise<AuditLogEntry[]> {
+  return apiFetch<AuditLogEntry[]>(`/audit-logs${toQueryString(filters ?? {})}`, {
+    headers: authHeaders(accessToken),
+  });
+}
+
+export function adminGetAuditEntities(accessToken: string): Promise<string[]> {
+  return apiFetch<string[]>("/audit-logs/entities", {
+    headers: authHeaders(accessToken),
+  });
+}
+
+export function adminClearAuditLogs(
+  accessToken: string
+): Promise<{ success: boolean; count: number }> {
+  return apiFetch("/audit-logs", {
+    method: "DELETE",
+    headers: authHeaders(accessToken),
+  });
+}
+
+export function adminUpdateUserRole(
+  accessToken: string,
+  id: string,
+  role: "USER" | "ADMIN"
+): Promise<AdminUser> {
+  return apiFetch<AdminUser>(`/users/${id}/role`, {
+    method: "PATCH",
+    body: JSON.stringify({ role }),
+    headers: authHeaders(accessToken),
+  });
+}

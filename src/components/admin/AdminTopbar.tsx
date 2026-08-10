@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Menu, Search, Bell, Maximize, ChevronDown, LogOut } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
@@ -15,6 +16,11 @@ const TITLES: Record<string, string> = {
   "/admin/yetkazib-berish": "Yetkazib berish",
   "/admin/sozlamalar": "Sozlamalar",
   "/admin/tolovlar": "To'lovlar",
+  "/admin/chegirmalar": "Chegirmalar",
+  "/admin/bannerlar": "Bannerlar",
+  "/admin/rollar": "Rollar va ruxsatlar",
+  "/admin/xabarnomalar": "Xabarnomalar",
+  "/admin/loglar": "Tizim loglari",
 };
 
 export default function AdminTopbar({
@@ -86,8 +92,8 @@ export default function AdminTopbar({
           </kbd>
         </div>
 
-        <button
-          type="button"
+        <Link
+          href="/admin/xabarnomalar"
           aria-label="Xabarnomalar"
           className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-lg hover:bg-brand-50"
         >
@@ -97,7 +103,7 @@ export default function AdminTopbar({
               {pendingOrders > 99 ? "99+" : pendingOrders}
             </span>
           )}
-        </button>
+        </Link>
 
         <button
           type="button"
