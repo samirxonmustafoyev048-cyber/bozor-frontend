@@ -1,11 +1,12 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { formatSom } from "@/lib/format";
+import { useElementWidth } from "@/lib/use-element-width";
 
-const WIDTH = 600;
 const HEIGHT = 220;
 const PADDING_LEFT = 44;
+const PADDING_RIGHT = 16;
 const PADDING_BOTTOM = 24;
 const PADDING_TOP = 12;
 
@@ -16,30 +17,29 @@ export default function SalesChart({
   data: { day: number; current: number; previous: number }[];
   monthLabel: string;
 }) {
-  const svgRef = useRef<SVGSVGElement>(null);
+  const [wrapRef, width] = useElementWidth<HTMLDivElement>();
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
   const max = Math.max(...data.map((d) => Math.max(d.current, d.previous)), 1);
-  const plotWidth = WIDTH - PADDING_LEFT - 8;
+  const plotWidth = Math.max(width - PADDING_LEFT - PADDING_RIGHT, 1);
   const plotHeight = HEIGHT - PADDING_TOP - PADDING_BOTTOM;
-  const step = data.length > 1 ? plotWidth / (data.length - 1) : plotWidth;
+  const step = data.length > 1 ? plotWidth / (data.length - 1) : 0;
 
   const xAt = (i: number) => PADDING_LEFT + i * step;
   const yAt = (v: number) => PADDING_TOP + plotHeight - (v / max) * plotHeight;
+  const baseline = PADDING_TOP + plotHeight;
 
   const currentPoints = data.map((d, i) => `${xAt(i)},${yAt(d.current)}`);
   const previousPoints = data.map((d, i) => `${xAt(i)},${yAt(d.previous)}`);
-  const areaPath = `M${currentPoints.join(" L")} L${xAt(data.length - 1)},${PADDING_TOP + plotHeight} L${xAt(0)},${PADDING_TOP + plotHeight} Z`;
+  const areaPath = `M${currentPoints.join(" L")} L${xAt(data.length - 1)},${baseline} L${xAt(0)},${baseline} Z`;
 
   const yTicks = [0, 0.25, 0.5, 0.75, 1].map((f) => Math.round(max * f));
   const tickEvery = Math.ceil(data.length / 5);
 
   function handleMove(e: React.MouseEvent<SVGSVGElement>) {
-    const svg = svgRef.current;
-    if (!svg) return;
-    const rect = svg.getBoundingClientRect();
-    const relX = ((e.clientX - rect.left) / rect.width) * WIDTH;
-    const i = Math.round((relX - PADDING_LEFT) / step);
+    if (step === 0) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const i = Math.round((e.clientX - rect.left - PADDING_LEFT) / step);
     setHoverIndex(Math.min(Math.max(i, 0), data.length - 1));
   }
 
@@ -64,11 +64,12 @@ export default function SalesChart({
         </div>
       </div>
 
-      <div className="relative mt-4">
+      <div ref={wrapRef} className="relative mt-4" style={{ height: HEIGHT }}>
+        {width > 0 && (
         <svg
-          ref={svgRef}
-          viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-          className="w-full touch-none"
+          width={width}
+          height={HEIGHT}
+          className="touch-none"
           onMouseMove={handleMove}
           onMouseLeave={() => setHoverIndex(null)}
         >
@@ -76,13 +77,19 @@ export default function SalesChart({
             <g key={t}>
               <line
                 x1={PADDING_LEFT}
-                x2={WIDTH}
+                x2={width - PADDING_RIGHT}
                 y1={yAt(t)}
                 y2={yAt(t)}
                 stroke="var(--color-border)"
                 strokeWidth={1}
               />
-              <text x={0} y={yAt(t) + 3} fontSize={10} fill="#898781">
+              <text
+                x={PADDING_LEFT - 8}
+                y={yAt(t) + 4}
+                fontSize={11}
+                fill="var(--color-muted)"
+                textAnchor="end"
+              >
                 {t >= 1000000 ? `${Math.round(t / 1000000)}M` : t >= 1000 ? `${Math.round(t / 1000)}k` : t}
               </text>
             </g>
@@ -109,9 +116,9 @@ export default function SalesChart({
                 key={d.day}
                 x={xAt(i)}
                 y={HEIGHT - 6}
-                fontSize={10}
-                fill="#898781"
-                textAnchor="middle"
+                fontSize={11}
+                fill="var(--color-muted)"
+                textAnchor={i === 0 ? "start" : "middle"}
               >
                 {d.day}
               </text>
@@ -134,12 +141,13 @@ export default function SalesChart({
             </g>
           )}
         </svg>
+        )}
 
         {hovered && hoverIndex !== null && (
           <div
             className="pointer-events-none absolute top-0 rounded-lg border border-border bg-neutral-900 px-3 py-2 text-xs text-white shadow-lg"
             style={{
-              left: `${(xAt(hoverIndex) / WIDTH) * 100}%`,
+              left: xAt(hoverIndex),
               transform:
                 hoverIndex > data.length / 2
                   ? "translateX(-105%)"
