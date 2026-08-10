@@ -161,7 +161,7 @@ export default function DeliveryDashboardPage() {
             </button>
           </div>
           <div className="relative mt-4 h-72 sm:h-80">
-            <div className="pointer-events-none absolute left-3 top-3 z-[400] rounded-xl border border-border bg-surface/95 p-3 text-xs shadow-md backdrop-blur-sm">
+            <div className="pointer-events-none absolute left-3 top-3 z-10 rounded-xl border border-border bg-surface/95 p-3 text-xs shadow-md backdrop-blur-sm">
               <p className="mb-1.5 flex items-center gap-1.5 font-semibold text-foreground">
                 <Users aria-hidden className="h-3.5 w-3.5 text-brand-600" />
                 Aktiv kuryerlar <span className="ml-auto">{stats.onlineCourierCount}</span>

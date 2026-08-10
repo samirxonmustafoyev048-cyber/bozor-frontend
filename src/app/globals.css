@@ -62,3 +62,13 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
+
+/* Leaflet paints its tile/marker panes at z-index 400 and its zoom and
+   attribution controls at 1000. The map container is position:relative with
+   no z-index of its own, so those values land in the root stacking context
+   and outrank the sticky header (z-50) — scrolling drags the map over it.
+   z-index:0 gives the container a stacking context that keeps them inside. */
+.leaflet-container {
+  z-index: 0;
+  isolation: isolate;
+}
