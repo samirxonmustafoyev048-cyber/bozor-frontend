@@ -7,6 +7,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: siteUrl, changeFrequency: "daily", priority: 1 },
     { url: `${siteUrl}/katalog`, changeFrequency: "daily", priority: 0.9 },
+    // Public content pages — everything reachable from the header or footer
+    // that is not behind a login.
+    { url: `${siteUrl}/haqida`, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${siteUrl}/filiallar`, changeFrequency: "weekly", priority: 0.6 },
+    { url: `${siteUrl}/yetkazib-berish`, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${siteUrl}/yangiliklar`, changeFrequency: "weekly", priority: 0.6 },
+    { url: `${siteUrl}/karyera`, changeFrequency: "weekly", priority: 0.5 },
+    { url: `${siteUrl}/savollar`, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${siteUrl}/tolov`, changeFrequency: "monthly", priority: 0.4 },
+    { url: `${siteUrl}/qaytarish`, changeFrequency: "monthly", priority: 0.4 },
+    { url: `${siteUrl}/shartlar`, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${siteUrl}/maxfiylik`, changeFrequency: "yearly", priority: 0.3 },
   ];
 
   try {

@@ -1,10 +1,17 @@
 import HeroBanner from "@/components/home/HeroBanner";
 import FeatureStrip from "@/components/home/FeatureStrip";
+import BannerRow from "@/components/home/BannerRow";
 import CategoryPills from "@/components/home/CategoryPills";
 import PromoGrid from "@/components/home/PromoGrid";
 import ProductTabs from "@/components/home/ProductTabs";
 import TrustBar from "@/components/home/TrustBar";
-import { getCategories, getProducts, type ProductListResult } from "@/lib/api";
+import {
+  getBanners,
+  getCategories,
+  getProducts,
+  type Banner,
+  type ProductListResult,
+} from "@/lib/api";
 import type { Category } from "@/types/product";
 
 export default async function Home() {
@@ -12,6 +19,7 @@ export default async function Home() {
   let discounted: ProductListResult = { items: [], total: 0, page: 1, pageSize: 0 };
   let popular: ProductListResult = { items: [], total: 0, page: 1, pageSize: 0 };
   let newest: ProductListResult = { items: [], total: 0, page: 1, pageSize: 0 };
+  let banners: Banner[] = [];
   let hasError = false;
 
   try {
@@ -22,6 +30,8 @@ export default async function Home() {
       getProducts({ sort: "popular", pageSize: 12 }, revalidate),
       getProducts({ sort: "new", pageSize: 12 }, revalidate),
     ]);
+    // Banners are optional decoration — a failure here must not blank the page.
+    banners = await getBanners({ revalidate: 60 }).catch(() => []);
   } catch {
     hasError = true;
   }
@@ -45,6 +55,7 @@ export default async function Home() {
     <div className="mx-auto flex max-w-7xl flex-col gap-10 px-4 py-6 sm:px-6 sm:py-8">
       <HeroBanner />
       <FeatureStrip />
+      <BannerRow banners={banners} />
 
       <section>
         <h2 className="flex items-center gap-2 text-xl font-bold text-foreground sm:text-2xl">

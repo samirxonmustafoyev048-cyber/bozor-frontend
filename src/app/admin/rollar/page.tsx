@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Shield, UserCog, Check, X } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { adminGetUsers, adminUpdateUserRole, type AdminUser } from "@/lib/api";
-import { formatDateTime } from "@/lib/format";
+import { formatDate } from "@/lib/format";
 import type { Role } from "@/types/product";
 
 /**
@@ -166,7 +166,7 @@ export default function AdminRolesPage() {
                       {user.email ?? user.phone ?? "—"}
                     </td>
                     <td className="px-5 py-3 text-muted">{user._count.orders} ta</td>
-                    <td className="px-5 py-3 text-muted">{formatDateTime(user.createdAt)}</td>
+                    <td className="px-5 py-3 text-muted">{formatDate(user.createdAt)}</td>
                     <td className="px-5 py-3">
                       <select
                         value={user.role}

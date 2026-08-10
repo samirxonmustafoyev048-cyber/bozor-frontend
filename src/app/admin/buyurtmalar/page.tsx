@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Check } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { adminGetOrders, adminUpdateOrderStatus } from "@/lib/api";
-import { formatSom } from "@/lib/format";
+import { formatSom, formatDate } from "@/lib/format";
 import type { Order, OrderStatus } from "@/types/product";
 
 const STATUS_OPTIONS: { value: OrderStatus; label: string }[] = [
@@ -64,9 +64,7 @@ export default function AdminOrdersPage() {
                   {o.paymentMethod}
                   {o.paid && <Check aria-hidden className="ml-1 inline h-3.5 w-3.5 text-brand-600" />}
                 </td>
-                <td className="px-3 py-2 text-muted">
-                  {new Date(o.createdAt).toLocaleDateString("uz-UZ")}
-                </td>
+                <td className="px-3 py-2 text-muted">{formatDate(o.createdAt)}</td>
                 <td className="px-3 py-2">
                   <select
                     value={o.status}

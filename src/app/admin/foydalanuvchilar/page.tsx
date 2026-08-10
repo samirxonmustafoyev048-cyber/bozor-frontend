@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { adminGetUsers, type AdminUser } from "@/lib/api";
+import { formatDate } from "@/lib/format";
 
 export default function AdminUsersPage() {
   const { auth } = useAuth();
@@ -53,9 +54,7 @@ export default function AdminUsersPage() {
                   </span>
                 </td>
                 <td className="px-3 py-2 text-muted">{u._count.orders}</td>
-                <td className="px-3 py-2 text-muted">
-                  {new Date(u.createdAt).toLocaleDateString("uz-UZ")}
-                </td>
+                <td className="px-3 py-2 text-muted">{formatDate(u.createdAt)}</td>
               </tr>
             ))}
           </tbody>

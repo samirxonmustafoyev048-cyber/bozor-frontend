@@ -12,25 +12,28 @@ export function discountPercent(price: number, discountPrice: number): number {
   return Math.round(((price - discountPrice) / price) * 100);
 }
 
-const UZ_MONTHS = [
-  "yanvar", "fevral", "mart", "aprel", "may", "iyun",
-  "iyul", "avgust", "sentabr", "oktabr", "noyabr", "dekabr",
-];
-
 function pad(n: number) {
   return n.toString().padStart(2, "0");
 }
 
 /**
- * "7 avgust, 14:32".
+ * "07.08.2026".
  *
- * Built by hand rather than with `toLocaleDateString("uz-UZ")`, whose Uzbek
- * month names are missing from most browsers' ICU data — they fall back to
- * "M01".."M12" while Node prints real names, which also breaks hydration.
+ * Built by hand rather than with `toLocaleDateString("uz-UZ")`. Browsers ship
+ * far less ICU data than Node does: for `uz-UZ` Node prints "07/08/2026" and
+ * real month names, while browsers fall back to a different order entirely and
+ * abbreviate months as "M01".."M12". That is both wrong on screen and, when a
+ * date is rendered on the server, a hydration mismatch.
  */
-export function formatDateTime(iso: string): string {
-  const d = new Date(iso);
-  return `${d.getDate()} ${UZ_MONTHS[d.getMonth()]}, ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+export function formatDate(value: string | Date): string {
+  const d = typeof value === "string" ? new Date(value) : value;
+  return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()}`;
+}
+
+/** "07.08.2026, 14:32" — see {@link formatDate} for why this is hand-rolled. */
+export function formatDateTime(value: string | Date): string {
+  const d = typeof value === "string" ? new Date(value) : value;
+  return `${formatDate(d)}, ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
 /** "5 daqiqa oldin", falling back to an absolute date after a week. */
@@ -47,5 +50,5 @@ export function formatRelativeTime(iso: string): string {
   const days = Math.floor(hours / 24);
   if (days < 7) return `${days} kun oldin`;
 
-  return formatDateTime(iso);
+  return formatDate(iso);
 }

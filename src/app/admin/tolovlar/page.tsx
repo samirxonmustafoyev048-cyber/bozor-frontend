@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Wallet2, Clock, XCircle, CreditCard } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { adminGetPayments, type AdminPayments } from "@/lib/api";
-import { formatSom } from "@/lib/format";
+import { formatSom, formatDateTime } from "@/lib/format";
 
 const PROVIDER_LABELS: Record<string, string> = {
   PAYME: "Payme",
@@ -126,11 +126,7 @@ export default function AdminPaymentsPage() {
                       </span>
                     </td>
                     <td className="py-2.5 whitespace-nowrap text-foreground/80">
-                      {new Date(p.createTime).toLocaleDateString("uz-UZ")}{" "}
-                      {new Date(p.createTime).toLocaleTimeString("uz-UZ", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                      {formatDateTime(p.createTime)}
                     </td>
                   </tr>
                 );

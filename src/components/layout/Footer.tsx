@@ -8,7 +8,7 @@ const columns = [
     links: [
       { label: "Biz haqimizda", href: "/haqida" },
       { label: "Filiallar", href: "/filiallar" },
-      { label: "Vakansiyalar", href: "/vakansiyalar" },
+      { label: "Vakansiyalar", href: "/karyera" },
     ],
   },
   {

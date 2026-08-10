@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { adminGetStats, type AdminStats } from "@/lib/api";
-import { formatSom } from "@/lib/format";
+import { formatSom, formatDate, formatDateTime } from "@/lib/format";
 import { STATUS_COLORS, STATUS_LABELS } from "@/lib/order-status";
 import ProductImage from "@/components/product/ProductImage";
 import StatCard from "@/components/admin/StatCard";
@@ -25,10 +25,6 @@ const MONTHS = [
   "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
   "Iyul", "Avgust", "Sentabr", "Oktabr", "Noyabr", "Dekabr",
 ];
-
-function formatDate(d: Date) {
-  return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.${d.getFullYear()}`;
-}
 
 export default function AdminDashboardPage() {
   const { auth } = useAuth();
@@ -202,11 +198,7 @@ export default function AdminDashboardPage() {
                       </span>
                     </td>
                     <td className="py-2.5 whitespace-nowrap text-foreground/80">
-                      {new Date(o.createdAt).toLocaleDateString("uz-UZ")}{" "}
-                      {new Date(o.createdAt).toLocaleTimeString("uz-UZ", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                      {formatDateTime(o.createdAt)}
                     </td>
                     <td className="py-2.5 text-right">
                       <MoreVertical aria-hidden className="ml-auto h-4 w-4 text-muted" />

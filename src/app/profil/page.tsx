@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Check } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { getMyOrders } from "@/lib/api";
-import { formatSom } from "@/lib/format";
+import { formatSom, formatDate } from "@/lib/format";
 import type { Order, OrderStatus } from "@/types/product";
 
 const STATUS_LABELS: Record<OrderStatus, string> = {
@@ -140,7 +140,7 @@ export default function ProfilePage() {
                 </span>
               </div>
               <div className="mt-1 flex items-center justify-between text-sm text-muted">
-                <span>{new Date(order.createdAt).toLocaleDateString("uz-UZ")}</span>
+                <span>{formatDate(order.createdAt)}</span>
                 <span className="font-medium text-foreground">
                   {formatSom(order.totalPrice)}
                 </span>
