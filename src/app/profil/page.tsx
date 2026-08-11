@@ -18,9 +18,13 @@ const STATUS_LABELS: Record<OrderStatus, string> = {
 
 export default function ProfilePage() {
   const { auth, isLoaded, updateName, logout } = useAuth();
-  const [name, setName] = useState("");
+  // `null` means "untouched, mirror the saved name". An empty string is a real
+  // edit, so it must survive — falling back to the saved name whenever the box
+  // is empty would refill it the moment you cleared it.
+  const [draftName, setDraftName] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [orders, setOrders] = useState<Order[] | null>(null);
 
   useEffect(() => {
@@ -51,15 +55,31 @@ export default function ProfilePage() {
     );
   }
 
+  const displayName = draftName ?? auth.user.name;
+  const trimmedName = displayName.trim();
+  const isUnchanged = trimmedName === auth.user.name;
+
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
     if (!auth) return;
+
+    if (!trimmedName) {
+      setError("Ism bo'sh bo'lishi mumkin emas");
+      return;
+    }
+
     setSaving(true);
     setSaved(false);
+    setError(null);
     try {
-      await updateName(name || auth.user.name);
+      await updateName(trimmedName);
+      // Track the saved value again so a later token refresh cannot revive
+      // a stale draft.
+      setDraftName(null);
       setSaved(true);
       setTimeout(() => setSaved(false), 1500);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Saqlashda xatolik yuz berdi");
     } finally {
       setSaving(false);
     }
@@ -88,8 +108,11 @@ export default function ProfilePage() {
           Ism
           <input
             type="text"
-            value={name || auth.user.name}
-            onChange={(e) => setName(e.target.value)}
+            value={displayName}
+            onChange={(e) => {
+              setDraftName(e.target.value);
+              setError(null);
+            }}
             className="rounded-md border border-border bg-background px-3 py-2 outline-none focus:border-brand-500"
           />
         </label>
@@ -99,10 +122,11 @@ export default function ProfilePage() {
         {auth.user.email && (
           <p className="text-sm text-muted">Email: {auth.user.email}</p>
         )}
+        {error && <p className="text-sm text-danger-600">{error}</p>}
         <button
           type="submit"
-          disabled={saving}
-          className="w-fit rounded-full bg-brand-600 px-6 py-2 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-50"
+          disabled={saving || isUnchanged}
+          className="w-fit rounded-full bg-brand-600 px-6 py-2 text-sm font-semibold text-white hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {saved ? (
             <span className="inline-flex items-center gap-1.5">
