@@ -16,6 +16,26 @@ export function isValidPhone(digits: string): boolean {
   return VALID_PHONE.test(digits);
 }
 
+/**
+ * Why the number is not acceptable yet, or null when it is fine.
+ *
+ * Says precisely what is wrong instead of restating the rule: "998" and "988"
+ * look alike at a glance, and a bare "12 ta raqam kerak" next to a 12/12
+ * counter reads as though nothing is wrong at all.
+ */
+export function phoneError(digits: string): string | null {
+  if (digits.length === 0) return null;
+
+  // Wait for three digits so the prefix is not flagged mid-typing.
+  if (digits.length >= 3 && !digits.startsWith("998")) {
+    return `Raqam 998 bilan boshlanishi kerak — siz "${digits.slice(0, 3)}" deb boshladingiz`;
+  }
+  if (digits.length < PHONE_LENGTH) {
+    return `Yana ${PHONE_LENGTH - digits.length} ta raqam kerak`;
+  }
+  return null;
+}
+
 /** "998901234567" -> "+998901234567", the form the API expects. */
 export function toApiPhone(digits: string): string {
   return `+${digits}`;

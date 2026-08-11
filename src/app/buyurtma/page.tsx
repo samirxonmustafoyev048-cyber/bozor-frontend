@@ -16,7 +16,13 @@ import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { createOrder, getBranches, getSettings } from "@/lib/api";
 import { formatSom } from "@/lib/format";
-import { PHONE_LENGTH, isValidPhone, toApiPhone, toPhoneDigits } from "@/lib/phone";
+import {
+  PHONE_LENGTH,
+  isValidPhone,
+  phoneError,
+  toApiPhone,
+  toPhoneDigits,
+} from "@/lib/phone";
 import DeliveryHero from "@/components/checkout/DeliveryHero";
 import DeliveryMethodCards, {
   type DeliveryType,
@@ -69,6 +75,7 @@ export default function CheckoutPage() {
   const deliveryFee = deliveryType === "yetkazish" ? deliveryFeeSetting : 0;
   const total = subtotal + deliveryFee;
 
+  const phoneProblem = phoneError(phone);
   const canSubmit =
     lines.length > 0 &&
     isValidPhone(phone) &&
@@ -156,7 +163,13 @@ export default function CheckoutPage() {
             <label className="text-sm font-semibold text-foreground">
               Aloqa telefon raqami
             </label>
-            <span className="mt-2 flex items-center rounded-md border border-border bg-background px-3 py-2 text-sm focus-within:border-brand-500">
+            <span
+              className={`mt-2 flex items-center rounded-md border bg-background px-3 py-2 text-sm ${
+                phoneProblem
+                  ? "border-danger-500 focus-within:border-danger-600"
+                  : "border-border focus-within:border-brand-500"
+              }`}
+            >
               <span className="shrink-0 select-none pr-1 text-muted">+</span>
               <input
                 type="tel"
@@ -165,16 +178,19 @@ export default function CheckoutPage() {
                 value={phone}
                 onChange={(e) => setPhone(toPhoneDigits(e.target.value))}
                 placeholder="998901234567"
+                aria-invalid={phoneProblem !== null}
                 className="w-full min-w-0 bg-transparent outline-none"
               />
-              <span className="shrink-0 pl-2 text-xs tabular-nums text-muted">
+              <span
+                className={`shrink-0 pl-2 text-xs tabular-nums ${
+                  phoneProblem ? "text-danger-600" : "text-muted"
+                }`}
+              >
                 {phone.length}/{PHONE_LENGTH}
               </span>
             </span>
-            {phone.length > 0 && !isValidPhone(phone) && (
-              <p className="mt-1.5 text-xs text-danger-600">
-                Raqam 998 bilan boshlanishi va 12 ta raqamdan iborat bo&apos;lishi kerak
-              </p>
+            {phoneProblem && (
+              <p className="mt-1.5 text-xs font-medium text-danger-600">{phoneProblem}</p>
             )}
           </div>
 

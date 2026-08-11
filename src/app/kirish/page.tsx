@@ -8,6 +8,7 @@ import {
   PHONE_LENGTH,
   formatPhone,
   isValidPhone,
+  phoneError,
   toApiPhone,
   toPhoneDigits,
 } from "@/lib/phone";
@@ -34,6 +35,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const phoneProblem = phoneError(phone);
   const phoneReady =
     isValidPhone(phone) && firstName.trim().length > 0 && lastName.trim().length > 0;
 
@@ -111,7 +113,13 @@ export default function LoginPage() {
         <form onSubmit={handlePhoneLogin} className="mt-6 flex flex-col gap-4">
           <label className="flex flex-col gap-1.5 text-sm">
             Telefon raqam
-            <span className="flex items-center rounded-md border border-border bg-background px-3 py-2 focus-within:border-brand-500">
+            <span
+              className={`flex items-center rounded-md border bg-background px-3 py-2 ${
+                phoneProblem
+                  ? "border-danger-500 focus-within:border-danger-600"
+                  : "border-border focus-within:border-brand-500"
+              }`}
+            >
               <span className="shrink-0 select-none pr-1 text-muted">+</span>
               <input
                 type="tel"
@@ -124,19 +132,28 @@ export default function LoginPage() {
                 onChange={(e) => setPhone(toPhoneDigits(e.target.value))}
                 placeholder="998901234567"
                 aria-describedby="phone-hint"
+                aria-invalid={phoneProblem !== null}
                 className="w-full min-w-0 bg-transparent outline-none"
               />
-              <span className="shrink-0 pl-2 text-xs tabular-nums text-muted">
+              <span
+                className={`shrink-0 pl-2 text-xs tabular-nums ${
+                  phoneProblem ? "text-danger-600" : "text-muted"
+                }`}
+              >
                 {phone.length}/{PHONE_LENGTH}
               </span>
             </span>
           </label>
-          <p id="phone-hint" className="-mt-2 text-xs text-muted">
-            {phone.length === 0
-              ? "998 bilan boshlanadigan 12 ta raqam. Masalan: 998901234567"
-              : isValidPhone(phone)
-                ? `Raqam: +${formatPhone(phone)}`
-                : "Raqam 998 bilan boshlanishi va 12 ta raqamdan iborat bo'lishi kerak"}
+          <p
+            id="phone-hint"
+            className={`-mt-2 text-xs ${
+              phoneProblem ? "font-medium text-danger-600" : "text-muted"
+            }`}
+          >
+            {phoneProblem ??
+              (phone.length === 0
+                ? "998 bilan boshlanadigan 12 ta raqam. Masalan: 998901234567"
+                : `Raqam: +${formatPhone(phone)}`)}
           </p>
 
           <div className="grid gap-4 sm:grid-cols-2">
