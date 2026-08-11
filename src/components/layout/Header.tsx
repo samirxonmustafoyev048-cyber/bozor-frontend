@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import CartIndicator from "@/components/cart/CartIndicator";
 import WishlistIndicator from "@/components/product/WishlistIndicator";
-import ProfileLink from "@/components/layout/ProfileLink";
+import UserMenu from "@/components/layout/UserMenu";
 
 const categories = [
   { label: "Sut mahsulotlari", href: "/katalog/sut-mahsulotlari" },
@@ -77,7 +77,6 @@ export default function Header() {
         </form>
 
         <div className="flex shrink-0 items-center gap-1 sm:gap-2">
-          <ProfileLink />
           <Link
             href="/sevimlilar"
             className="relative hidden flex-col items-center rounded-lg px-2 py-1 text-xs text-foreground hover:bg-brand-50 sm:flex"
@@ -94,6 +93,7 @@ export default function Header() {
             <span className="hidden sm:inline">Savat</span>
             <CartIndicator />
           </Link>
+          <UserMenu />
         </div>
       </div>
 
