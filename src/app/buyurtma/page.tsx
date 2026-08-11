@@ -16,6 +16,7 @@ import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { createOrder, getBranches, getSettings } from "@/lib/api";
 import { formatSom } from "@/lib/format";
+import { PHONE_LENGTH, isValidPhone, toApiPhone, toPhoneDigits } from "@/lib/phone";
 import DeliveryHero from "@/components/checkout/DeliveryHero";
 import DeliveryMethodCards, {
   type DeliveryType,
@@ -45,7 +46,8 @@ export default function CheckoutPage() {
   const [branches, setBranches] = useState<Branch[]>([]);
   const [deliveryType, setDeliveryType] = useState<DeliveryType>("yetkazish");
   const [address, setAddress] = useState("");
-  const [phone, setPhone] = useState(() => auth?.user.phone ?? "");
+  // Kept as bare digits; the saved profile number arrives as "+998...".
+  const [phone, setPhone] = useState(() => toPhoneDigits(auth?.user.phone ?? ""));
   const [branchId, setBranchId] = useState("");
   const [payment, setPayment] = useState<PaymentMethod>("naqd");
   const [submitting, setSubmitting] = useState(false);
@@ -69,7 +71,7 @@ export default function CheckoutPage() {
 
   const canSubmit =
     lines.length > 0 &&
-    phone.trim().length > 0 &&
+    isValidPhone(phone) &&
     (deliveryType === "olib-ketish" ? !!branchId : address.trim().length > 0);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -84,7 +86,7 @@ export default function CheckoutPage() {
           deliveryType: deliveryType === "yetkazish" ? "YETKAZISH" : "OLIB_KETISH",
           address: deliveryType === "yetkazish" ? address : undefined,
           branchId: deliveryType === "olib-ketish" ? branchId : undefined,
-          phone,
+          phone: toApiPhone(phone),
           paymentMethod: PAYMENT_METHOD_MAP[payment],
           items: lines.map((line) => ({
             productId: line.product.id,
@@ -154,13 +156,26 @@ export default function CheckoutPage() {
             <label className="text-sm font-semibold text-foreground">
               Aloqa telefon raqami
             </label>
-            <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="+998 90 123 45 67"
-              className="mt-2 w-full rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
-            />
+            <span className="mt-2 flex items-center rounded-md border border-border bg-background px-3 py-2 text-sm focus-within:border-brand-500">
+              <span className="shrink-0 select-none pr-1 text-muted">+</span>
+              <input
+                type="tel"
+                inputMode="numeric"
+                autoComplete="tel"
+                value={phone}
+                onChange={(e) => setPhone(toPhoneDigits(e.target.value))}
+                placeholder="998901234567"
+                className="w-full min-w-0 bg-transparent outline-none"
+              />
+              <span className="shrink-0 pl-2 text-xs tabular-nums text-muted">
+                {phone.length}/{PHONE_LENGTH}
+              </span>
+            </span>
+            {phone.length > 0 && !isValidPhone(phone) && (
+              <p className="mt-1.5 text-xs text-danger-600">
+                Raqam 998 bilan boshlanishi va 12 ta raqamdan iborat bo&apos;lishi kerak
+              </p>
+            )}
           </div>
 
           <PaymentMethodGrid value={payment} onChange={setPayment} />

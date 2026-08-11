@@ -5,6 +5,13 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { requestOtp } from "@/lib/api";
+import {
+  PHONE_LENGTH,
+  formatPhone,
+  isValidPhone,
+  toApiPhone,
+  toPhoneDigits,
+} from "@/lib/phone";
 
 type Tab = "phone" | "email";
 type EmailMode = "login" | "register";
@@ -31,12 +38,15 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const phoneReady = isValidPhone(phone);
+
   async function handleRequestOtp(e: React.FormEvent) {
     e.preventDefault();
+    if (!phoneReady) return;
     setError(null);
     setSubmitting(true);
     try {
-      const res = await requestOtp(phone);
+      const res = await requestOtp(toApiPhone(phone));
       setDevCode(res.devCode);
       setPhoneStep("code");
     } catch {
@@ -51,7 +61,7 @@ export default function LoginPage() {
     setError(null);
     setSubmitting(true);
     try {
-      await loginWithOtp(phone, code, name || undefined);
+      await loginWithOtp(toApiPhone(phone), code, name || undefined);
       router.push("/profil");
     } catch {
       setError("Kod noto'g'ri yoki eskirgan.");
@@ -117,19 +127,37 @@ export default function LoginPage() {
         <form onSubmit={handleRequestOtp} className="mt-6 flex flex-col gap-4">
           <label className="flex flex-col gap-1.5 text-sm">
             Telefon raqam
-            <input
-              type="tel"
-              required
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="+998 90 123 45 67"
-              className="rounded-md border border-border bg-background px-3 py-2 outline-none focus:border-brand-500"
-            />
+            <span className="flex items-center rounded-md border border-border bg-background px-3 py-2 focus-within:border-brand-500">
+              <span className="shrink-0 select-none pr-1 text-muted">+</span>
+              <input
+                type="tel"
+                required
+                inputMode="numeric"
+                autoComplete="tel"
+                // Digits are stripped on every keystroke, so letters and
+                // punctuation simply never reach the field.
+                value={phone}
+                onChange={(e) => setPhone(toPhoneDigits(e.target.value))}
+                placeholder="998901234567"
+                aria-describedby="phone-hint"
+                className="w-full min-w-0 bg-transparent outline-none"
+              />
+              <span className="shrink-0 pl-2 text-xs tabular-nums text-muted">
+                {phone.length}/{PHONE_LENGTH}
+              </span>
+            </span>
           </label>
+          <p id="phone-hint" className="-mt-2 text-xs text-muted">
+            {phone.length === 0
+              ? "998 bilan boshlanadigan 12 ta raqam. Masalan: 998901234567"
+              : phoneReady
+                ? `Raqam: +${formatPhone(phone)}`
+                : "Raqam 998 bilan boshlanishi va 12 ta raqamdan iborat bo'lishi kerak"}
+          </p>
           <button
             type="submit"
-            disabled={submitting}
-            className="rounded-full bg-brand-600 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-50"
+            disabled={submitting || !phoneReady}
+            className="rounded-full bg-brand-600 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {submitting ? "Yuborilmoqda..." : "Kod yuborish"}
           </button>
@@ -149,11 +177,12 @@ export default function LoginPage() {
               type="text"
               required
               inputMode="numeric"
+              autoComplete="one-time-code"
               maxLength={6}
               value={code}
-              onChange={(e) => setCode(e.target.value)}
+              onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
               placeholder="123456"
-              className="rounded-md border border-border bg-background px-3 py-2 outline-none focus:border-brand-500"
+              className="rounded-md border border-border bg-background px-3 py-2 tracking-widest outline-none focus:border-brand-500"
             />
           </label>
           <label className="flex flex-col gap-1.5 text-sm">
@@ -168,8 +197,8 @@ export default function LoginPage() {
           </label>
           <button
             type="submit"
-            disabled={submitting}
-            className="rounded-full bg-brand-600 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-50"
+            disabled={submitting || code.length !== 6}
+            className="rounded-full bg-brand-600 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {submitting ? "Tekshirilmoqda..." : "Tasdiqlash"}
           </button>
