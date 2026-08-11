@@ -140,21 +140,18 @@ export function getMyOrders(accessToken: string): Promise<Order[]> {
   });
 }
 
-export function requestOtp(phone: string): Promise<{ message: string; devCode: string }> {
-  return apiFetch("/auth/otp/request", {
-    method: "POST",
-    body: JSON.stringify({ phone }),
-  });
-}
-
-export function verifyOtp(
+/**
+ * Signs in by phone number, creating the account on first use. The backend
+ * still exposes the SMS-code endpoints for when a gateway is connected.
+ */
+export function phoneLogin(
   phone: string,
-  code: string,
-  name?: string
+  firstName: string,
+  lastName: string
 ): Promise<AuthResponse> {
-  return apiFetch<AuthResponse>("/auth/otp/verify", {
+  return apiFetch<AuthResponse>("/auth/phone-login", {
     method: "POST",
-    body: JSON.stringify({ phone, code, name }),
+    body: JSON.stringify({ phone, firstName, lastName }),
   });
 }
 

@@ -21,7 +21,11 @@ interface AuthState {
 interface AuthContextValue {
   auth: AuthState | null;
   isLoaded: boolean;
-  loginWithOtp: (phone: string, code: string, name?: string) => Promise<void>;
+  loginWithPhone: (
+    phone: string,
+    firstName: string,
+    lastName: string
+  ) => Promise<void>;
   loginWithEmail: (email: string, password: string) => Promise<void>;
   registerWithEmail: (
     name: string,
@@ -152,9 +156,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const auth = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const isLoaded = useSyncExternalStore(subscribeNoop, getClientTrue, getClientFalse);
 
-  const loginWithOtp = useCallback(
-    async (phone: string, code: string, name?: string) => {
-      const res = await api.verifyOtp(phone, code, name);
+  const loginWithPhone = useCallback(
+    async (phone: string, firstName: string, lastName: string) => {
+      const res = await api.phoneLogin(phone, firstName, lastName);
       setAuthState(fromAuthResponse(res));
     },
     []
@@ -184,7 +188,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const value: AuthContextValue = {
     auth,
     isLoaded,
-    loginWithOtp,
+    loginWithPhone,
     loginWithEmail,
     registerWithEmail,
     updateName,
