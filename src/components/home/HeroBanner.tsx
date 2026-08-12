@@ -90,13 +90,13 @@ export default function HeroBanner() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/hero/savat.webp"
-              alt="Yangi mevalar solingan savat"
-              width={760}
-              height={507}
+              alt="Yangi mevalar solingan savatcha"
+              width={780}
+              height={600}
               // Largest element in the viewport on load, so it leads the queue.
               fetchPriority="high"
               decoding="async"
-              className="h-full w-full object-cover object-bottom"
+              className="h-full w-full object-cover object-center"
             />
           </div>
 
