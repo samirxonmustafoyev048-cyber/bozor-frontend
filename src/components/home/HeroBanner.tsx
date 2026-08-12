@@ -85,12 +85,14 @@ export default function HeroBanner() {
 
         {/* Basket photo + phone mockup */}
         <div className="relative mx-auto h-72 w-full max-w-xs sm:h-80 sm:max-w-sm lg:h-96 lg:max-w-none">
-          {/* A soft radial mask washed the photo out, so it stays a crisp card. */}
+          {/* A soft radial mask washed the photo out, so it stays a crisp card.
+              Photo: "Apple Harvest" by Steenbergs, CC BY 2.0 — credited in the
+              site footer, which the licence requires. */}
           <div className="absolute bottom-2 left-0 h-[78%] w-[68%] overflow-hidden rounded-2xl shadow-xl ring-1 ring-black/5 sm:w-[66%]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/hero/savat.webp"
-              alt="Yangi mevalar solingan savatcha"
+              alt="To'qilgan savatda yangi uzilgan olmalar"
               width={780}
               height={600}
               // Largest element in the viewport on load, so it leads the queue.
