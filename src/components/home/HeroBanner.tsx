@@ -1,4 +1,3 @@
-import type { CSSProperties } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -14,9 +13,6 @@ import {
   Leaf,
   type LucideIcon,
 } from "lucide-react";
-import FloatingFruit, { type FruitSpec } from "@/components/home/FloatingFruit";
-import ParallaxScene from "@/components/home/ParallaxScene";
-
 const badges: { icon: LucideIcon; title: string; subtitle: string }[] = [
   { icon: BadgeCheck, title: "100%", subtitle: "Sifat kafolati" },
   { icon: Truck, title: "Tez", subtitle: "yetkazib berish" },
@@ -34,52 +30,19 @@ const miniCategories: { icon: LucideIcon; label: string }[] = [
   { icon: CupSoda, label: "Ichimlik" },
 ];
 
-/** The handset's shelf, using the same cut-outs as the floating fruit. */
+/** The handset's shelf. Same cut-outs the banner used to scatter around. */
 const phoneProducts = [
   { image: "/hero/olma-qizil.webp", name: "Olma Golden", price: "18 900 so'm", off: "-20%" },
   { image: "/hero/qulupnay.webp", name: "Qulupnay", price: "27 500 so'm", off: "-15%" },
 ];
 
-const RED = { src: "/hero/olma-qizil.webp", width: 145, height: 160 };
-const GREEN = { src: "/hero/olma-yashil.webp", width: 155, height: 160 };
-const MANDARIN = { src: "/hero/mandarin.webp", width: 96, height: 160 };
-const BERRY = { src: "/hero/qulupnay.webp", width: 131, height: 160 };
-
-/**
- * Scattered around the edges rather than over the copy, and each piece drifts
- * on its own cycle so the group never pulses in unison.
- *
- * Everything in the upper band is hidden below `sm`: the heading is centred and
- * full-width there, so a fruit at the top has nowhere to sit that is not behind
- * text. What remains on phones sits around the basket and the handset.
- */
-const fruits: FruitSpec[] = [
-  { ...RED, className: "left-[1%] top-[5%] hidden w-11 sm:block sm:w-14", duration: "7s", delay: "0s", tilt: "-8deg", depth: "16px" },
-  { ...BERRY, className: "left-[26%] top-[2%] hidden w-9 sm:block sm:w-11", duration: "8.5s", delay: "-1.2s", tilt: "10deg", depth: "9px" },
-  { ...GREEN, className: "left-[45%] top-[6%] hidden w-11 lg:block lg:w-14", duration: "6.5s", delay: "-0.6s", tilt: "-5deg", depth: "14px" },
-  { ...MANDARIN, className: "left-[0.5%] top-[44%] hidden w-9 sm:block sm:w-11", duration: "9s", delay: "-2.4s", tilt: "6deg", depth: "8px" },
-  { ...BERRY, className: "bottom-[4%] left-[2%] w-11 sm:w-12", duration: "7.5s", delay: "-3s", tilt: "-12deg", depth: "13px" },
-  { ...GREEN, className: "bottom-[2%] left-[30%] hidden w-9 sm:block sm:w-11", duration: "8s", delay: "-1.8s", tilt: "8deg", depth: "7px" },
-  { ...MANDARIN, className: "right-[30%] top-[12%] hidden w-10 lg:block lg:w-12", duration: "7s", delay: "-2.1s", tilt: "-6deg", depth: "11px" },
-  { ...BERRY, className: "right-[5%] top-[7%] hidden w-9 sm:block sm:w-11", duration: "9.5s", delay: "-0.9s", tilt: "12deg", depth: "8px" },
-  { ...RED, className: "bottom-[7%] right-[2%] w-12 sm:w-14", duration: "6.8s", delay: "-3.6s", tilt: "7deg", depth: "17px" },
-  { ...MANDARIN, className: "bottom-[28%] right-[37%] hidden w-8 lg:block lg:w-10", duration: "8.2s", delay: "-1.5s", tilt: "-10deg", depth: "6px" },
-];
-
 export default function HeroBanner() {
   return (
-    <ParallaxScene className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-sky-50 to-white">
+    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-sky-50 to-white">
       <div
         className="absolute inset-y-0 right-0 hidden w-[45%] bg-gradient-to-br from-sky-500 to-blue-600 lg:block"
         style={{ clipPath: "polygon(35% 0, 100% 0, 100% 100%, 0 100%)" }}
       />
-
-      {/* Above the background wash, behind the copy */}
-      <div className="pointer-events-none absolute inset-0 z-[1]">
-        {fruits.map((fruit, i) => (
-          <FloatingFruit key={`${fruit.src}-${i}`} fruit={fruit} />
-        ))}
-      </div>
 
       <div className="relative z-10 grid gap-10 px-6 py-10 sm:px-10 sm:py-14 lg:grid-cols-2 lg:items-center">
         <div className="text-center lg:text-left">
@@ -122,8 +85,7 @@ export default function HeroBanner() {
 
         {/* Basket photo + phone mockup */}
         <div className="relative mx-auto h-72 w-full max-w-xs sm:h-80 sm:max-w-sm lg:h-96 lg:max-w-none">
-          {/* A soft radial mask washed the photo out, so it stays a crisp card
-              and the floating fruit supplies the depth instead. */}
+          {/* A soft radial mask washed the photo out, so it stays a crisp card. */}
           <div className="absolute bottom-2 left-0 h-[78%] w-[68%] overflow-hidden rounded-2xl shadow-xl ring-1 ring-black/5 sm:w-[66%]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -206,32 +168,8 @@ export default function HeroBanner() {
             </div>
           </div>
 
-          {/* Rides in front of the basket, and moves the most with the pointer */}
-          <span
-            aria-hidden
-            className="hero-parallax pointer-events-none absolute bottom-[6%] left-[8%] z-20 w-12 sm:w-14"
-            style={{ "--depth": "22px" } as CSSProperties}
-          >
-            <span
-              className="hero-float block"
-              style={
-                { "--dur": "7.8s", "--delay": "-2.7s", "--tilt": "-9deg" } as CSSProperties
-              }
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={RED.src}
-                alt=""
-                width={RED.width}
-                height={RED.height}
-                fetchPriority="low"
-                decoding="async"
-                className="h-full w-full object-contain drop-shadow-lg"
-              />
-            </span>
-          </span>
         </div>
       </div>
-    </ParallaxScene>
+    </div>
   );
 }
