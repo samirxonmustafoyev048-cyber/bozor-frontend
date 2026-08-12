@@ -4,6 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useSyncExternalStore,
   type ReactNode,
 } from "react";
@@ -155,6 +156,21 @@ function fromAuthResponse(res: AuthResponse): AuthState {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const auth = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const isLoaded = useSyncExternalStore(subscribeNoop, getClientTrue, getClientFalse);
+
+  // The user copy in localStorage is a snapshot from sign-in time. An admin can
+  // change someone's role or name in the meantime, so re-read it on load
+  // instead of leaving the UI stale until the next token refresh.
+  useEffect(() => {
+    if (!authState) return;
+    api
+      .getMe(authState.accessToken)
+      .then((user) => {
+        if (authState) setAuthState({ ...authState, user });
+      })
+      .catch(() => {
+        // Expired or revoked token — scheduleRefresh() already handles renewal.
+      });
+  }, []);
 
   const loginWithPhone = useCallback(
     async (phone: string, firstName: string, lastName: string) => {
