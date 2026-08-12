@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -10,10 +11,10 @@ import {
   Beef,
   CupSoda,
   Croissant,
-  Package,
   Leaf,
   type LucideIcon,
 } from "lucide-react";
+import FloatingFruit, { type FruitSpec } from "@/components/home/FloatingFruit";
 
 const badges: { icon: LucideIcon; title: string; subtitle: string }[] = [
   { icon: BadgeCheck, title: "100%", subtitle: "Sifat kafolati" },
@@ -30,6 +31,29 @@ const miniCategories: { icon: LucideIcon; label: string }[] = [
   { icon: CupSoda, label: "Ichimlik" },
 ];
 
+const RED = "/hero/olma-qizil.webp";
+const GREEN = "/hero/olma-yashil.webp";
+const MANDARIN = "/hero/mandarin.webp";
+const BERRY = "/hero/qulupnay.webp";
+
+/**
+ * Scattered around the edges rather than over the copy, and each piece drifts
+ * on its own cycle so the group never pulses in unison. The denser ones drop
+ * out on small screens, where there is no room for them.
+ */
+const fruits: FruitSpec[] = [
+  { src: RED, className: "left-[1%] top-[5%] w-11 sm:w-14", duration: "7s", delay: "0s", tilt: "-8deg" },
+  { src: BERRY, className: "left-[26%] top-[2%] hidden w-9 sm:block sm:w-11", duration: "8.5s", delay: "-1.2s", tilt: "10deg" },
+  { src: GREEN, className: "left-[45%] top-[6%] hidden w-11 lg:block lg:w-14", duration: "6.5s", delay: "-0.6s", tilt: "-5deg" },
+  { src: MANDARIN, className: "left-[0.5%] top-[44%] hidden w-9 sm:block sm:w-11", duration: "9s", delay: "-2.4s", tilt: "6deg" },
+  { src: BERRY, className: "bottom-[4%] left-[2%] w-9 sm:w-12", duration: "7.5s", delay: "-3s", tilt: "-12deg" },
+  { src: GREEN, className: "bottom-[2%] left-[30%] hidden w-9 sm:block sm:w-11", duration: "8s", delay: "-1.8s", tilt: "8deg" },
+  { src: MANDARIN, className: "right-[30%] top-[12%] hidden w-10 lg:block lg:w-12", duration: "7s", delay: "-2.1s", tilt: "-6deg" },
+  { src: BERRY, className: "right-[5%] top-[7%] w-9 sm:w-11", duration: "9.5s", delay: "-0.9s", tilt: "12deg" },
+  { src: RED, className: "bottom-[7%] right-[2%] w-10 sm:w-14", duration: "6.8s", delay: "-3.6s", tilt: "7deg" },
+  { src: MANDARIN, className: "bottom-[28%] right-[37%] hidden w-8 lg:block lg:w-10", duration: "8.2s", delay: "-1.5s", tilt: "-10deg" },
+];
+
 export default function HeroBanner() {
   return (
     <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-sky-50 to-white">
@@ -38,7 +62,14 @@ export default function HeroBanner() {
         style={{ clipPath: "polygon(35% 0, 100% 0, 100% 100%, 0 100%)" }}
       />
 
-      <div className="relative grid gap-10 px-6 py-10 sm:px-10 sm:py-14 lg:grid-cols-2 lg:items-center">
+      {/* Above the background wash, behind the copy */}
+      <div className="pointer-events-none absolute inset-0 z-[1]">
+        {fruits.map((fruit, i) => (
+          <FloatingFruit key={`${fruit.src}-${i}`} fruit={fruit} />
+        ))}
+      </div>
+
+      <div className="relative z-10 grid gap-10 px-6 py-10 sm:px-10 sm:py-14 lg:grid-cols-2 lg:items-center">
         <div className="text-center lg:text-left">
           <h1 className="text-3xl font-extrabold leading-tight text-foreground sm:text-4xl lg:text-5xl">
             <span className="text-brand-600">Olma</span>{" "}
@@ -77,34 +108,20 @@ export default function HeroBanner() {
           </Link>
         </div>
 
-        {/* Illustration */}
-        <div className="relative mx-auto h-72 w-full max-w-xs sm:h-80 sm:max-w-sm lg:h-96">
-          {/* Basket */}
-          <div
-            aria-hidden
-            className="absolute bottom-4 left-2 h-32 w-40 rounded-b-2xl rounded-t-md bg-brand-600 shadow-xl sm:h-40 sm:w-48"
-            style={{ clipPath: "polygon(8% 0, 92% 0, 100% 100%, 0 100%)" }}
-          >
-            <div className="absolute inset-x-0 top-0 h-2 rounded-t-md bg-brand-700" />
-          </div>
-          <div
-            aria-hidden
-            className="absolute bottom-[6.5rem] left-4 h-8 w-36 rounded-full bg-brand-800/40 sm:bottom-[9.5rem] sm:w-44"
-          />
-
-          {/* Produce piled above the basket rim */}
-          <div
-            aria-hidden
-            className="absolute bottom-24 left-3 flex h-16 w-36 items-end gap-1 sm:bottom-32 sm:w-44"
-          >
-            <span className="h-10 w-10 rounded-full bg-emerald-600 shadow sm:h-12 sm:w-12" />
-            <span className="h-14 w-12 rounded-full bg-red-500 shadow sm:h-16 sm:w-14" />
-            <span className="h-11 w-11 rounded-full bg-amber-500 shadow sm:h-14 sm:w-14" />
-            <span className="h-9 w-9 rounded-full bg-emerald-500 shadow sm:h-11 sm:w-11" />
+        {/* Basket photo + phone mockup */}
+        <div className="relative mx-auto h-72 w-full max-w-xs sm:h-80 sm:max-w-sm lg:h-96 lg:max-w-none">
+          {/* A soft radial mask washed the photo out, so it stays a crisp card
+              and the floating fruit supplies the depth instead. */}
+          <div className="absolute bottom-2 left-0 h-[78%] w-[68%] overflow-hidden rounded-2xl shadow-xl ring-1 ring-black/5 sm:w-[66%]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/hero/savat.webp"
+              alt="Yangi mevalar solingan savat"
+              className="h-full w-full object-cover object-bottom"
+            />
           </div>
 
-          {/* Phone mockup */}
-          <div className="absolute bottom-0 right-0 h-64 w-32 -rotate-3 rounded-[1.5rem] border-4 border-neutral-900 bg-neutral-900 shadow-2xl sm:h-72 sm:w-36">
+          <div className="hero-phone absolute bottom-0 right-0 h-64 w-32 rounded-[1.5rem] border-4 border-neutral-900 bg-neutral-900 shadow-2xl sm:h-72 sm:w-36">
             <div className="h-full w-full overflow-hidden rounded-[1.1rem] bg-white">
               <div className="flex items-center justify-between bg-brand-600 px-2 py-1.5">
                 <span className="flex items-center gap-1 text-[9px] font-bold text-white">
@@ -175,35 +192,21 @@ export default function HeroBanner() {
             </div>
           </div>
 
-          {/* Floating badges */}
-          <span className="absolute left-0 top-2 flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-lg sm:h-16 sm:w-16">
-            <Apple aria-hidden className="h-7 w-7 text-red-500 sm:h-8 sm:w-8" />
-          </span>
-          <span className="absolute right-8 top-0 flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-lg sm:h-14 sm:w-14">
-            <span className="h-7 w-7 rounded-full bg-orange-400 sm:h-8 sm:w-8" />
-          </span>
-          <span className="absolute right-0 top-1/3 flex h-16 w-16 flex-col items-center justify-center rounded-full bg-sky-600 text-center text-white shadow-lg sm:h-20 sm:w-20">
-            <Truck aria-hidden className="h-4 w-4 sm:h-5 sm:w-5" />
-            <span className="mt-0.5 text-[7px] font-semibold leading-tight sm:text-[8px]">
-              Tez yetkazib
-              <br />
-              berish
-            </span>
-          </span>
-          <Leaf
+          {/* Rides in front of the basket for depth */}
+          <span
             aria-hidden
-            className="absolute left-1/3 top-0 h-5 w-5 -rotate-12 text-emerald-500 sm:h-6 sm:w-6"
-          />
-          <Leaf
-            aria-hidden
-            className="absolute bottom-1/3 left-0 h-5 w-5 rotate-45 text-emerald-500 sm:h-6 sm:w-6"
-          />
-          <div className="absolute bottom-0 right-2 flex h-11 w-14 flex-col items-center justify-center rounded-md bg-amber-200 text-amber-800 shadow sm:h-14 sm:w-16">
-            <Package aria-hidden className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-            <span className="mt-0.5 text-[6px] font-bold leading-none sm:text-[7px]">
-              Olma Market
-            </span>
-          </div>
+            className="hero-float pointer-events-none absolute bottom-[6%] left-[8%] z-20 w-12 sm:w-14"
+            style={
+              { "--dur": "7.8s", "--delay": "-2.7s", "--tilt": "-9deg" } as CSSProperties
+            }
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={RED}
+              alt=""
+              className="h-full w-full object-contain drop-shadow-lg"
+            />
+          </span>
         </div>
       </div>
     </div>

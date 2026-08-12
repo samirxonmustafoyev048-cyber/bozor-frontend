@@ -72,3 +72,42 @@ body {
   z-index: 0;
   isolation: isolate;
 }
+
+/* Hero banner motion. Each floating fruit sets its own --dur/--delay/--tilt so
+   one keyframe set produces a scattered, non-synchronised drift. */
+@keyframes hero-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--tilt, 0deg));
+  }
+  50% {
+    transform: translateY(-14px) rotate(calc(var(--tilt, 0deg) + 5deg));
+  }
+}
+
+@keyframes hero-phone {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-3deg);
+  }
+  50% {
+    transform: translateY(-14px) rotate(-1deg);
+  }
+}
+
+.hero-float {
+  animation: hero-float var(--dur, 7s) ease-in-out var(--delay, 0s) infinite;
+  will-change: transform;
+}
+
+.hero-phone {
+  animation: hero-phone 6.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-float,
+  .hero-phone {
+    animation: none;
+  }
+}
