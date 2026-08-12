@@ -97,12 +97,25 @@ body {
 
 .hero-float {
   animation: hero-float var(--dur, 7s) ease-in-out var(--delay, 0s) infinite;
-  will-change: transform;
 }
 
+/* Shifts with the pointer. --px/--py are published on the banner by
+   ParallaxScene and default to 0, so this is inert until a mouse arrives. */
+.hero-parallax {
+  transform: translate3d(
+    calc(var(--px, 0) * var(--depth, 10px)),
+    calc(var(--py, 0) * var(--depth, 10px)),
+    0
+  );
+  transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* The tilt is a design choice, not part of the motion, so it is declared here
+   as well as in the keyframes — otherwise switching the animation off below
+   would stand the phone upright. */
 .hero-phone {
+  transform: rotate(-3deg);
   animation: hero-phone 6.5s ease-in-out infinite;
-  will-change: transform;
 }
 
 @media (prefers-reduced-motion: reduce) {
