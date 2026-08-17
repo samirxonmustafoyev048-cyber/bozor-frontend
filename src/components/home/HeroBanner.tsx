@@ -71,19 +71,9 @@ const fruits: {
     duration: "8.5s", delay: "-1.4s", tilt: "-7deg",
   },
   {
-    src: "/hero/mandarin.webp", width: 96, height: 160,
-    className: "right-[2%] top-[10%] hidden w-8 lg:block lg:w-10",
-    duration: "9s", delay: "-2.6s", tilt: "8deg",
-  },
-  {
     src: "/hero/olma-yashil.webp", width: 155, height: 160,
     className: "bottom-[1%] left-[36%] w-11 sm:w-16",
     duration: "6.8s", delay: "-3.2s", tilt: "6deg",
-  },
-  {
-    src: "/hero/olma-qizil.webp", width: 145, height: 160,
-    className: "bottom-[24%] right-[1%] hidden w-9 sm:block sm:w-11",
-    duration: "7.8s", delay: "-1.9s", tilt: "-11deg",
   },
 ];
 
