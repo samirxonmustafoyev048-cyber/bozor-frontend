@@ -53,7 +53,12 @@ export default async function Home() {
 
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-10 px-4 py-6 sm:px-6 sm:py-8">
-      <HeroBanner />
+      {/* The strip reads as the banner's base, so it sits tight against it
+          rather than picking up the page's section spacing. */}
+      <div className="flex flex-col gap-3">
+        <HeroBanner />
+        <FeatureStrip />
+      </div>
 
       <ProductRow
         title="Bugungi aksiyalar"
@@ -72,7 +77,6 @@ export default async function Home() {
 
       <BannerRow banners={banners} />
 
-      <FeatureStrip />
       <WhyUs />
       <HowItWorks />
       <Testimonials />
