@@ -75,7 +75,7 @@ export default async function BranchesPage() {
 
 function BranchCard({ branch }: { branch: Branch }) {
   return (
-    <article className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] transition-colors hover:border-white/20">
+    <article className="group relative overflow-hidden rounded-2xl border border-white/10 transition-colors hover:border-white/25">
       {branch.imageUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -83,25 +83,31 @@ function BranchCard({ branch }: { branch: Branch }) {
           alt={`${branch.name} binosi`}
           loading="lazy"
           decoding="async"
-          className="h-44 w-full object-cover sm:h-52"
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
       ) : (
         // Until a storefront photo is set in the admin panel, a tinted panel
         // keeps the card's proportions instead of collapsing it.
-        <div className="flex h-44 w-full items-center justify-center bg-gradient-to-br from-brand-900/60 to-brand-800/30 sm:h-52">
+        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-brand-900/70 to-brand-800/40">
           <Store aria-hidden className="h-10 w-10 text-white/25" />
         </div>
       )}
 
-      <div className="p-5">
-        <h2 className="flex items-center gap-2.5 text-lg font-bold text-white">
+      {/* The copy sits on the photo, so it needs its own floor to stay legible */}
+      <span
+        aria-hidden
+        className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/55 to-black/10"
+      />
+
+      <div className="relative flex min-h-[19rem] flex-col justify-end p-5 sm:min-h-[21rem]">
+        <h2 className="flex items-center gap-2.5 text-lg font-bold text-white sm:text-xl">
           <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-600">
             <MapPin aria-hidden className="h-4 w-4 text-white" />
           </span>
           {branch.name}
         </h2>
 
-        <p className="mt-2 flex items-start gap-1.5 text-sm text-white/60">
+        <p className="mt-2 flex items-start gap-1.5 text-sm text-white/75">
           <MapPin aria-hidden className="mt-0.5 h-3.5 w-3.5 shrink-0" />
           {branch.address}
         </p>
@@ -116,7 +122,7 @@ function BranchCard({ branch }: { branch: Branch }) {
           <MapLink
             href={yandexMapsUrl(branch)}
             label="Yandex Maps"
-            className="border border-white/15 bg-white/5 text-white hover:bg-white/10"
+            className="border border-white/20 bg-black/40 text-white backdrop-blur-sm hover:bg-black/60"
             dotClassName="bg-red-500"
           />
         </div>
