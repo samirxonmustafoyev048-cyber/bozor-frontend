@@ -23,14 +23,8 @@ import {
 } from "@/lib/api";
 import { formatSom } from "@/lib/format";
 import { PHONE_LENGTH, isValidPhone, toApiPhone, toPhoneDigits } from "@/lib/phone";
-import {
-  CARD_LENGTH,
-  cardBrandLabel,
-  cardLast4,
-  formatCard,
-  isValidCard,
-  toCardDigits,
-} from "@/lib/card";
+import { cardLast4, isValidCard } from "@/lib/card";
+import CardNumberField from "@/components/checkout/CardNumberField";
 import ProductImage from "@/components/product/ProductImage";
 import type { Branch, Category, Order, Product } from "@/types/product";
 
@@ -442,35 +436,7 @@ export default function CashierPage() {
             )}
 
             {payMethod === "KARTA" && (
-              <div className="mt-3">
-                <label className="text-xs font-medium text-muted">
-                  Karta raqami
-                  <input
-                    inputMode="numeric"
-                    autoComplete="off"
-                    value={formatCard(card)}
-                    onChange={(e) => setCard(toCardDigits(e.target.value))}
-                    placeholder="8600 0000 0000 0000"
-                    className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 font-mono text-sm tracking-wider outline-none focus:border-brand-500"
-                  />
-                </label>
-                <p className="mt-1 flex items-center justify-between text-[11px]">
-                  <span className="font-semibold text-brand-700">
-                    {card.length >= 4 ? cardBrandLabel(card) : " "}
-                  </span>
-                  <span
-                    className={
-                      isValidCard(card) ? "text-muted" : "text-danger-600"
-                    }
-                  >
-                    {card.length}/{CARD_LENGTH}
-                  </span>
-                </p>
-                <p className="mt-1 text-[11px] text-muted/70">
-                  To&apos;liq raqam saqlanmaydi — cheklarda faqat oxirgi 4 raqam
-                  qoladi.
-                </p>
-              </div>
+              <CardNumberField value={card} onChange={setCard} className="mt-3" />
             )}
 
             <label className="mt-3 block text-xs font-medium text-muted">

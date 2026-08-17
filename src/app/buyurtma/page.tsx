@@ -23,11 +23,13 @@ import {
   toApiPhone,
   toPhoneDigits,
 } from "@/lib/phone";
+import { cardLast4, isValidCard } from "@/lib/card";
 import DeliveryHero from "@/components/checkout/DeliveryHero";
 import DeliveryMethodCards, {
   type DeliveryType,
 } from "@/components/checkout/DeliveryMethodCards";
 import PaymentMethodGrid, { type PaymentMethod } from "@/components/checkout/PaymentMethodGrid";
+import CardNumberField from "@/components/checkout/CardNumberField";
 import BranchList from "@/components/checkout/BranchList";
 import type { Branch } from "@/types/product";
 
@@ -56,6 +58,7 @@ export default function CheckoutPage() {
   const [phone, setPhone] = useState(() => toPhoneDigits(auth?.user.phone ?? ""));
   const [branchId, setBranchId] = useState("");
   const [payment, setPayment] = useState<PaymentMethod>("naqd");
+  const [card, setCard] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [deliveryFeeSetting, setDeliveryFeeSetting] = useState(15000);
@@ -79,6 +82,7 @@ export default function CheckoutPage() {
   const canSubmit =
     lines.length > 0 &&
     isValidPhone(phone) &&
+    (payment !== "karta" || isValidCard(card)) &&
     (deliveryType === "olib-ketish" ? !!branchId : address.trim().length > 0);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -95,6 +99,8 @@ export default function CheckoutPage() {
           branchId: deliveryType === "olib-ketish" ? branchId : undefined,
           phone: toApiPhone(phone),
           paymentMethod: PAYMENT_METHOD_MAP[payment],
+          // Only the last four digits travel; the full number stays in the form.
+          cardLast4: payment === "karta" ? cardLast4(card) : undefined,
           items: lines.map((line) => ({
             productId: line.product.id,
             quantity: line.quantity,
@@ -195,6 +201,12 @@ export default function CheckoutPage() {
           </div>
 
           <PaymentMethodGrid value={payment} onChange={setPayment} />
+
+          {payment === "karta" && (
+            <div className="rounded-2xl border border-border bg-surface p-4">
+              <CardNumberField value={card} onChange={setCard} />
+            </div>
+          )}
         </div>
 
         <aside className="h-fit rounded-2xl border border-border bg-surface p-5">

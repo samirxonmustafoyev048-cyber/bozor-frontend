@@ -116,6 +116,8 @@ export interface CreateOrderPayload {
   branchId?: string;
   phone: string;
   paymentMethod: "NAQD" | "KARTA" | "PAYME" | "CLICK";
+  /** Last four digits only — never the full card number. */
+  cardLast4?: string;
   items: { productId: string; quantity: number }[];
 }
 

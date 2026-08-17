@@ -19,6 +19,7 @@ import DeliveryMethodCards, {
   type DeliveryType,
 } from "@/components/checkout/DeliveryMethodCards";
 import PaymentMethodGrid, { type PaymentMethod } from "@/components/checkout/PaymentMethodGrid";
+import CardNumberField from "@/components/checkout/CardNumberField";
 import BranchList from "@/components/checkout/BranchList";
 import type { Branch } from "@/types/product";
 
@@ -35,6 +36,7 @@ export default function DeliveryInfoPage() {
   const [deliveryType, setDeliveryType] = useState<DeliveryType>("yetkazish");
   const [branchId, setBranchId] = useState("");
   const [payment, setPayment] = useState<PaymentMethod>("naqd");
+  const [card, setCard] = useState("");
   const [deliveryFeeSetting, setDeliveryFeeSetting] = useState(15000);
 
   useEffect(() => {
@@ -86,6 +88,12 @@ export default function DeliveryInfoPage() {
           )}
 
           <PaymentMethodGrid value={payment} onChange={setPayment} />
+
+          {payment === "karta" && (
+            <div className="rounded-2xl border border-border bg-surface p-4">
+              <CardNumberField value={card} onChange={setCard} />
+            </div>
+          )}
         </div>
 
         <aside className="h-fit rounded-2xl border border-border bg-surface p-5">
