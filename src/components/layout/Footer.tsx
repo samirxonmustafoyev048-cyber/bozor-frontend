@@ -107,27 +107,6 @@ export default async function Footer() {
             bilan
           </p>
         </div>
-        {/* The hero photo is CC BY 2.0, which only allows use with a credit. */}
-        <div className="mx-auto max-w-7xl px-4 pb-4 text-[11px] text-muted/70 sm:px-6">
-          Bosh sahifadagi rasm:{" "}
-          <a
-            href="https://www.flickr.com/photos/50310535@N03/5003036427"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline hover:text-brand-700"
-          >
-            &quot;Apple Harvest&quot; — Steenbergs
-          </a>
-          ,{" "}
-          <a
-            href="https://creativecommons.org/licenses/by/2.0/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline hover:text-brand-700"
-          >
-            CC BY 2.0
-          </a>
-        </div>
       </div>
     </footer>
   );

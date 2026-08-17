@@ -73,7 +73,18 @@ body {
   isolation: isolate;
 }
 
-/* Hero banner motion. */
+/* Hero banner motion. Each fruit passes its own --dur/--delay/--tilt so the
+   group drifts out of step instead of pulsing together. */
+@keyframes hero-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(var(--tilt, 6deg));
+  }
+}
+
 @keyframes hero-phone {
   0%,
   100% {
@@ -92,8 +103,13 @@ body {
   animation: hero-phone 6.5s ease-in-out infinite;
 }
 
+.hero-float {
+  animation: hero-float var(--dur, 7s) ease-in-out var(--delay, 0s) infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .hero-phone {
+  .hero-phone,
+  .hero-float {
     animation: none;
   }
 }
