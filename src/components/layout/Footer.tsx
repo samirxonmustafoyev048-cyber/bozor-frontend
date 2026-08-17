@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Send, Camera, ThumbsUp, Heart } from "lucide-react";
+import { Send, Camera, ThumbsUp, Heart, Phone, Mail, MapPin } from "lucide-react";
 import { getSettings } from "@/lib/api";
 
 const columns = [
@@ -34,7 +34,7 @@ export default async function Footer() {
 
   return (
     <footer className="mt-auto border-t border-border bg-surface">
-      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-4 py-10 sm:px-6 md:grid-cols-5">
+      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-4 py-10 sm:px-6 md:grid-cols-6">
         <div className="col-span-2">
           <span className="text-xl font-extrabold tracking-tight text-brand-700">
             Olma Market
@@ -96,6 +96,28 @@ export default async function Footer() {
             </ul>
           </div>
         ))}
+
+        <div>
+          <h3 className="text-sm font-semibold text-foreground">Aloqa</h3>
+          <ul className="mt-3 space-y-2 text-sm text-muted">
+            <li>
+              <a href="tel:+998712002233" className="flex items-start gap-2 hover:text-brand-700">
+                <Phone aria-hidden className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                +998 71 200 22 33
+              </a>
+            </li>
+            <li>
+              <a href="mailto:info@olmamarket.uz" className="flex items-start gap-2 hover:text-brand-700">
+                <Mail aria-hidden className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                info@olmamarket.uz
+              </a>
+            </li>
+            <li className="flex items-start gap-2">
+              <MapPin aria-hidden className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+              Toshkent, O&apos;zbekiston
+            </li>
+          </ul>
+        </div>
       </div>
 
       <div className="border-t border-border">

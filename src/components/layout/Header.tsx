@@ -13,6 +13,7 @@ import {
   Newspaper,
 } from "lucide-react";
 import CartIndicator from "@/components/cart/CartIndicator";
+import CartSummary from "@/components/cart/CartSummary";
 import WishlistIndicator from "@/components/product/WishlistIndicator";
 import UserMenu from "@/components/layout/UserMenu";
 
@@ -43,9 +44,14 @@ export default function Header() {
           <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-600 text-white">
             <Apple aria-hidden className="h-5 w-5" />
           </span>
-          <span className="text-lg font-extrabold tracking-tight sm:text-xl">
-            <span className="text-brand-600">Olma</span>{" "}
-            <span className="text-sky-600">Market</span>
+          <span>
+            <span className="block text-lg font-extrabold leading-none tracking-tight sm:text-xl">
+              <span className="text-brand-600">Olma</span>{" "}
+              <span className="text-sky-600">Market</span>
+            </span>
+            <span className="hidden text-[10px] text-muted sm:block">
+              Toza, sifatli va qulay
+            </span>
           </span>
         </Link>
 
@@ -54,7 +60,7 @@ export default function Header() {
           className="hidden shrink-0 items-center gap-1.5 rounded-full bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 sm:flex"
         >
           <LayoutGrid aria-hidden className="h-4 w-4" />
-          Katalog
+          Kategoriyalar
         </Link>
 
         <form
@@ -64,7 +70,7 @@ export default function Header() {
           <input
             type="search"
             name="q"
-            placeholder="Mahsulotlarni qidirish..."
+            placeholder="Mahsulot yoki kategoriya qidirish..."
             className="w-full min-w-0 bg-transparent px-2 text-sm outline-none placeholder:text-muted"
           />
           <button
@@ -77,6 +83,20 @@ export default function Header() {
         </form>
 
         <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+          <Link
+            href="/yetkazib-berish"
+            className="hidden items-center gap-2 rounded-lg px-2 py-1 hover:bg-brand-50 xl:flex"
+          >
+            <Truck aria-hidden className="h-5 w-5 text-brand-600" />
+            <span className="text-left">
+              <span className="block text-xs font-semibold leading-tight text-foreground">
+                Yetkazib berish
+              </span>
+              <span className="block text-[11px] leading-tight text-muted">
+                2 soat ichida
+              </span>
+            </span>
+          </Link>
           <Link
             href="/sevimlilar"
             className="relative hidden flex-col items-center rounded-lg px-2 py-1 text-xs text-foreground hover:bg-brand-50 sm:flex"
@@ -93,6 +113,7 @@ export default function Header() {
             <span className="hidden sm:inline">Savat</span>
             <CartIndicator />
           </Link>
+          <CartSummary />
           <UserMenu />
         </div>
       </div>

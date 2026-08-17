@@ -1,4 +1,4 @@
-import { PackageOpen, Clock, ShieldCheck, Percent, type LucideIcon } from "lucide-react";
+import { Truck, ShieldCheck, Headset, Tag, type LucideIcon } from "lucide-react";
 
 const features: {
   icon: LucideIcon;
@@ -8,30 +8,30 @@ const features: {
   color: string;
 }[] = [
   {
-    icon: PackageOpen,
-    title: "Keng assortiment",
-    subtitle: "10 000+ mahsulot",
+    icon: Truck,
+    title: "Tez yetkazib berish",
+    subtitle: "Buyurtmangizni 2 soat ichida yetkazib beramiz",
     bg: "bg-brand-100",
     color: "text-brand-600",
   },
   {
-    icon: Clock,
-    title: "Tez yetkazib berish",
-    subtitle: "2 soat ichida",
+    icon: ShieldCheck,
+    title: "Sifat kafolati",
+    subtitle: "Faqat yangi va sifatli mahsulotlar",
     bg: "bg-sky-100",
     color: "text-sky-600",
   },
   {
-    icon: ShieldCheck,
-    title: "Ishonchli xizmat",
-    subtitle: "100% kafolat",
+    icon: Headset,
+    title: "24/7 qo'llab-quvvatlash",
+    subtitle: "Har doim siz bilan, tezkor yordam",
     bg: "bg-amber-100",
     color: "text-amber-600",
   },
   {
-    icon: Percent,
-    title: "Doimiy chegirmalar",
-    subtitle: "Eng yaxshi narxlar",
+    icon: Tag,
+    title: "Qulay narxlar",
+    subtitle: "Eng arzon narxlar bizda",
     bg: "bg-brand-100",
     color: "text-brand-600",
   },
