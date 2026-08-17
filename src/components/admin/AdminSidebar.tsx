@@ -12,6 +12,7 @@ import {
   Truck,
   Wallet,
   ScanLine,
+  Boxes as BoxesIcon,
   Tag,
   Image as ImageIcon,
   UserCog,
@@ -58,6 +59,7 @@ export default function AdminSidebar({
     { label: "Yetkazib berish", href: "/admin/yetkazib-berish", icon: Truck },
     { label: "To'lovlar", href: "/admin/tolovlar", icon: Wallet },
     { label: "Kassa", href: "/kassa", icon: ScanLine },
+    { label: "Ombor", href: "/ombor", icon: BoxesIcon },
     { label: "Chegirmalar", href: "/admin/chegirmalar", icon: Tag },
     { label: "Bannerlar", href: "/admin/bannerlar", icon: ImageIcon },
   ];

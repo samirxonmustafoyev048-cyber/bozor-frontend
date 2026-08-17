@@ -1,4 +1,4 @@
-import type { AuthResponse, Branch, Category, Order, OrderStatus, Product, User } from "@/types/product";
+import type { AuthResponse, Branch, Category, Order, OrderStatus, Product, Role, User } from "@/types/product";
 
 export class ApiError extends Error {
   status: number;
@@ -764,11 +764,59 @@ export function adminClearAuditLogs(
 export function adminUpdateUserRole(
   accessToken: string,
   id: string,
-  role: "USER" | "ADMIN"
+  role: Role
 ): Promise<AdminUser> {
   return apiFetch<AdminUser>(`/users/${id}/role`, {
     method: "PATCH",
     body: JSON.stringify({ role }),
+    headers: authHeaders(accessToken),
+  });
+}
+
+export type StockMovementType = "KIRIM" | "CHIQIM" | "TUZATISH";
+
+export interface StockOverview {
+  lowStockThreshold: number;
+  outOfStock: number;
+  lowStock: number;
+  totalUnits: number;
+  products: Product[];
+}
+
+export interface StockMovement {
+  id: string;
+  type: StockMovementType;
+  quantity: number;
+  stockAfter: number;
+  reason: string | null;
+  actorName: string;
+  createdAt: string;
+  product: { name: string; unit: string };
+}
+
+export function getStockOverview(
+  accessToken: string,
+  search?: string
+): Promise<StockOverview> {
+  return apiFetch<StockOverview>(`/stock${toQueryString({ q: search })}`, {
+    headers: authHeaders(accessToken),
+  });
+}
+
+export function getStockMovements(accessToken: string): Promise<StockMovement[]> {
+  return apiFetch<StockMovement[]>("/stock/movements", {
+    headers: authHeaders(accessToken),
+  });
+}
+
+export function adjustStock(
+  accessToken: string,
+  productId: string,
+  payload: { type: StockMovementType; quantity: number; reason?: string }
+): Promise<Product> {
+  return apiFetch<Product>(`/stock/${productId}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
     headers: authHeaders(accessToken),
   });
 }

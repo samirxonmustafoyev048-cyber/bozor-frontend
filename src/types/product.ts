@@ -25,7 +25,7 @@ export interface Product {
   category: Category;
 }
 
-export type Role = "USER" | "ADMIN";
+export type Role = "USER" | "ADMIN" | "KASSIR" | "OMBORCHI";
 
 export interface User {
   id: string;

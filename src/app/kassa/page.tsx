@@ -160,7 +160,7 @@ export default function CashierPage() {
 
   if (!isLoaded) return null;
 
-  if (!auth || auth.user.role !== "ADMIN") {
+  if (!auth || !["ADMIN", "KASSIR"].includes(auth.user.role)) {
     return (
       <div className="mx-auto flex max-w-md flex-col items-center gap-4 px-4 py-20 text-center sm:px-6">
         <h1 className="text-xl font-bold text-foreground">

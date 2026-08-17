@@ -1,34 +1,39 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Shield, UserCog, Check, X } from "lucide-react";
+import { Shield, UserCog, ScanLine, Boxes, Check, X } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { adminGetUsers, adminUpdateUserRole, type AdminUser } from "@/lib/api";
 import { formatDate } from "@/lib/format";
 import type { Role } from "@/types/product";
 
-/**
- * The API enforces access with a single ADMIN/USER flag, so this matrix
- * documents what that flag actually unlocks rather than inventing a
- * finer-grained permission model the backend does not have.
- */
-const PERMISSIONS: { label: string; user: boolean; admin: boolean }[] = [
-  { label: "Katalogni ko'rish va xarid qilish", user: true, admin: true },
-  { label: "O'z buyurtmalarini kuzatish", user: true, admin: true },
-  { label: "Profilni tahrirlash", user: true, admin: true },
-  { label: "Barcha buyurtmalarni ko'rish va holatini o'zgartirish", user: false, admin: true },
-  { label: "Mahsulot va kategoriyalarni boshqarish", user: false, admin: true },
-  { label: "Filiallar va yetkazib berishni boshqarish", user: false, admin: true },
-  { label: "Chegirma va bannerlarni boshqarish", user: false, admin: true },
-  { label: "To'lovlarni ko'rish", user: false, admin: true },
-  { label: "Foydalanuvchi rollarini o'zgartirish", user: false, admin: true },
-  { label: "Tizim loglari va sozlamalar", user: false, admin: true },
-];
+const ROLES: Role[] = ["USER", "KASSIR", "OMBORCHI", "ADMIN"];
 
 const ROLE_LABELS: Record<Role, string> = {
-  ADMIN: "Administrator",
   USER: "Foydalanuvchi",
+  KASSIR: "Kassir",
+  OMBORCHI: "Omborchi",
+  ADMIN: "Administrator",
 };
+
+/**
+ * Mirrors what the backend guards actually enforce — each row lists the roles
+ * whose endpoints allow it — so the table cannot drift into promising a
+ * finer-grained model than exists.
+ */
+const PERMISSIONS: { label: string; roles: Role[] }[] = [
+  { label: "Katalogni ko'rish va xarid qilish", roles: ROLES },
+  { label: "O'z buyurtmalarini kuzatish", roles: ROLES },
+  { label: "Profilni tahrirlash", roles: ROLES },
+  { label: "Kassada sotuv rasmiylashtirish", roles: ["KASSIR", "ADMIN"] },
+  { label: "Ombor zaxirasini o'zgartirish", roles: ["OMBORCHI", "ADMIN"] },
+  { label: "Zaxira harakatlari tarixini ko'rish", roles: ["OMBORCHI", "ADMIN"] },
+  { label: "Barcha buyurtmalarni ko'rish va holatini o'zgartirish", roles: ["ADMIN"] },
+  { label: "Mahsulot va kategoriyalarni boshqarish", roles: ["ADMIN"] },
+  { label: "Chegirma va bannerlarni boshqarish", roles: ["ADMIN"] },
+  { label: "Foydalanuvchi rollarini o'zgartirish", roles: ["ADMIN"] },
+  { label: "Tizim loglari va sozlamalar", roles: ["ADMIN"] },
+];
 
 export default function AdminRolesPage() {
   const { auth } = useAuth();
@@ -61,7 +66,8 @@ export default function AdminRolesPage() {
     }
   }
 
-  const adminCount = users.filter((u) => u.role === "ADMIN").length;
+  const countOf = (role: Role) => users.filter((u) => u.role === role).length;
+  const adminCount = countOf("ADMIN");
 
   return (
     <div className="flex flex-col gap-6">
@@ -74,20 +80,34 @@ export default function AdminRolesPage() {
         </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <RoleCard
-          icon={Shield}
-          title="Administrator"
-          description="Admin panelga to'liq kirish huquqi. Barcha ma'lumotlarni ko'radi va o'zgartiradi."
-          count={adminCount}
-          accent="bg-brand-100 text-brand-600"
-        />
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <RoleCard
           icon={UserCog}
           title="Foydalanuvchi"
           description="Oddiy mijoz. Faqat o'z buyurtmalari va profilini boshqaradi."
-          count={users.length - adminCount}
+          count={countOf("USER")}
           accent="bg-sky-100 text-sky-600"
+        />
+        <RoleCard
+          icon={ScanLine}
+          title="Kassir"
+          description="Kassa panelida sotuv rasmiylashtiradi. Admin panelga kira olmaydi."
+          count={countOf("KASSIR")}
+          accent="bg-amber-100 text-amber-600"
+        />
+        <RoleCard
+          icon={Boxes}
+          title="Omborchi"
+          description="Zaxirani boshqaradi: kirim, chiqim va inventarizatsiya."
+          count={countOf("OMBORCHI")}
+          accent="bg-violet-100 text-violet-600"
+        />
+        <RoleCard
+          icon={Shield}
+          title="Administrator"
+          description="Admin panelga to'liq kirish huquqi. Barcha ma'lumotlarni ko'radi va o'zgartiradi."
+          count={countOf("ADMIN")}
+          accent="bg-brand-100 text-brand-600"
         />
       </div>
 
@@ -96,24 +116,26 @@ export default function AdminRolesPage() {
           Ruxsatlar jadvali
         </h2>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[520px] text-sm">
+          <table className="w-full min-w-[680px] text-sm">
             <thead>
               <tr className="border-b border-border text-xs text-muted">
                 <th className="px-5 py-3 text-left font-medium">Ruxsat</th>
-                <th className="px-5 py-3 text-center font-medium">Foydalanuvchi</th>
-                <th className="px-5 py-3 text-center font-medium">Administrator</th>
+                {ROLES.map((role) => (
+                  <th key={role} className="px-4 py-3 text-center font-medium">
+                    {ROLE_LABELS[role]}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
               {PERMISSIONS.map((permission) => (
                 <tr key={permission.label} className="border-b border-border last:border-0">
                   <td className="px-5 py-3 text-foreground">{permission.label}</td>
-                  <td className="px-5 py-3 text-center">
-                    <PermissionMark allowed={permission.user} />
-                  </td>
-                  <td className="px-5 py-3 text-center">
-                    <PermissionMark allowed={permission.admin} />
-                  </td>
+                  {ROLES.map((role) => (
+                    <td key={role} className="px-4 py-3 text-center">
+                      <PermissionMark allowed={permission.roles.includes(role)} />
+                    </td>
+                  ))}
                 </tr>
               ))}
             </tbody>
@@ -178,8 +200,11 @@ export default function AdminRolesPage() {
                             : "border-border bg-background text-muted"
                         }`}
                       >
-                        <option value="USER">{ROLE_LABELS.USER}</option>
-                        <option value="ADMIN">{ROLE_LABELS.ADMIN}</option>
+                        {ROLES.map((role) => (
+                          <option key={role} value={role}>
+                            {ROLE_LABELS[role]}
+                          </option>
+                        ))}
                       </select>
                     </td>
                   </tr>

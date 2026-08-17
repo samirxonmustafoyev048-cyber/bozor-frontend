@@ -9,9 +9,19 @@ import {
   ClipboardList,
   Heart,
   Settings,
+  ScanLine,
+  Boxes,
   LogOut,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import type { Role } from "@/types/product";
+
+const ROLE_LABELS: Record<Role, string> = {
+  USER: "Foydalanuvchi",
+  KASSIR: "Kassir",
+  OMBORCHI: "Omborchi",
+  ADMIN: "Administrator",
+};
 
 export default function UserMenu() {
   const { auth, isLoaded, logout } = useAuth();
@@ -60,6 +70,8 @@ export default function UserMenu() {
   }
 
   const isAdmin = auth.user.role === "ADMIN";
+  const canUseTill = isAdmin || auth.user.role === "KASSIR";
+  const canUseWarehouse = isAdmin || auth.user.role === "OMBORCHI";
   const firstName = auth.user.name.split(" ")[0];
   const initial = auth.user.name.slice(0, 1).toUpperCase();
 
@@ -109,9 +121,9 @@ export default function UserMenu() {
             </span>
           </div>
 
-          {isAdmin && (
+          {auth.user.role !== "USER" && (
             <span className="block bg-brand-50 px-4 py-1.5 text-[11px] font-semibold text-brand-700">
-              Administrator
+              {ROLE_LABELS[auth.user.role]}
             </span>
           )}
 
@@ -129,6 +141,16 @@ export default function UserMenu() {
             <MenuLink href="/sevimlilar" icon={Heart} onNavigate={() => setOpen(false)}>
               Sevimlilar
             </MenuLink>
+            {canUseTill && (
+              <MenuLink href="/kassa" icon={ScanLine} onNavigate={() => setOpen(false)}>
+                Kassa paneli
+              </MenuLink>
+            )}
+            {canUseWarehouse && (
+              <MenuLink href="/ombor" icon={Boxes} onNavigate={() => setOpen(false)}>
+                Ombor paneli
+              </MenuLink>
+            )}
             {isAdmin && (
               <MenuLink href="/admin" icon={Settings} onNavigate={() => setOpen(false)}>
                 Admin panel
