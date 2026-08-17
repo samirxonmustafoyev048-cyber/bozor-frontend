@@ -10,10 +10,13 @@ export const metadata: Metadata = {
     "O'zbekiston bo'ylab joylashgan Olma Market filiallari: manzillar va xaritada yo'nalish.",
 };
 
-export const revalidate = 300;
+// Branch names, addresses and photos are edited from the admin panel, so a
+// five-minute window made a fresh edit look like it had not saved. A minute
+// keeps the page cheap to serve without that confusion.
+export const revalidate = 60;
 
 export default async function BranchesPage() {
-  const branches = await getBranches({ revalidate: 300 });
+  const branches = await getBranches({ revalidate: 60 });
 
   return (
     <section className="relative overflow-hidden bg-[#0b2417] py-12 sm:py-16">
