@@ -42,6 +42,7 @@ export default function AdminBranchesPage() {
     setForm({
       name: b.name,
       address: b.address,
+      imageUrl: b.imageUrl ?? undefined,
       lat: b.lat ?? undefined,
       lng: b.lng ?? undefined,
     });
@@ -51,10 +52,11 @@ export default function AdminBranchesPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!auth) return;
+    const payload = { ...form, imageUrl: form.imageUrl?.trim() || undefined };
     if (editingId) {
-      await adminUpdateBranch(auth.accessToken, editingId, form);
+      await adminUpdateBranch(auth.accessToken, editingId, payload);
     } else {
-      await adminCreateBranch(auth.accessToken, form);
+      await adminCreateBranch(auth.accessToken, payload);
     }
     setShowForm(false);
     loadBranches();
@@ -102,6 +104,12 @@ export default function AdminBranchesPage() {
             value={form.address}
             onChange={(e) => setForm({ ...form, address: e.target.value })}
             className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
+          />
+          <input
+            placeholder="Bino rasmi manzili (ixtiyoriy)"
+            value={form.imageUrl ?? ""}
+            onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
+            className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500 sm:col-span-2"
           />
           <input
             type="number"

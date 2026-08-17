@@ -46,6 +46,7 @@ export interface Branch {
   id: string;
   name: string;
   address: string;
+  imageUrl: string | null;
   lat: number | null;
   lng: number | null;
 }

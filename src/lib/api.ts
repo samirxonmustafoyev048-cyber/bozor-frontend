@@ -503,6 +503,7 @@ export function adminDeleteCategory(accessToken: string, id: string): Promise<{ 
 export interface BranchPayload {
   name: string;
   address: string;
+  imageUrl?: string;
   lat?: number;
   lng?: number;
 }
