@@ -58,7 +58,7 @@ export default function AdminOrdersPage() {
                 <td className="px-3 py-2 font-medium text-foreground">
                   {o.orderNumber}
                 </td>
-                <td className="px-3 py-2 text-muted">{o.phone}</td>
+                <td className="px-3 py-2 text-muted">{o.phone ?? "—"}</td>
                 <td className="px-3 py-2">{formatSom(o.totalPrice)}</td>
                 <td className="px-3 py-2 text-muted">
                   {o.paymentMethod}

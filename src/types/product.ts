@@ -75,7 +75,7 @@ export interface Order {
   status: OrderStatus;
   deliveryType: DeliveryType;
   address: string | null;
-  phone: string;
+  phone: string | null;
   paymentMethod: PaymentMethod;
   deliveryFee: number;
   totalPrice: number;

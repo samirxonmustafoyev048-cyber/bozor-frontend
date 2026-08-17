@@ -382,6 +382,25 @@ export function adminGetOrders(accessToken: string): Promise<Order[]> {
   return apiFetch<Order[]>("/orders", { headers: authHeaders(accessToken) });
 }
 
+export interface PosSalePayload {
+  items: { productId: string; quantity: number }[];
+  paymentMethod: "NAQD" | "KARTA" | "PAYME" | "CLICK";
+  branchId?: string;
+  phone?: string;
+}
+
+/** Rings up an in-store sale: already paid, no delivery, closed immediately. */
+export function createPosSale(
+  accessToken: string,
+  payload: PosSalePayload
+): Promise<Order> {
+  return apiFetch<Order>("/orders/pos", {
+    method: "POST",
+    body: JSON.stringify(payload),
+    headers: authHeaders(accessToken),
+  });
+}
+
 export function adminUpdateOrderStatus(
   accessToken: string,
   orderId: string,
