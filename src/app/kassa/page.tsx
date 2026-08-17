@@ -23,6 +23,14 @@ import {
 } from "@/lib/api";
 import { formatSom } from "@/lib/format";
 import { PHONE_LENGTH, isValidPhone, toApiPhone, toPhoneDigits } from "@/lib/phone";
+import {
+  CARD_LENGTH,
+  cardBrandLabel,
+  cardLast4,
+  formatCard,
+  isValidCard,
+  toCardDigits,
+} from "@/lib/card";
 import ProductImage from "@/components/product/ProductImage";
 import type { Branch, Category, Order, Product } from "@/types/product";
 
@@ -49,6 +57,7 @@ export default function CashierPage() {
   const [payMethod, setPayMethod] = useState<PayMethod>("NAQD");
   const [received, setReceived] = useState(0);
   const [phone, setPhone] = useState("");
+  const [card, setCard] = useState("");
   const [branchId, setBranchId] = useState("");
 
   const [submitting, setSubmitting] = useState(false);
@@ -114,6 +123,7 @@ export default function CashierPage() {
     setLines([]);
     setReceived(0);
     setPhone("");
+    setCard("");
     setError(null);
   }
 
@@ -133,7 +143,7 @@ export default function CashierPage() {
   const canSubmit =
     lines.length > 0 &&
     !submitting &&
-    (payMethod === "KARTA" || received >= total) &&
+    (payMethod === "KARTA" ? isValidCard(card) : received >= total) &&
     (phone.length === 0 || isValidPhone(phone));
 
   async function handleCheckout() {
@@ -146,6 +156,8 @@ export default function CashierPage() {
       paymentMethod: payMethod,
       branchId: branchId || undefined,
       phone: phone ? toApiPhone(phone) : undefined,
+      // Only the last four digits travel; the full number stays in this form.
+      cardLast4: payMethod === "KARTA" ? cardLast4(card) : undefined,
     };
 
     try {
@@ -429,6 +441,38 @@ export default function CashierPage() {
               </div>
             )}
 
+            {payMethod === "KARTA" && (
+              <div className="mt-3">
+                <label className="text-xs font-medium text-muted">
+                  Karta raqami
+                  <input
+                    inputMode="numeric"
+                    autoComplete="off"
+                    value={formatCard(card)}
+                    onChange={(e) => setCard(toCardDigits(e.target.value))}
+                    placeholder="8600 0000 0000 0000"
+                    className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 font-mono text-sm tracking-wider outline-none focus:border-brand-500"
+                  />
+                </label>
+                <p className="mt-1 flex items-center justify-between text-[11px]">
+                  <span className="font-semibold text-brand-700">
+                    {card.length >= 4 ? cardBrandLabel(card) : " "}
+                  </span>
+                  <span
+                    className={
+                      isValidCard(card) ? "text-muted" : "text-danger-600"
+                    }
+                  >
+                    {card.length}/{CARD_LENGTH}
+                  </span>
+                </p>
+                <p className="mt-1 text-[11px] text-muted/70">
+                  To&apos;liq raqam saqlanmaydi — cheklarda faqat oxirgi 4 raqam
+                  qoladi.
+                </p>
+              </div>
+            )}
+
             <label className="mt-3 block text-xs font-medium text-muted">
               Mijoz telefoni (ixtiyoriy)
               <span className="mt-1 flex items-center rounded-lg border border-border bg-background px-3 py-2 focus-within:border-brand-500">
@@ -495,6 +539,14 @@ export default function CashierPage() {
                 {formatSom(receipt.totalPrice)}
               </span>
             </div>
+            {payMethod === "KARTA" && receipt.cardLast4 && (
+              <div className="mt-1 flex items-center justify-between text-sm text-muted">
+                <span>Karta</span>
+                <span className="font-mono font-semibold">
+                  •••• {receipt.cardLast4}
+                </span>
+              </div>
+            )}
             {payMethod === "NAQD" && change > 0 && (
               <div className="mt-1 flex items-center justify-between text-sm text-muted">
                 <span>Qaytim</span>

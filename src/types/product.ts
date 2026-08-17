@@ -79,6 +79,7 @@ export interface Order {
   paymentMethod: PaymentMethod;
   deliveryFee: number;
   totalPrice: number;
+  cardLast4: string | null;
   paid: boolean;
   paidAt: string | null;
   createdAt: string;

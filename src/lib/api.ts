@@ -387,6 +387,8 @@ export interface PosSalePayload {
   paymentMethod: "NAQD" | "KARTA" | "PAYME" | "CLICK";
   branchId?: string;
   phone?: string;
+  /** Last four digits only — never the full card number. */
+  cardLast4?: string;
 }
 
 /** Rings up an in-store sale: already paid, no delivery, closed immediately. */
