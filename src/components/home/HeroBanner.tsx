@@ -28,7 +28,7 @@ const badges: { icon: LucideIcon; title: string; subtitle: string }[] = [
   { icon: Headset, title: "24/7", subtitle: "qo'llab-quvvatlash" },
 ];
 
-// Labels are kept to one short word: the tile is ~38px wide, so anything
+// Labels are kept to one short word: the tile is ~40px wide, so anything
 // longer wrapped into unreadable slivers.
 const miniCategories: { icon: LucideIcon; label: string }[] = [
   { icon: Apple, label: "Meva" },
@@ -47,8 +47,8 @@ const phoneProducts = [
 const phoneTabs: LucideIcon[] = [Home, LayoutGrid, ShoppingCart, Heart, User];
 
 /**
- * Decorative cut-outs scattered around the basket. Positions are percentages of
- * the illustration column, and each drifts on its own cycle so the group never
+ * Cut-outs scattered around the basket. Positions are percentages of the
+ * illustration column, and each drifts on its own cycle so the group never
  * pulses in unison.
  */
 const fruits: {
@@ -62,63 +62,74 @@ const fruits: {
 }[] = [
   {
     src: "/hero/qulupnay.webp", width: 131, height: 160,
-    className: "left-[42%] top-[1%] w-9 sm:w-11",
+    className: "left-[38%] top-0 w-8 sm:w-10",
     duration: "7s", delay: "0s", tilt: "10deg",
   },
   {
     src: "/hero/olma-yashil.webp", width: 155, height: 160,
-    className: "right-[6%] top-[6%] hidden w-10 sm:block sm:w-12",
+    className: "left-[2%] top-[26%] hidden w-9 sm:block sm:w-11",
     duration: "8.5s", delay: "-1.4s", tilt: "-7deg",
   },
   {
     src: "/hero/mandarin.webp", width: 96, height: 160,
-    className: "left-[4%] top-[30%] hidden w-8 lg:block lg:w-10",
+    className: "right-[2%] top-[10%] hidden w-8 lg:block lg:w-10",
     duration: "9s", delay: "-2.6s", tilt: "8deg",
   },
   {
     src: "/hero/olma-yashil.webp", width: 155, height: 160,
-    className: "bottom-[2%] left-[30%] w-10 sm:w-14",
+    className: "bottom-[1%] left-[36%] w-11 sm:w-16",
     duration: "6.8s", delay: "-3.2s", tilt: "6deg",
   },
   {
     src: "/hero/olma-qizil.webp", width: 145, height: 160,
-    className: "bottom-[16%] right-[2%] hidden w-9 sm:block sm:w-11",
+    className: "bottom-[24%] right-[1%] hidden w-9 sm:block sm:w-11",
     duration: "7.8s", delay: "-1.9s", tilt: "-11deg",
   },
 ];
 
 export default function HeroBanner() {
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-white via-brand-50/40 to-brand-50">
-      {/* Soft organic wash in the lower right, mirroring the mock-up */}
+    <div className="relative overflow-hidden rounded-3xl bg-white">
+      {/* Background build-up, back to front: a green field anchored to the
+          right, a mint floor the basket sits on, and a dot grid in the
+          corner — the three shapes the mock-up is built from. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -bottom-24 -right-16 h-80 w-[42rem] rounded-full bg-gradient-to-tr from-brand-200/50 to-brand-100/20 blur-2xl"
+        className="pointer-events-none absolute -right-32 -top-24 hidden h-[130%] w-[62%] rotate-12 rounded-[6rem] bg-gradient-to-br from-brand-100 via-brand-200/70 to-brand-300/60 lg:block"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -left-20 top-8 h-64 w-64 rounded-full bg-sky-100/40 blur-3xl"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-brand-100/70 via-brand-50/40 to-transparent"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute bottom-8 right-10 hidden h-24 w-32 lg:block"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle, rgba(22,163,74,0.28) 1.6px, transparent 1.6px)",
+          backgroundSize: "13px 13px",
+        }}
       />
 
-      <div className="relative z-10 grid gap-8 px-6 py-10 sm:px-10 sm:py-12 lg:grid-cols-[1fr_1.15fr] lg:items-center lg:gap-4">
+      <div className="relative z-10 grid gap-8 px-6 py-10 sm:px-10 sm:py-12 lg:grid-cols-[0.82fr_1.18fr] lg:items-center lg:gap-2">
         <div className="text-center lg:text-left">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-brand-700">
             <BadgeCheck aria-hidden className="h-3.5 w-3.5" />
             Sifat • Tezlik • Ishonch
           </span>
 
-          <h1 className="mt-4 text-3xl font-extrabold leading-[1.15] text-foreground sm:text-4xl lg:text-[2.75rem]">
+          <h1 className="mt-4 text-3xl font-extrabold leading-[1.12] text-foreground sm:text-4xl lg:text-[2.9rem]">
             <span className="text-brand-600">Olma</span>{" "}
             <span className="text-sky-600">Market</span> –
             <br className="hidden sm:block" /> Xarid qilishning eng oson
             yo&apos;li!
           </h1>
 
-          <p className="mt-3 max-w-md text-sm text-muted sm:text-base lg:mx-0">
+          <p className="mt-3 max-w-sm text-sm text-muted sm:text-base lg:mx-0">
             Sifatli mahsulotlar, qulay narxlar va tez yetkazib berish xizmati.
           </p>
 
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-4 lg:justify-start">
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-4 lg:justify-start">
             {badges.map((b) => (
               <div key={b.subtitle} className="flex items-center gap-2">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-brand-600 shadow-sm ring-1 ring-brand-100">
@@ -148,12 +159,12 @@ export default function HeroBanner() {
         </div>
 
         {/* Basket + handset */}
-        <div className="relative mx-auto h-80 w-full max-w-sm sm:h-96 lg:h-[26rem] lg:max-w-none">
+        <div className="relative mx-auto h-80 w-full max-w-sm sm:h-[26rem] lg:h-[30rem] lg:max-w-none">
           {fruits.map((fruit, i) => (
             <span
               key={`${fruit.src}-${i}`}
               aria-hidden
-              className={`hero-float pointer-events-none absolute z-20 select-none ${fruit.className}`}
+              className={`hero-float pointer-events-none absolute z-30 select-none ${fruit.className}`}
               style={
                 {
                   "--dur": fruit.duration,
@@ -176,7 +187,8 @@ export default function HeroBanner() {
             </span>
           ))}
 
-          <div className="absolute bottom-0 left-0 h-[92%] w-[78%] sm:w-[74%]">
+          {/* Sits in front of the handset, as in the mock-up */}
+          <div className="absolute bottom-0 left-0 z-20 h-[88%] w-[68%] sm:w-[64%]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/hero/savat.webp"
@@ -190,15 +202,14 @@ export default function HeroBanner() {
             />
           </div>
 
-          {/* Round call-out riding the basket's top-left shoulder */}
-          <span className="absolute left-[6%] top-[6%] z-30 hidden h-24 w-24 flex-col items-center justify-center rounded-full bg-sky-500 text-center text-white shadow-xl sm:flex">
+          <span className="absolute left-[26%] top-[4%] z-30 hidden h-24 w-24 flex-col items-center justify-center rounded-full bg-sky-500 text-center text-white shadow-xl sm:flex">
             <Heart aria-hidden className="h-4 w-4" />
             <span className="mt-1 px-2 text-[10px] font-bold leading-tight">
               Yangi mahsulotlar har kuni!
             </span>
           </span>
 
-          <div className="hero-phone absolute bottom-2 right-0 z-20 h-72 w-36 rounded-[1.6rem] border-4 border-neutral-900 bg-neutral-900 shadow-2xl sm:h-80 sm:w-40">
+          <div className="hero-phone absolute bottom-4 right-0 z-10 h-72 w-36 rounded-[1.6rem] border-4 border-neutral-900 bg-neutral-900 shadow-2xl sm:h-[21rem] sm:w-40 lg:h-[24rem] lg:w-48">
             <div className="flex h-full w-full flex-col overflow-hidden rounded-[1.2rem] bg-white">
               <div className="flex items-center justify-between bg-brand-600 px-2 py-1.5">
                 <span className="flex items-center gap-1 text-[9px] font-bold text-white">
@@ -254,7 +265,7 @@ export default function HeroBanner() {
                       height={64}
                       fetchPriority="low"
                       decoding="async"
-                      className="h-6 w-6 object-contain"
+                      className="h-7 w-7 object-contain"
                     />
                     <p className="mt-0.5 text-[6px] font-medium leading-tight text-neutral-700">
                       {p.name}
