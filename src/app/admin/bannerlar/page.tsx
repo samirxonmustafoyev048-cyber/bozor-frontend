@@ -11,6 +11,7 @@ import {
   type Banner,
   type BannerPayload,
 } from "@/lib/api";
+import Modal from "@/components/admin/Modal";
 
 const emptyForm: BannerPayload = {
   title: "",
@@ -138,15 +139,13 @@ export default function AdminBannersPage() {
         </button>
       </div>
 
-      {showForm && (
-        <form
-          onSubmit={handleSubmit}
-          className="grid gap-3 rounded-2xl border border-border bg-surface p-5 sm:grid-cols-2 sm:p-6"
-        >
-          <h2 className="font-bold text-foreground sm:col-span-2">
-            {editingId ? "Bannerni tahrirlash" : "Yangi banner"}
-          </h2>
-
+      <Modal
+        open={showForm}
+        onClose={() => setShowForm(false)}
+        title={editingId ? "Bannerni tahrirlash" : "Yangi banner"}
+        widthClassName="max-w-2xl"
+      >
+        <form onSubmit={handleSubmit} className="grid gap-3 sm:grid-cols-2">
           <label className="flex flex-col gap-1 text-xs font-medium text-muted">
             Sarlavha
             <input
@@ -240,7 +239,7 @@ export default function AdminBannersPage() {
             </button>
           </div>
         </form>
-      )}
+      </Modal>
 
       {loading ? (
         <p className="rounded-2xl border border-border bg-surface px-5 py-10 text-center text-sm text-muted">

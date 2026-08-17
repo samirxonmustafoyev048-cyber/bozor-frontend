@@ -13,6 +13,7 @@ import {
 import { formatSom } from "@/lib/format";
 import ProductImage from "@/components/product/ProductImage";
 import type { Category, Product } from "@/types/product";
+import Modal from "@/components/admin/Modal";
 
 const emptyForm: ProductPayload = {
   slug: "",
@@ -113,11 +114,13 @@ export default function AdminProductsPage() {
         </button>
       </div>
 
-      {showForm && (
-        <form
-          onSubmit={handleSubmit}
-          className="grid gap-3 rounded-lg border border-border bg-surface p-4 sm:grid-cols-2"
-        >
+      <Modal
+        open={showForm}
+        onClose={() => setShowForm(false)}
+        title={editingId ? "Mahsulotni tahrirlash" : "Yangi mahsulot"}
+        widthClassName="max-w-3xl"
+      >
+        <form onSubmit={handleSubmit} className="grid gap-3 sm:grid-cols-2">
           <input
             required
             placeholder="Slug (masalan: yangi-non)"
@@ -239,7 +242,7 @@ export default function AdminProductsPage() {
             </button>
           </div>
         </form>
-      )}
+      </Modal>
 
       <div className="overflow-x-auto rounded-lg border border-border">
         <table className="min-w-full divide-y divide-border text-sm">

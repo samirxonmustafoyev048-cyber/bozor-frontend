@@ -13,6 +13,7 @@ import {
   type Notification,
 } from "@/lib/api";
 import { formatRelativeTime } from "@/lib/format";
+import Modal from "@/components/admin/Modal";
 
 const inputClass =
   "rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500";
@@ -92,7 +93,7 @@ export default function AdminNotificationsPage() {
         </div>
         <button
           type="button"
-          onClick={() => setShowForm((v) => !v)}
+          onClick={() => setShowForm(true)}
           className="flex items-center gap-1.5 rounded-full bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700"
         >
           <Plus aria-hidden className="h-4 w-4" />
@@ -100,11 +101,13 @@ export default function AdminNotificationsPage() {
         </button>
       </div>
 
-      {showForm && (
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-3 rounded-2xl border border-border bg-surface p-5 sm:p-6"
-        >
+      <Modal
+        open={showForm}
+        onClose={() => setShowForm(false)}
+        title="Yangi xabarnoma"
+        widthClassName="max-w-lg"
+      >
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <input
             required
             placeholder="Sarlavha"
@@ -137,7 +140,7 @@ export default function AdminNotificationsPage() {
             </button>
           </div>
         </form>
-      )}
+      </Modal>
 
       <div className="flex flex-wrap items-center gap-2">
         <button

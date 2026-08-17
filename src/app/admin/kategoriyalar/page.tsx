@@ -11,6 +11,7 @@ import {
 } from "@/lib/api";
 import { getCategoryIcon } from "@/lib/category-icons";
 import type { Category } from "@/types/product";
+import Modal from "@/components/admin/Modal";
 
 const emptyForm: CategoryPayload = { slug: "", name: "", icon: "" };
 
@@ -82,11 +83,13 @@ export default function AdminCategoriesPage() {
         </button>
       </div>
 
-      {showForm && (
-        <form
-          onSubmit={handleSubmit}
-          className="grid gap-3 rounded-lg border border-border bg-surface p-4 sm:grid-cols-3"
-        >
+      <Modal
+        open={showForm}
+        onClose={() => setShowForm(false)}
+        title={editingId ? "Kategoriyani tahrirlash" : "Yangi kategoriya"}
+        widthClassName="max-w-2xl"
+      >
+        <form onSubmit={handleSubmit} className="grid gap-3 sm:grid-cols-3">
           <input
             required
             placeholder="Slug"
@@ -127,7 +130,7 @@ export default function AdminCategoriesPage() {
             </button>
           </div>
         </form>
-      )}
+      </Modal>
 
       <ul className="flex flex-col gap-2">
         {categories.map((c) => (

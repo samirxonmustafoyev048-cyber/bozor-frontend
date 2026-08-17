@@ -12,6 +12,7 @@ import {
 } from "@/lib/api";
 import { googleMapsUrl } from "@/lib/maps";
 import type { Branch } from "@/types/product";
+import Modal from "@/components/admin/Modal";
 
 const emptyForm: BranchPayload = { name: "", address: "" };
 
@@ -81,11 +82,13 @@ export default function AdminBranchesPage() {
         </button>
       </div>
 
-      {showForm && (
-        <form
-          onSubmit={handleSubmit}
-          className="grid gap-3 rounded-lg border border-border bg-surface p-4 sm:grid-cols-2"
-        >
+      <Modal
+        open={showForm}
+        onClose={() => setShowForm(false)}
+        title={editingId ? "Filialni tahrirlash" : "Yangi filial"}
+        widthClassName="max-w-xl"
+      >
+        <form onSubmit={handleSubmit} className="grid gap-3 sm:grid-cols-2">
           <input
             required
             placeholder="Filial nomi"
@@ -136,7 +139,7 @@ export default function AdminBranchesPage() {
             </button>
           </div>
         </form>
-      )}
+      </Modal>
 
       <ul className="flex flex-col gap-2">
         {branches.map((b) => (
