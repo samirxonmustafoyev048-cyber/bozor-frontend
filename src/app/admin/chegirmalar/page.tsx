@@ -12,6 +12,7 @@ import {
   type PromoCodePayload,
 } from "@/lib/api";
 import { formatSom } from "@/lib/format";
+import Modal from "@/components/admin/Modal";
 
 const emptyForm: PromoCodePayload = {
   code: "",
@@ -146,15 +147,12 @@ export default function AdminPromoCodesPage() {
         <SummaryCard icon={Percent} label="Jami ishlatilgan" value={`${totalUses} marta`} />
       </div>
 
-      {showForm && (
-        <form
-          onSubmit={handleSubmit}
-          className="grid gap-3 rounded-2xl border border-border bg-surface p-5 sm:grid-cols-2 sm:p-6"
-        >
-          <h2 className="font-bold text-foreground sm:col-span-2">
-            {editingId ? "Chegirmani tahrirlash" : "Yangi chegirma"}
-          </h2>
-
+      <Modal
+        open={showForm}
+        onClose={() => setShowForm(false)}
+        title={editingId ? "Chegirmani tahrirlash" : "Yangi chegirma"}
+      >
+        <form onSubmit={handleSubmit} className="grid gap-3 sm:grid-cols-2">
           <label className="flex flex-col gap-1 text-xs font-medium text-muted">
             Promo-kod
             <input
@@ -255,7 +253,7 @@ export default function AdminPromoCodesPage() {
             </button>
           </div>
         </form>
-      )}
+      </Modal>
 
       <div className="overflow-hidden rounded-2xl border border-border bg-surface">
         <div className="overflow-x-auto">
