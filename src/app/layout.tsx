@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import SiteChrome from "@/components/layout/SiteChrome";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import { AuthProvider } from "@/context/AuthContext";
@@ -48,9 +49,9 @@ export default function RootLayout({
         <AuthProvider>
           <CartProvider>
             <WishlistProvider>
-              <Header />
-              <main className="flex-1">{children}</main>
-              <Footer />
+              <SiteChrome header={<Header />} footer={<Footer />}>
+                {children}
+              </SiteChrome>
             </WishlistProvider>
           </CartProvider>
         </AuthProvider>
