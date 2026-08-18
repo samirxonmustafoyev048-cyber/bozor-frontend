@@ -26,11 +26,20 @@ export default function Modal({
   const panelRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
 
+  // The pages pass an inline arrow for onClose, so its identity changes on
+  // every render — and the form state lives in the page, so that is every
+  // keystroke. Reading it from a ref keeps it out of the effect below, which
+  // must run when the dialog opens and not once per typed character.
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  });
+
   useEffect(() => {
     if (!open) return;
 
     function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") onCloseRef.current();
     }
     document.addEventListener("keydown", onKeyDown);
 
@@ -38,14 +47,18 @@ export default function Modal({
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
-    // Move focus in so keyboard users land inside the dialog, not behind it.
-    panelRef.current?.focus();
+    // Move focus in so keyboard users land inside the dialog, not behind it —
+    // on the first field where the typing starts, if the form has one.
+    const firstField = panelRef.current?.querySelector<HTMLElement>(
+      "input:not([type='hidden']), select, textarea"
+    );
+    (firstField ?? panelRef.current)?.focus();
 
     return () => {
       document.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = previousOverflow;
     };
-  }, [open, onClose]);
+  }, [open]);
 
   if (!open) return null;
 
