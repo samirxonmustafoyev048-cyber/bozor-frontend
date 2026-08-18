@@ -286,7 +286,7 @@ export default function CashierPage() {
         </div>
 
         {/* Current sale */}
-        <aside className="flex h-fit flex-col rounded-2xl border border-border bg-surface lg:sticky lg:top-24">
+        <aside className="flex h-fit flex-col rounded-2xl border border-border bg-surface lg:sticky lg:top-16">
           <div className="flex items-center justify-between border-b border-border px-4 py-3">
             <h2 className="font-bold text-foreground">Joriy sotuv</h2>
             {lines.length > 0 && (
