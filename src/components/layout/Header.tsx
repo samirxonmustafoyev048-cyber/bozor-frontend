@@ -17,15 +17,6 @@ import CartSummary from "@/components/cart/CartSummary";
 import WishlistIndicator from "@/components/product/WishlistIndicator";
 import UserMenu from "@/components/layout/UserMenu";
 
-const categories = [
-  { label: "Sut mahsulotlari", href: "/katalog/sut-mahsulotlari" },
-  { label: "Non va nonushta", href: "/katalog/non-va-nonushta" },
-  { label: "Go'sht va baliq", href: "/katalog/gosht-va-baliq" },
-  { label: "Sabzavot va meva", href: "/katalog/sabzavot-va-meva" },
-  { label: "Ichimliklar", href: "/katalog/ichimliklar" },
-  { label: "Uy-ro'zg'or", href: "/katalog/uy-rozgor" },
-];
-
 const navItems = [
   { label: "Aksiyalar", href: "/katalog?chegirma=true", icon: BadgePercent },
   { label: "Yetkazib berish", href: "/yetkazib-berish", icon: Truck },
@@ -118,7 +109,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Category nav */}
+      {/* Secondary nav */}
       <nav className="hidden border-t border-border md:block">
         <div className="mx-auto flex max-w-7xl items-center gap-6 overflow-x-auto px-4 py-2 text-sm sm:px-6">
           {navItems.map((item) => (
@@ -129,16 +120,6 @@ export default function Header() {
             >
               <item.icon aria-hidden className="h-3.5 w-3.5" />
               {item.label}
-            </Link>
-          ))}
-          <span className="h-4 w-px shrink-0 bg-border" />
-          {categories.map((cat) => (
-            <Link
-              key={cat.href}
-              href={cat.href}
-              className="whitespace-nowrap text-foreground/80 hover:text-brand-700"
-            >
-              {cat.label}
             </Link>
           ))}
         </div>
