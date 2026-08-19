@@ -13,6 +13,7 @@ import {
 } from "@/lib/api";
 import Modal from "@/components/admin/Modal";
 import ErrorBanner from "@/components/admin/ErrorBanner";
+import { DeleteButton, EditButton } from "@/components/admin/RowActions";
 import { errorMessage } from "@/lib/error-message";
 
 const emptyForm: BannerPayload = {
@@ -318,7 +319,7 @@ export default function AdminBannersPage() {
                 )}
               </div>
 
-              <div className="flex shrink-0 items-center gap-1">
+              <div className="flex shrink-0 flex-wrap items-center justify-end gap-1.5">
                 <IconButton
                   label="Yuqoriga"
                   icon={ArrowUp}
@@ -336,20 +337,8 @@ export default function AdminBannersPage() {
                   icon={banner.active ? EyeOff : Eye}
                   onClick={() => toggleActive(banner)}
                 />
-                <button
-                  type="button"
-                  onClick={() => startEdit(banner)}
-                  className="ml-1 text-xs font-medium text-brand-700 hover:underline"
-                >
-                  Tahrirlash
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleDelete(banner)}
-                  className="ml-3 text-xs font-medium text-danger-600 hover:underline"
-                >
-                  O&apos;chirish
-                </button>
+                <EditButton onClick={() => startEdit(banner)} />
+                <DeleteButton onClick={() => handleDelete(banner)} />
               </div>
             </li>
           ))}

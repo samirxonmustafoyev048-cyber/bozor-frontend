@@ -13,6 +13,7 @@ import { getCategoryIcon } from "@/lib/category-icons";
 import type { Category } from "@/types/product";
 import Modal from "@/components/admin/Modal";
 import ErrorBanner from "@/components/admin/ErrorBanner";
+import RowActions from "@/components/admin/RowActions";
 import { errorMessage } from "@/lib/error-message";
 
 const emptyForm: CategoryPayload = { slug: "", name: "", icon: "" };
@@ -159,22 +160,10 @@ export default function AdminCategoriesPage() {
               {c.name}{" "}
               <span className="text-xs text-muted">({c.slug})</span>
             </span>
-            <span>
-              <button
-                type="button"
-                onClick={() => startEdit(c)}
-                className="mr-3 text-sm text-brand-700 hover:underline"
-              >
-                Tahrirlash
-              </button>
-              <button
-                type="button"
-                onClick={() => handleDelete(c.id)}
-                className="text-sm text-danger-600 hover:underline"
-              >
-                O&apos;chirish
-              </button>
-            </span>
+            <RowActions
+              onEdit={() => startEdit(c)}
+              onDelete={() => handleDelete(c.id)}
+            />
           </li>
         ))}
       </ul>

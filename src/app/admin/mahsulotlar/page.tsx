@@ -15,6 +15,7 @@ import ProductImage from "@/components/product/ProductImage";
 import type { Category, Product } from "@/types/product";
 import Modal from "@/components/admin/Modal";
 import ErrorBanner from "@/components/admin/ErrorBanner";
+import RowActions from "@/components/admin/RowActions";
 import { errorMessage } from "@/lib/error-message";
 
 const emptyForm: ProductPayload = {
@@ -303,20 +304,10 @@ export default function AdminProductsPage() {
                 </td>
                 <td className="px-3 py-2 text-muted">{p.stock}</td>
                 <td className="px-3 py-2 text-right">
-                  <button
-                    type="button"
-                    onClick={() => startEdit(p)}
-                    className="mr-3 text-brand-700 hover:underline"
-                  >
-                    Tahrirlash
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleDelete(p.id)}
-                    className="text-danger-600 hover:underline"
-                  >
-                    O&apos;chirish
-                  </button>
+                  <RowActions
+                    onEdit={() => startEdit(p)}
+                    onDelete={() => handleDelete(p.id)}
+                  />
                 </td>
               </tr>
             ))}

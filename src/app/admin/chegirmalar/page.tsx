@@ -14,6 +14,7 @@ import {
 import { formatSom } from "@/lib/format";
 import Modal from "@/components/admin/Modal";
 import ErrorBanner from "@/components/admin/ErrorBanner";
+import RowActions, { rowActionClass } from "@/components/admin/RowActions";
 import { errorMessage } from "@/lib/error-message";
 
 const emptyForm: PromoCodePayload = {
@@ -323,27 +324,18 @@ export default function AdminPromoCodesPage() {
                       />
                     </td>
                     <td className="px-5 py-3 text-right whitespace-nowrap">
-                      <button
-                        type="button"
-                        onClick={() => toggleActive(promo)}
-                        className="mr-3 text-xs font-medium text-muted hover:underline"
+                      <RowActions
+                        onEdit={() => startEdit(promo)}
+                        onDelete={() => handleDelete(promo)}
                       >
-                        {promo.active ? "O'chirib qo'yish" : "Yoqish"}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => startEdit(promo)}
-                        className="mr-3 text-xs font-medium text-brand-700 hover:underline"
-                      >
-                        Tahrirlash
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(promo)}
-                        className="text-xs font-medium text-danger-600 hover:underline"
-                      >
-                        O&apos;chirish
-                      </button>
+                        <button
+                          type="button"
+                          onClick={() => toggleActive(promo)}
+                          className={rowActionClass}
+                        >
+                          {promo.active ? "O'chirib qo'yish" : "Yoqish"}
+                        </button>
+                      </RowActions>
                     </td>
                   </tr>
                 );

@@ -14,6 +14,7 @@ import { googleMapsUrl } from "@/lib/maps";
 import type { Branch } from "@/types/product";
 import Modal from "@/components/admin/Modal";
 import ErrorBanner from "@/components/admin/ErrorBanner";
+import RowActions, { rowActionClass } from "@/components/admin/RowActions";
 import { errorMessage } from "@/lib/error-message";
 
 const emptyForm: BranchPayload = { name: "", address: "" };
@@ -177,31 +178,20 @@ export default function AdminBranchesPage() {
               <span className="font-medium text-foreground">{b.name}</span>{" "}
               <span className="text-muted">— {b.address}</span>
             </span>
-            <span>
+            <RowActions
+              onEdit={() => startEdit(b)}
+              onDelete={() => handleDelete(b.id)}
+            >
               <a
                 href={googleMapsUrl(b)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mr-3 inline-flex items-center gap-1 text-sm text-brand-700 hover:underline"
+                className={rowActionClass}
               >
-                <MapPin className="h-3.5 w-3.5" />
+                <MapPin aria-hidden className="h-3.5 w-3.5" />
                 Xaritada
               </a>
-              <button
-                type="button"
-                onClick={() => startEdit(b)}
-                className="mr-3 text-sm text-brand-700 hover:underline"
-              >
-                Tahrirlash
-              </button>
-              <button
-                type="button"
-                onClick={() => handleDelete(b.id)}
-                className="text-sm text-danger-600 hover:underline"
-              >
-                O&apos;chirish
-              </button>
-            </span>
+            </RowActions>
           </li>
         ))}
       </ul>
