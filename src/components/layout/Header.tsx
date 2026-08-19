@@ -111,7 +111,10 @@ export default function Header() {
 
       {/* Secondary nav */}
       <nav className="hidden border-t border-border md:block">
-        <div className="mx-auto flex max-w-7xl items-center gap-6 overflow-x-auto px-4 py-2 text-sm sm:px-6">
+        {/* Spread across the same width as the bar above, so the row reads as
+            part of it rather than a short cluster under the logo. gap-6 is the
+            floor, which keeps the links apart on a narrow window too. */}
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 overflow-x-auto px-4 py-2.5 text-sm sm:px-6">
           {navItems.map((item) => (
             <Link
               key={item.href}
