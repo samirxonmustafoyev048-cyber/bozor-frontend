@@ -20,6 +20,7 @@ import ProductImage from "@/components/product/ProductImage";
 import StatCard from "@/components/admin/StatCard";
 import SalesChart from "@/components/admin/SalesChart";
 import OrdersDonutChart from "@/components/admin/OrdersDonutChart";
+import CategorySalesCard from "@/components/admin/CategorySalesCard";
 
 const MONTHS = [
   "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
@@ -147,6 +148,10 @@ export default function AdminDashboardPage() {
               <p className="text-sm text-muted">Ma&apos;lumot yo&apos;q.</p>
             )}
           </ol>
+        </div>
+
+        <div className="lg:col-span-2">
+          <CategorySalesCard data={stats.salesByCategory} />
         </div>
       </div>
 

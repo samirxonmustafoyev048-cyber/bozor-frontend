@@ -220,6 +220,14 @@ export interface AdminStats {
   ordersByStatus: { status: OrderStatus; count: number }[];
   popularProducts: { product: Product; totalSold: number }[];
   dailySales: { day: number; current: number; previous: number }[];
+  /** Sold value per category, biggest first. Uses the price each line was charged at. */
+  salesByCategory: {
+    id: string;
+    name: string;
+    slug: string;
+    revenue: number;
+    quantity: number;
+  }[];
   recentOrders: {
     id: string;
     orderNumber: string;
