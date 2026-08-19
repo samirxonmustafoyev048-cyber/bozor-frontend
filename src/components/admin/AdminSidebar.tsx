@@ -107,11 +107,14 @@ export default function AdminSidebar({
 
   return (
     <aside
-      className={`fixed inset-y-0 left-0 z-40 flex w-64 shrink-0 flex-col border-r border-border bg-surface transition-transform lg:static lg:translate-x-0 ${
+      // Sticky and exactly one screen tall, so the menu keeps its own scrollbar
+      // instead of growing with the page: on a long report the bottom entries
+      // used to sit below the fold, reachable only by scrolling the content.
+      className={`fixed inset-y-0 left-0 z-40 flex w-64 shrink-0 flex-col border-r border-border bg-surface transition-transform lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 ${
         open ? "translate-x-0" : "-translate-x-full"
       }`}
     >
-      <Link href="/" className="flex items-center gap-2 px-5 py-5">
+      <Link href="/" className="flex shrink-0 items-center gap-2 px-5 py-5">
         <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-600 text-white">
           <Apple aria-hidden className="h-5 w-5" />
         </span>
@@ -134,7 +137,7 @@ export default function AdminSidebar({
       </nav>
 
       {auth && (
-        <div className="flex items-center gap-2.5 border-t border-border p-4">
+        <div className="flex shrink-0 items-center gap-2.5 border-t border-border p-4">
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-bold text-brand-700">
             {auth.user.name.slice(0, 1).toUpperCase()}
           </span>
