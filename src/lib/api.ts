@@ -475,6 +475,7 @@ export interface CategoryPayload {
   slug: string;
   name: string;
   icon: string;
+  imageUrl?: string;
   parentId?: string;
 }
 

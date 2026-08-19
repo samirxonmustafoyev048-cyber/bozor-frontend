@@ -3,6 +3,8 @@ export interface Category {
   slug: string;
   name: string;
   icon: string;
+  /** Tile photo for the storefront category strip; falls back to the icon. */
+  imageUrl: string | null;
   parentId: string | null;
 }
 

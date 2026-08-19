@@ -16,7 +16,7 @@ import ErrorBanner from "@/components/admin/ErrorBanner";
 import RowActions from "@/components/admin/RowActions";
 import { errorMessage } from "@/lib/error-message";
 
-const emptyForm: CategoryPayload = { slug: "", name: "", icon: "" };
+const emptyForm: CategoryPayload = { slug: "", name: "", icon: "", imageUrl: "" };
 
 export default function AdminCategoriesPage() {
   const { auth } = useAuth();
@@ -44,7 +44,12 @@ export default function AdminCategoriesPage() {
 
   function startEdit(c: Category) {
     setEditingId(c.id);
-    setForm({ slug: c.slug, name: c.name, icon: c.icon });
+    setForm({
+      slug: c.slug,
+      name: c.name,
+      icon: c.icon,
+      imageUrl: c.imageUrl ?? "",
+    });
     setShowForm(true);
     setError(null);
   }
@@ -52,16 +57,18 @@ export default function AdminCategoriesPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!auth) return;
+    // The API rejects an empty string for the optional photo, so drop it.
+    const payload = { ...form, imageUrl: form.imageUrl?.trim() || undefined };
     try {
       if (editingId) {
-        await adminUpdateCategory(auth.accessToken, editingId, form);
+        await adminUpdateCategory(auth.accessToken, editingId, payload);
       } else {
-        await adminCreateCategory(auth.accessToken, form);
+        await adminCreateCategory(auth.accessToken, payload);
       }
       setShowForm(false);
       loadCategories();
-    } catch {
-      setError("Saqlashda xatolik. Slug allaqachon band bo'lishi mumkin.");
+    } catch (err) {
+      setError(errorMessage(err, "Saqlashda xatolik yuz berdi."));
     }
   }
 
@@ -125,6 +132,12 @@ export default function AdminCategoriesPage() {
             onChange={(e) => setForm({ ...form, icon: e.target.value })}
             className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
           />
+          <input
+            placeholder="Rasm manzili (masalan: /photos/categories/muzqaymoq.webp)"
+            value={form.imageUrl ?? ""}
+            onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
+            className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500 sm:col-span-3"
+          />
 
           {error && <p className="text-sm text-danger-600 sm:col-span-3">{error}</p>}
 
@@ -152,13 +165,26 @@ export default function AdminCategoriesPage() {
             key={c.id}
             className="flex items-center justify-between rounded-lg border border-border bg-surface px-4 py-3"
           >
-            <span className="flex items-center gap-2 text-sm">
-              {createElement(getCategoryIcon(c.slug, c.name), {
-                "aria-hidden": true,
-                className: "h-4 w-4 text-brand-600",
-              })}
-              {c.name}{" "}
-              <span className="text-xs text-muted">({c.slug})</span>
+            <span className="flex min-w-0 items-center gap-2.5 text-sm">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-brand-50">
+                {c.imageUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={c.imageUrl}
+                    alt=""
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  createElement(getCategoryIcon(c.slug, c.name), {
+                    "aria-hidden": true,
+                    className: "h-4 w-4 text-brand-600",
+                  })
+                )}
+              </span>
+              <span className="min-w-0 truncate">
+                {c.name}{" "}
+                <span className="text-xs text-muted">({c.slug})</span>
+              </span>
             </span>
             <RowActions
               onEdit={() => startEdit(c)}
