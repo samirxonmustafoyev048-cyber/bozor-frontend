@@ -53,7 +53,7 @@ export default function CategorySalesCard({ data }: { data: CategorySales[] }) {
       ) : (
         <ul className="mt-4 flex flex-col gap-3">
           {data.map((category) => {
-            const Icon = getCategoryIcon(category.slug, category.name);
+            const Icon = getCategoryIcon(category.slug, category.name, category.icon);
             const share = total > 0 ? (category.revenue / total) * 100 : 0;
             const width = leader > 0 ? (category.revenue / leader) * 100 : 0;
 

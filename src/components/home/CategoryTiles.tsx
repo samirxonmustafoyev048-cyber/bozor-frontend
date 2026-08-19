@@ -61,7 +61,7 @@ export default function CategoryTiles({ categories }: { categories: Category[] }
               <span
                 className={`flex h-20 items-center justify-center ${TINTS[i % TINTS.length]}`}
               >
-                {createElement(getCategoryIcon(cat.slug, cat.name), {
+                {createElement(getCategoryIcon(cat.slug, cat.name, cat.icon), {
                   "aria-hidden": true,
                   className:
                     "h-9 w-9 text-brand-600 transition-transform group-hover:scale-110",

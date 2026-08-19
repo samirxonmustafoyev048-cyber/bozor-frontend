@@ -9,7 +9,10 @@ import {
   getCategories,
   type CategoryPayload,
 } from "@/lib/api";
-import { getCategoryIcon } from "@/lib/category-icons";
+import {
+  CATEGORY_ICON_CHOICES,
+  getCategoryIcon,
+} from "@/lib/category-icons";
 import type { Category } from "@/types/product";
 import Modal from "@/components/admin/Modal";
 import ErrorBanner from "@/components/admin/ErrorBanner";
@@ -125,13 +128,27 @@ export default function AdminCategoriesPage() {
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
           />
-          <input
-            required
-            placeholder="Ikonka (emoji)"
-            value={form.icon}
-            onChange={(e) => setForm({ ...form, icon: e.target.value })}
-            className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
-          />
+          <span className="flex items-center gap-2">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-50">
+              {createElement(getCategoryIcon(form.slug, form.name, form.icon), {
+                "aria-hidden": true,
+                className: "h-4 w-4 text-brand-600",
+              })}
+            </span>
+            <select
+              required
+              value={form.icon}
+              onChange={(e) => setForm({ ...form, icon: e.target.value })}
+              className="min-w-0 flex-1 rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
+            >
+              <option value="">Ikonka tanlang</option>
+              {CATEGORY_ICON_CHOICES.map((choice) => (
+                <option key={choice.name} value={choice.name}>
+                  {choice.label}
+                </option>
+              ))}
+            </select>
+          </span>
           <input
             placeholder="Rasm manzili (masalan: /photos/categories/muzqaymoq.webp)"
             value={form.imageUrl ?? ""}
@@ -175,7 +192,7 @@ export default function AdminCategoriesPage() {
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  createElement(getCategoryIcon(c.slug, c.name), {
+                  createElement(getCategoryIcon(c.slug, c.name, c.icon), {
                     "aria-hidden": true,
                     className: "h-4 w-4 text-brand-600",
                   })

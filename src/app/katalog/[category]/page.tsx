@@ -77,7 +77,13 @@ export default async function CategoryPage({
         <div className="flex items-center justify-between">
           <div>
             <h1 className="flex items-center gap-2 text-lg font-bold text-foreground sm:text-xl">
-              {createElement(getCategoryIcon(activeCategory.slug, activeCategory.name), {
+              {createElement(
+                getCategoryIcon(
+                  activeCategory.slug,
+                  activeCategory.name,
+                  activeCategory.icon
+                ),
+                {
                 "aria-hidden": true,
                 className: "h-5 w-5 text-brand-600",
               })}

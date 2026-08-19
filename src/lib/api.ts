@@ -225,6 +225,7 @@ export interface AdminStats {
     id: string;
     name: string;
     slug: string;
+    icon: string;
     revenue: number;
     quantity: number;
   }[];

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, Send } from "lucide-react";
+import { Check, Mail, Send } from "lucide-react";
 
 export default function NewsletterBar() {
   const [email, setEmail] = useState("");
@@ -41,8 +41,12 @@ export default function NewsletterBar() {
           type="submit"
           className="flex shrink-0 items-center gap-1.5 rounded-full bg-brand-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-800"
         >
-          {subscribed ? "Obuna bo'ldingiz ✓" : "Obuna bo'lish"}
-          <Send aria-hidden className="h-3.5 w-3.5" />
+          {subscribed ? "Obuna bo'ldingiz" : "Obuna bo'lish"}
+          {subscribed ? (
+            <Check aria-hidden className="h-3.5 w-3.5" />
+          ) : (
+            <Send aria-hidden className="h-3.5 w-3.5" />
+          )}
         </button>
       </form>
     </section>

@@ -85,16 +85,23 @@ export default function AdminProductsPage() {
     if (!auth) return;
     setSaving(true);
     setError(null);
+    // The API still requires the field; fill it from the chosen category so
+    // the admin never has to think about it.
+    const category = categories.find((c) => c.id === form.categoryId);
+    const payload = {
+      ...form,
+      emoji: form.emoji || category?.icon || "Package",
+    };
     try {
       if (editingId) {
-        await adminUpdateProduct(auth.accessToken, editingId, form);
+        await adminUpdateProduct(auth.accessToken, editingId, payload);
       } else {
-        await adminCreateProduct(auth.accessToken, form);
+        await adminCreateProduct(auth.accessToken, payload);
       }
       setShowForm(false);
       loadProducts();
-    } catch {
-      setError("Saqlashda xatolik yuz berdi. Maydonlarni tekshiring.");
+    } catch (err) {
+      setError(errorMessage(err, "Saqlashda xatolik yuz berdi."));
     } finally {
       setSaving(false);
     }
@@ -171,13 +178,6 @@ export default function AdminProductsPage() {
             placeholder="Birlik (masalan: 1 kg)"
             value={form.unit}
             onChange={(e) => setForm({ ...form, unit: e.target.value })}
-            className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
-          />
-          <input
-            required
-            placeholder="Emoji (masalan: tomat)"
-            value={form.emoji}
-            onChange={(e) => setForm({ ...form, emoji: e.target.value })}
             className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
           />
           <input

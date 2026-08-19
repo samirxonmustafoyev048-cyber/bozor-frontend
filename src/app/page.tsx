@@ -1,3 +1,4 @@
+import { Flame } from "lucide-react";
 import HeroBanner from "@/components/home/HeroBanner";
 import ProductRow from "@/components/home/ProductRow";
 import CategoryTiles from "@/components/home/CategoryTiles";
@@ -62,7 +63,7 @@ export default async function Home() {
 
       <ProductRow
         title="Bugungi aksiyalar"
-        emoji="🔥"
+        icon={Flame}
         href="/katalog?chegirma=true"
         products={discounted.items}
       />

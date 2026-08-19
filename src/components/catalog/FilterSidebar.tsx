@@ -51,7 +51,7 @@ export default function FilterSidebar({
                     : "text-foreground/80 hover:bg-brand-50"
                 }`}
               >
-                {createElement(getCategoryIcon(cat.slug, cat.name), {
+                {createElement(getCategoryIcon(cat.slug, cat.name, cat.icon), {
                   "aria-hidden": true,
                   className: "h-4 w-4",
                 })}

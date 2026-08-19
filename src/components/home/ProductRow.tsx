@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, type LucideIcon } from "lucide-react";
 import ProductCard from "@/components/product/ProductCard";
 import type { Product } from "@/types/product";
 
@@ -12,13 +12,14 @@ import type { Product } from "@/types/product";
  */
 export default function ProductRow({
   title,
-  emoji,
+  icon: Icon,
   href,
   products,
   limit = 6,
 }: {
   title: string;
-  emoji?: string;
+  /** Optional mark beside the heading, e.g. a flame on the deals row. */
+  icon?: LucideIcon;
   href: string;
   products: Product[];
   limit?: number;
@@ -30,7 +31,7 @@ export default function ProductRow({
       <div className="flex items-end justify-between gap-3">
         <h2 className="flex items-center gap-2 text-xl font-bold text-foreground sm:text-2xl">
           {title}
-          {emoji && <span aria-hidden>{emoji}</span>}
+          {Icon && <Icon aria-hidden className="h-5 w-5 text-danger-500" />}
         </h2>
         <Link
           href={href}

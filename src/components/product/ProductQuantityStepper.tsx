@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Check } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import type { Product } from "@/types/product";
 
@@ -19,9 +20,10 @@ export default function ProductQuantityStepper({ product }: { product: Product }
       type="button"
       onClick={handleAdd}
       aria-label={`${product.name} savatga qo'shish`}
-      className="w-full rounded-full border border-border bg-white py-2 text-sm font-semibold text-foreground shadow-sm transition-colors hover:bg-brand-50 hover:text-brand-700"
+      className="flex w-full items-center justify-center gap-1.5 rounded-full border border-border bg-white py-2 text-sm font-semibold text-foreground shadow-sm transition-colors hover:bg-brand-50 hover:text-brand-700"
     >
-      {added ? "Qo'shildi ✓" : "Sotib olish"}
+      {added && <Check aria-hidden className="h-4 w-4 text-brand-600" />}
+      {added ? "Qo'shildi" : "Sotib olish"}
     </button>
   );
 }
