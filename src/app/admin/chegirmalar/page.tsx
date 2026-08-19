@@ -13,6 +13,8 @@ import {
 } from "@/lib/api";
 import { formatSom } from "@/lib/format";
 import Modal from "@/components/admin/Modal";
+import ErrorBanner from "@/components/admin/ErrorBanner";
+import { errorMessage } from "@/lib/error-message";
 
 const emptyForm: PromoCodePayload = {
   code: "",
@@ -45,6 +47,7 @@ export default function AdminPromoCodesPage() {
   const [form, setForm] = useState<PromoCodePayload>(emptyForm);
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(() => {
@@ -109,15 +112,27 @@ export default function AdminPromoCodesPage() {
 
   async function toggleActive(promo: PromoCode) {
     if (!auth) return;
-    await adminUpdatePromoCode(auth.accessToken, promo.id, { active: !promo.active });
-    load();
+    setActionError(null);
+    try {
+      await adminUpdatePromoCode(auth.accessToken, promo.id, {
+        active: !promo.active,
+      });
+      load();
+    } catch (err) {
+      setActionError(errorMessage(err));
+    }
   }
 
   async function handleDelete(promo: PromoCode) {
     if (!auth) return;
     if (!confirm(`"${promo.code}" chegirmasini o'chirishga ishonchingiz komilmi?`)) return;
-    await adminDeletePromoCode(auth.accessToken, promo.id);
-    load();
+    setActionError(null);
+    try {
+      await adminDeletePromoCode(auth.accessToken, promo.id);
+      load();
+    } catch (err) {
+      setActionError(errorMessage(err));
+    }
   }
 
   const activeCount = promos.filter((p) => p.active && !isExpired(p) && !isUsedUp(p)).length;
@@ -146,6 +161,11 @@ export default function AdminPromoCodesPage() {
         <SummaryCard icon={CheckCircle2} label="Faol" value={String(activeCount)} />
         <SummaryCard icon={Percent} label="Jami ishlatilgan" value={`${totalUses} marta`} />
       </div>
+
+      <ErrorBanner
+        message={actionError}
+        onDismiss={() => setActionError(null)}
+      />
 
       <Modal
         open={showForm}

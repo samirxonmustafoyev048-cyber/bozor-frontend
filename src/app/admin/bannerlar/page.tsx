@@ -12,6 +12,8 @@ import {
   type BannerPayload,
 } from "@/lib/api";
 import Modal from "@/components/admin/Modal";
+import ErrorBanner from "@/components/admin/ErrorBanner";
+import { errorMessage } from "@/lib/error-message";
 
 const emptyForm: BannerPayload = {
   title: "",
@@ -32,6 +34,7 @@ export default function AdminBannersPage() {
   const [form, setForm] = useState<BannerPayload>(emptyForm);
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(() => {
@@ -94,8 +97,15 @@ export default function AdminBannersPage() {
 
   async function toggleActive(banner: Banner) {
     if (!auth) return;
-    await adminUpdateBanner(auth.accessToken, banner.id, { active: !banner.active });
-    load();
+    setActionError(null);
+    try {
+      await adminUpdateBanner(auth.accessToken, banner.id, {
+        active: !banner.active,
+      });
+      load();
+    } catch (err) {
+      setActionError(errorMessage(err));
+    }
   }
 
   /** Swaps a banner's sortOrder with its neighbour so admins can reorder without typing numbers. */
@@ -105,18 +115,32 @@ export default function AdminBannersPage() {
     const neighbour = banners[index + direction];
     if (!neighbour) return;
 
-    await Promise.all([
-      adminUpdateBanner(auth.accessToken, banner.id, { sortOrder: neighbour.sortOrder }),
-      adminUpdateBanner(auth.accessToken, neighbour.id, { sortOrder: banner.sortOrder }),
-    ]);
-    load();
+    setActionError(null);
+    try {
+      await Promise.all([
+        adminUpdateBanner(auth.accessToken, banner.id, {
+          sortOrder: neighbour.sortOrder,
+        }),
+        adminUpdateBanner(auth.accessToken, neighbour.id, {
+          sortOrder: banner.sortOrder,
+        }),
+      ]);
+      load();
+    } catch (err) {
+      setActionError(errorMessage(err));
+    }
   }
 
   async function handleDelete(banner: Banner) {
     if (!auth) return;
     if (!confirm(`"${banner.title}" bannerini o'chirishga ishonchingiz komilmi?`)) return;
-    await adminDeleteBanner(auth.accessToken, banner.id);
-    load();
+    setActionError(null);
+    try {
+      await adminDeleteBanner(auth.accessToken, banner.id);
+      load();
+    } catch (err) {
+      setActionError(errorMessage(err));
+    }
   }
 
   const activeCount = banners.filter((b) => b.active).length;
@@ -138,6 +162,11 @@ export default function AdminBannersPage() {
           + Yangi banner
         </button>
       </div>
+
+      <ErrorBanner
+        message={actionError}
+        onDismiss={() => setActionError(null)}
+      />
 
       <Modal
         open={showForm}

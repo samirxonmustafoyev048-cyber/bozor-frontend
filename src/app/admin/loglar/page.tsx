@@ -10,6 +10,8 @@ import {
   type AuditLogEntry,
 } from "@/lib/api";
 import { formatDateTime, formatRelativeTime } from "@/lib/format";
+import ErrorBanner from "@/components/admin/ErrorBanner";
+import { errorMessage } from "@/lib/error-message";
 
 const ACTION_STYLE: Record<string, { label: string; className: string; icon: typeof Plus }> = {
   CREATE: {
@@ -54,6 +56,7 @@ export default function AdminAuditLogPage() {
   const [entity, setEntity] = useState("");
   const [action, setAction] = useState("");
   const [loading, setLoading] = useState(true);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   const load = useCallback(() => {
     if (!auth) return;
@@ -75,8 +78,13 @@ export default function AdminAuditLogPage() {
   async function clearAll() {
     if (!auth) return;
     if (!confirm("Barcha loglar o'chirilsinmi? Bu amalni qaytarib bo'lmaydi.")) return;
-    await adminClearAuditLogs(auth.accessToken);
-    load();
+    setActionError(null);
+    try {
+      await adminClearAuditLogs(auth.accessToken);
+      load();
+    } catch (err) {
+      setActionError(errorMessage(err));
+    }
   }
 
   return (
@@ -106,6 +114,11 @@ export default function AdminAuditLogPage() {
           </button>
         </div>
       </div>
+
+      <ErrorBanner
+        message={actionError}
+        onDismiss={() => setActionError(null)}
+      />
 
       <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-border bg-surface p-4">
         <label className="flex items-center gap-2 text-xs font-medium text-muted">

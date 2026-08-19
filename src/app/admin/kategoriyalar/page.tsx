@@ -12,6 +12,8 @@ import {
 import { getCategoryIcon } from "@/lib/category-icons";
 import type { Category } from "@/types/product";
 import Modal from "@/components/admin/Modal";
+import ErrorBanner from "@/components/admin/ErrorBanner";
+import { errorMessage } from "@/lib/error-message";
 
 const emptyForm: CategoryPayload = { slug: "", name: "", icon: "" };
 
@@ -22,6 +24,7 @@ export default function AdminCategoriesPage() {
   const [form, setForm] = useState<CategoryPayload>(emptyForm);
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   function loadCategories() {
     getCategories()
@@ -64,8 +67,13 @@ export default function AdminCategoriesPage() {
   async function handleDelete(id: string) {
     if (!auth) return;
     if (!confirm("Kategoriyani o'chirishga ishonchingiz komilmi?")) return;
-    await adminDeleteCategory(auth.accessToken, id);
-    loadCategories();
+    setActionError(null);
+    try {
+      await adminDeleteCategory(auth.accessToken, id);
+      loadCategories();
+    } catch (err) {
+      setActionError(errorMessage(err));
+    }
   }
 
   return (
@@ -82,6 +90,11 @@ export default function AdminCategoriesPage() {
           + Yangi kategoriya
         </button>
       </div>
+
+      <ErrorBanner
+        message={actionError}
+        onDismiss={() => setActionError(null)}
+      />
 
       <Modal
         open={showForm}

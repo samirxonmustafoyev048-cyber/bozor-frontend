@@ -6,6 +6,8 @@ import { useAuth } from "@/context/AuthContext";
 import { adminGetOrders, adminUpdateOrderStatus } from "@/lib/api";
 import { formatSom, formatDate } from "@/lib/format";
 import type { Order, OrderStatus } from "@/types/product";
+import ErrorBanner from "@/components/admin/ErrorBanner";
+import { errorMessage } from "@/lib/error-message";
 
 const STATUS_OPTIONS: { value: OrderStatus; label: string }[] = [
   { value: "QABUL_QILINDI", label: "Qabul qilindi" },
@@ -18,6 +20,7 @@ const STATUS_OPTIONS: { value: OrderStatus; label: string }[] = [
 export default function AdminOrdersPage() {
   const { auth } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   function loadOrders() {
     if (!auth) return;
@@ -30,8 +33,13 @@ export default function AdminOrdersPage() {
 
   async function handleStatusChange(orderId: string, status: string) {
     if (!auth) return;
-    await adminUpdateOrderStatus(auth.accessToken, orderId, status);
-    loadOrders();
+    setActionError(null);
+    try {
+      await adminUpdateOrderStatus(auth.accessToken, orderId, status);
+      loadOrders();
+    } catch (err) {
+      setActionError(errorMessage(err));
+    }
   }
 
   return (
@@ -39,6 +47,11 @@ export default function AdminOrdersPage() {
       <h1 className="text-xl font-bold text-foreground sm:text-2xl">
         Buyurtmalar
       </h1>
+
+      <ErrorBanner
+        message={actionError}
+        onDismiss={() => setActionError(null)}
+      />
 
       <div className="overflow-x-auto rounded-lg border border-border">
         <table className="min-w-full divide-y divide-border text-sm">

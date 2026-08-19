@@ -14,6 +14,8 @@ import {
 } from "@/lib/api";
 import { formatRelativeTime } from "@/lib/format";
 import Modal from "@/components/admin/Modal";
+import ErrorBanner from "@/components/admin/ErrorBanner";
+import { errorMessage } from "@/lib/error-message";
 
 const inputClass =
   "rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500";
@@ -25,6 +27,7 @@ export default function AdminNotificationsPage() {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ title: "", body: "" });
   const [error, setError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(() => {
@@ -56,27 +59,47 @@ export default function AdminNotificationsPage() {
 
   async function markRead(item: Notification) {
     if (!auth || item.read) return;
-    await adminMarkNotificationRead(auth.accessToken, item.id);
-    load();
+    setActionError(null);
+    try {
+      await adminMarkNotificationRead(auth.accessToken, item.id);
+      load();
+    } catch (err) {
+      setActionError(errorMessage(err));
+    }
   }
 
   async function markAllRead() {
     if (!auth) return;
-    await adminMarkAllNotificationsRead(auth.accessToken);
-    load();
+    setActionError(null);
+    try {
+      await adminMarkAllNotificationsRead(auth.accessToken);
+      load();
+    } catch (err) {
+      setActionError(errorMessage(err));
+    }
   }
 
   async function remove(item: Notification) {
     if (!auth) return;
-    await adminDeleteNotification(auth.accessToken, item.id);
-    load();
+    setActionError(null);
+    try {
+      await adminDeleteNotification(auth.accessToken, item.id);
+      load();
+    } catch (err) {
+      setActionError(errorMessage(err));
+    }
   }
 
   async function clearRead() {
     if (!auth) return;
     if (!confirm("O'qilgan barcha xabarnomalar o'chirilsinmi?")) return;
-    await adminDeleteReadNotifications(auth.accessToken);
-    load();
+    setActionError(null);
+    try {
+      await adminDeleteReadNotifications(auth.accessToken);
+      load();
+    } catch (err) {
+      setActionError(errorMessage(err));
+    }
   }
 
   const unreadCount = items.filter((n) => !n.read).length;
@@ -100,6 +123,11 @@ export default function AdminNotificationsPage() {
           Qo&apos;lda qo&apos;shish
         </button>
       </div>
+
+      <ErrorBanner
+        message={actionError}
+        onDismiss={() => setActionError(null)}
+      />
 
       <Modal
         open={showForm}

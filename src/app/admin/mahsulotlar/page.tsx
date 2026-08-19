@@ -14,6 +14,8 @@ import { formatSom } from "@/lib/format";
 import ProductImage from "@/components/product/ProductImage";
 import type { Category, Product } from "@/types/product";
 import Modal from "@/components/admin/Modal";
+import ErrorBanner from "@/components/admin/ErrorBanner";
+import { errorMessage } from "@/lib/error-message";
 
 const emptyForm: ProductPayload = {
   slug: "",
@@ -33,15 +35,20 @@ export default function AdminProductsPage() {
   const [form, setForm] = useState<ProductPayload>(emptyForm);
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
   function loadProducts() {
-    getProducts({ pageSize: 200 }).then((res) => setProducts(res.items));
+    getProducts({ pageSize: 200 })
+      .then((res) => setProducts(res.items))
+      .catch(() => setActionError("Mahsulotlar ro'yxatini yuklab bo'lmadi"));
   }
 
   useEffect(() => {
     loadProducts();
-    getCategories().then(setCategories);
+    getCategories()
+      .then(setCategories)
+      .catch(() => setActionError("Kategoriyalarni yuklab bo'lmadi"));
   }, []);
 
   function startCreate() {
@@ -95,8 +102,13 @@ export default function AdminProductsPage() {
   async function handleDelete(id: string) {
     if (!auth) return;
     if (!confirm("Mahsulotni o'chirishga ishonchingiz komilmi?")) return;
-    await adminDeleteProduct(auth.accessToken, id);
-    loadProducts();
+    setActionError(null);
+    try {
+      await adminDeleteProduct(auth.accessToken, id);
+      loadProducts();
+    } catch (err) {
+      setActionError(errorMessage(err));
+    }
   }
 
   return (
@@ -113,6 +125,11 @@ export default function AdminProductsPage() {
           + Yangi mahsulot
         </button>
       </div>
+
+      <ErrorBanner
+        message={actionError}
+        onDismiss={() => setActionError(null)}
+      />
 
       <Modal
         open={showForm}

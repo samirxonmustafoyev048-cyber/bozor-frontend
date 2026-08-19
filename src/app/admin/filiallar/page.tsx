@@ -13,6 +13,8 @@ import {
 import { googleMapsUrl } from "@/lib/maps";
 import type { Branch } from "@/types/product";
 import Modal from "@/components/admin/Modal";
+import ErrorBanner from "@/components/admin/ErrorBanner";
+import { errorMessage } from "@/lib/error-message";
 
 const emptyForm: BranchPayload = { name: "", address: "" };
 
@@ -22,6 +24,7 @@ export default function AdminBranchesPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<BranchPayload>(emptyForm);
   const [showForm, setShowForm] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   function loadBranches() {
     getBranches()
@@ -53,20 +56,30 @@ export default function AdminBranchesPage() {
     e.preventDefault();
     if (!auth) return;
     const payload = { ...form, imageUrl: form.imageUrl?.trim() || undefined };
-    if (editingId) {
-      await adminUpdateBranch(auth.accessToken, editingId, payload);
-    } else {
-      await adminCreateBranch(auth.accessToken, payload);
+    setActionError(null);
+    try {
+      if (editingId) {
+        await adminUpdateBranch(auth.accessToken, editingId, payload);
+      } else {
+        await adminCreateBranch(auth.accessToken, payload);
+      }
+      setShowForm(false);
+      loadBranches();
+    } catch (err) {
+      setActionError(errorMessage(err));
     }
-    setShowForm(false);
-    loadBranches();
   }
 
   async function handleDelete(id: string) {
     if (!auth) return;
     if (!confirm("Filialni o'chirishga ishonchingiz komilmi?")) return;
-    await adminDeleteBranch(auth.accessToken, id);
-    loadBranches();
+    setActionError(null);
+    try {
+      await adminDeleteBranch(auth.accessToken, id);
+      loadBranches();
+    } catch (err) {
+      setActionError(errorMessage(err));
+    }
   }
 
   return (
@@ -83,6 +96,11 @@ export default function AdminBranchesPage() {
           + Yangi filial
         </button>
       </div>
+
+      <ErrorBanner
+        message={actionError}
+        onDismiss={() => setActionError(null)}
+      />
 
       <Modal
         open={showForm}
