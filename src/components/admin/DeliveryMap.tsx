@@ -1,7 +1,14 @@
 "use client";
 
 import { useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  Polyline,
+  useMapEvents,
+} from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -24,7 +31,27 @@ interface Branch {
   lng: number | null;
 }
 
-export default function DeliveryMap({ branches }: { branches: Branch[] }) {
+/**
+ * Turns a click on the map into coordinates. Rendered only while the admin is
+ * placing a branch, so an ordinary click still pans the map.
+ */
+function ClickPicker({ onPick }: { onPick: (lat: number, lng: number) => void }) {
+  useMapEvents({
+    click(e) {
+      onPick(e.latlng.lat, e.latlng.lng);
+    },
+  });
+  return null;
+}
+
+export default function DeliveryMap({
+  branches,
+  onPick,
+}: {
+  branches: Branch[];
+  /** When set, the next click on the map reports its position instead of panning. */
+  onPick?: (lat: number, lng: number) => void;
+}) {
   const points = branches.filter(
     (b): b is Branch & { lat: number; lng: number } => b.lat != null && b.lng != null
   );
@@ -56,8 +83,9 @@ export default function DeliveryMap({ branches }: { branches: Branch[] }) {
       center={center}
       zoom={11}
       scrollWheelZoom={false}
-      className="h-full w-full"
+      className={`h-full w-full ${onPick ? "cursor-crosshair" : ""}`}
     >
+      {onPick && <ClickPicker onPick={onPick} />}
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
