@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   Boxes,
   Search,
+  Plus,
   ArrowDownToLine,
   ArrowUpFromLine,
   Wrench,
@@ -16,8 +17,11 @@ import {
 import { useAuth } from "@/context/AuthContext";
 import {
   adjustStock,
+  adminCreateProduct,
+  getCategories,
   getStockMovements,
   getStockOverview,
+  type ProductPayload,
   type StockMovement,
   type StockMovementType,
   type StockOverview,
@@ -25,7 +29,8 @@ import {
 import { formatRelativeTime } from "@/lib/format";
 import Modal from "@/components/admin/Modal";
 import ProductImage from "@/components/product/ProductImage";
-import type { Product } from "@/types/product";
+import { errorMessage } from "@/lib/error-message";
+import type { Category, Product } from "@/types/product";
 
 const MOVEMENT_STYLE: Record<
   StockMovementType,
@@ -51,13 +56,40 @@ const MOVEMENT_STYLE: Record<
   },
 };
 
+/** A new arrival needs only what identifies and prices it — the rest has defaults. */
+const emptyProduct: ProductPayload = {
+  slug: "",
+  name: "",
+  description: "",
+  price: 0,
+  unit: "",
+  emoji: "",
+  categoryId: "",
+  stock: 0,
+};
+
+/** "Bulg'or qalampiri" -> "bulgor-qalampiri", so the keeper never types a slug. */
+function toSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/['''`]/g, "")
+    .replace(/[^a-z0-9\u0400-\u04FF]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 export default function WarehousePage() {
   const { auth, isLoaded } = useAuth();
 
   const [data, setData] = useState<StockOverview | null>(null);
   const [movements, setMovements] = useState<StockMovement[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [query, setQuery] = useState("");
   const [error, setError] = useState<string | null>(null);
+
+  const [creating, setCreating] = useState(false);
+  const [newProduct, setNewProduct] = useState<ProductPayload>(emptyProduct);
+  const [createError, setCreateError] = useState<string | null>(null);
+  const [createSaving, setCreateSaving] = useState(false);
 
   const [editing, setEditing] = useState<Product | null>(null);
   const [form, setForm] = useState<{
@@ -77,6 +109,40 @@ export default function WarehousePage() {
   }, [auth, query]);
 
   useEffect(load, [load]);
+
+  useEffect(() => {
+    getCategories().then(setCategories).catch(() => {});
+  }, []);
+
+  function startCreate() {
+    setNewProduct({ ...emptyProduct, categoryId: categories[0]?.id ?? "" });
+    setCreateError(null);
+    setCreating(true);
+  }
+
+  async function handleCreate(e: React.FormEvent) {
+    e.preventDefault();
+    if (!auth) return;
+    setCreateSaving(true);
+    setCreateError(null);
+
+    const category = categories.find((c) => c.id === newProduct.categoryId);
+    try {
+      await adminCreateProduct(auth.accessToken, {
+        ...newProduct,
+        slug: newProduct.slug.trim() || toSlug(newProduct.name),
+        description: newProduct.description.trim() || newProduct.name.trim(),
+        // Drawn from the category, the same way the product list does it.
+        emoji: newProduct.emoji || category?.icon || "Package",
+      });
+      setCreating(false);
+      load();
+    } catch (err) {
+      setCreateError(errorMessage(err, "Mahsulotni qo'shib bo'lmadi"));
+    } finally {
+      setCreateSaving(false);
+    }
+  }
 
   function startAdjust(product: Product) {
     setEditing(product);
@@ -126,15 +192,26 @@ export default function WarehousePage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
-      <div>
-        <h1 className="flex items-center gap-2 text-xl font-bold text-foreground sm:text-2xl">
-          <Boxes aria-hidden className="h-6 w-6 text-brand-600" />
-          Ombor
-        </h1>
-        <p className="text-sm text-muted">
-          Omborchi: {auth.user.name} · Zaxirani qabul qiling, chiqaring va
-          hisobdan tuzating.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="flex items-center gap-2 text-xl font-bold text-foreground sm:text-2xl">
+            <Boxes aria-hidden className="h-6 w-6 text-brand-600" />
+            Ombor
+          </h1>
+          <p className="text-sm text-muted">
+            Omborchi: {auth.user.name} · Zaxirani qabul qiling, chiqaring va
+            hisobdan tuzating.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={startCreate}
+          className="flex shrink-0 items-center gap-1.5 rounded-full bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700"
+        >
+          <Plus aria-hidden className="h-4 w-4" />
+          Yangi mahsulot
+        </button>
       </div>
 
       <div className="mt-5 grid gap-4 sm:grid-cols-3">
@@ -274,6 +351,129 @@ export default function WarehousePage() {
           )}
         </aside>
       </div>
+
+      <Modal
+        open={creating}
+        onClose={() => setCreating(false)}
+        title="Yangi mahsulot"
+        widthClassName="max-w-xl"
+      >
+        <form onSubmit={handleCreate} className="grid gap-3 sm:grid-cols-2">
+          <label className="flex flex-col gap-1 text-xs font-medium text-muted sm:col-span-2">
+            Nomi
+            <input
+              required
+              value={newProduct.name}
+              onChange={(e) =>
+                setNewProduct({ ...newProduct, name: e.target.value })
+              }
+              placeholder="Masalan: Bulg'or qalampiri"
+              className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
+            />
+          </label>
+
+          <label className="flex flex-col gap-1 text-xs font-medium text-muted">
+            Kategoriya
+            <select
+              required
+              value={newProduct.categoryId}
+              onChange={(e) =>
+                setNewProduct({ ...newProduct, categoryId: e.target.value })
+              }
+              className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
+            >
+              <option value="">Tanlang</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="flex flex-col gap-1 text-xs font-medium text-muted">
+            Birlik
+            <input
+              required
+              value={newProduct.unit}
+              onChange={(e) =>
+                setNewProduct({ ...newProduct, unit: e.target.value })
+              }
+              placeholder="1 kg / 500 ml / dona"
+              className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
+            />
+          </label>
+
+          <label className="flex flex-col gap-1 text-xs font-medium text-muted">
+            Narxi (so&apos;m)
+            <input
+              required
+              type="number"
+              min={0}
+              value={newProduct.price || ""}
+              onChange={(e) =>
+                setNewProduct({ ...newProduct, price: Number(e.target.value) || 0 })
+              }
+              className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
+            />
+          </label>
+
+          <label className="flex flex-col gap-1 text-xs font-medium text-muted">
+            Boshlang&apos;ich zaxira
+            <input
+              type="number"
+              min={0}
+              value={newProduct.stock ?? 0}
+              onChange={(e) =>
+                setNewProduct({ ...newProduct, stock: Number(e.target.value) || 0 })
+              }
+              className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
+            />
+          </label>
+
+          <label className="flex flex-col gap-1 text-xs font-medium text-muted sm:col-span-2">
+            Rasm manzili (ixtiyoriy)
+            <input
+              type="url"
+              value={newProduct.imageUrl ?? ""}
+              onChange={(e) =>
+                setNewProduct({
+                  ...newProduct,
+                  imageUrl: e.target.value || undefined,
+                })
+              }
+              placeholder="https://..."
+              className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
+            />
+          </label>
+
+          <p className="text-xs text-muted sm:col-span-2">
+            Tavsif va manzil (slug) nomdan avtomatik yasaladi — keyinroq admin
+            panelidan to&apos;ldirsa bo&apos;ladi.
+          </p>
+
+          {createError && (
+            <p className="text-sm text-danger-600 sm:col-span-2">{createError}</p>
+          )}
+
+          <div className="mt-1 flex gap-2 sm:col-span-2">
+            <button
+              type="submit"
+              disabled={createSaving}
+              className="rounded-full bg-brand-600 px-6 py-2 text-sm font-semibold text-white hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {createSaving ? "Qo'shilmoqda..." : "Qo'shish"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setCreating(false)}
+              className="rounded-full border border-border px-6 py-2 text-sm font-semibold text-foreground hover:bg-brand-50"
+            >
+              Bekor qilish
+            </button>
+          </div>
+        </form>
+      </Modal>
 
       <Modal
         open={editing !== null}
