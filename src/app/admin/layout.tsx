@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { adminGetStats, adminGetUnreadCount } from "@/lib/api";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminTopbar from "@/components/admin/AdminTopbar";
+import { AdminBadgesProvider } from "@/context/AdminBadgesContext";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { auth, isLoaded } = useAuth();
@@ -13,7 +14,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [pendingOrders, setPendingOrders] = useState(0);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
 
-  useEffect(() => {
+  // Also called by pages that change these numbers, so a notification marked
+  // read clears its badge without a reload.
+  const refreshBadges = useCallback(() => {
     if (!auth) return;
     adminGetStats(auth.accessToken)
       .then((stats) => {
@@ -27,6 +30,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       .then(setUnreadNotifications)
       .catch(() => {});
   }, [auth]);
+
+  useEffect(refreshBadges, [refreshBadges]);
 
   if (!isLoaded) {
     return null;
@@ -65,10 +70,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       <div className="flex min-w-0 flex-1 flex-col">
         <AdminTopbar
-          pendingOrders={pendingOrders}
+          unreadNotifications={unreadNotifications}
           onMenuClick={() => setSidebarOpen((v) => !v)}
         />
-        <main className="min-w-0 flex-1 p-4 sm:p-6">{children}</main>
+        <main className="min-w-0 flex-1 p-4 sm:p-6">
+          <AdminBadgesProvider refresh={refreshBadges}>
+            {children}
+          </AdminBadgesProvider>
+        </main>
       </div>
     </div>
   );

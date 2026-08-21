@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Bell, BellOff, CheckCheck, Trash2, Plus } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { useAdminBadges } from "@/context/AdminBadgesContext";
 import {
   adminCreateNotification,
   adminDeleteNotification,
@@ -22,6 +23,7 @@ const inputClass =
 
 export default function AdminNotificationsPage() {
   const { auth } = useAuth();
+  const { refresh: refreshBadges } = useAdminBadges();
   const [items, setItems] = useState<Notification[]>([]);
   const [unreadOnly, setUnreadOnly] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -52,6 +54,7 @@ export default function AdminNotificationsPage() {
       setForm({ title: "", body: "" });
       setShowForm(false);
       load();
+      refreshBadges();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Saqlashda xatolik");
     }
@@ -63,6 +66,7 @@ export default function AdminNotificationsPage() {
     try {
       await adminMarkNotificationRead(auth.accessToken, item.id);
       load();
+      refreshBadges();
     } catch (err) {
       setActionError(errorMessage(err));
     }
@@ -74,6 +78,7 @@ export default function AdminNotificationsPage() {
     try {
       await adminMarkAllNotificationsRead(auth.accessToken);
       load();
+      refreshBadges();
     } catch (err) {
       setActionError(errorMessage(err));
     }
@@ -85,6 +90,7 @@ export default function AdminNotificationsPage() {
     try {
       await adminDeleteNotification(auth.accessToken, item.id);
       load();
+      refreshBadges();
     } catch (err) {
       setActionError(errorMessage(err));
     }
@@ -97,6 +103,7 @@ export default function AdminNotificationsPage() {
     try {
       await adminDeleteReadNotifications(auth.accessToken);
       load();
+      refreshBadges();
     } catch (err) {
       setActionError(errorMessage(err));
     }

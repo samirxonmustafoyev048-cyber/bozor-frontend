@@ -24,10 +24,11 @@ const TITLES: Record<string, string> = {
 };
 
 export default function AdminTopbar({
-  pendingOrders,
+  unreadNotifications,
   onMenuClick,
 }: {
-  pendingOrders: number;
+  /** The bell links to the notifications page, so it counts those — not orders. */
+  unreadNotifications: number;
   onMenuClick: () => void;
 }) {
   const pathname = usePathname();
@@ -98,9 +99,9 @@ export default function AdminTopbar({
           className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-lg hover:bg-brand-50"
         >
           <Bell aria-hidden className="h-5 w-5 text-foreground/80" />
-          {pendingOrders > 0 && (
+          {unreadNotifications > 0 && (
             <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-danger-500 px-1 text-[10px] font-bold text-white">
-              {pendingOrders > 99 ? "99+" : pendingOrders}
+              {unreadNotifications > 99 ? "99+" : unreadNotifications}
             </span>
           )}
         </Link>
