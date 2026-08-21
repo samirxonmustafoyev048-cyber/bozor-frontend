@@ -42,6 +42,27 @@ export default async function BranchesPage() {
           backgroundSize: "14px 14px",
         }}
       />
+      {/* The mock-up sweeps a leaf across the top-right corner; it sits behind
+          the cards and never crosses the column the text runs in. */}
+      <svg
+        aria-hidden
+        viewBox="0 0 200 200"
+        className="pointer-events-none absolute -right-10 -top-16 hidden h-80 w-80 text-brand-500/25 lg:block"
+        fill="none"
+      >
+        <path
+          d="M20 180C20 100 80 30 180 20c10 90-50 150-130 160"
+          stroke="currentColor"
+          strokeWidth="10"
+          strokeLinecap="round"
+        />
+        <path
+          d="M60 150c30-50 70-80 110-95"
+          stroke="currentColor"
+          strokeWidth="6"
+          strokeLinecap="round"
+        />
+      </svg>
 
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/50">
@@ -96,10 +117,25 @@ function BranchCard({ branch }: { branch: Branch }) {
           className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
       ) : (
-        // Until a storefront photo is set in the admin panel, a tinted panel
-        // keeps the card's proportions instead of collapsing it.
-        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-brand-900/70 to-brand-800/40">
-          <Store aria-hidden className="h-10 w-10 text-white/25" />
+        // Most branches have no storefront photo yet. A flat tint read as a
+        // loading failure, so the card keeps the same shape with a deliberate
+        // pattern behind the shop mark.
+        <div className="absolute inset-0 bg-gradient-to-br from-brand-800 to-[#0b2417]">
+          <span
+            aria-hidden
+            className="absolute inset-0 opacity-40"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle, rgba(255,255,255,0.16) 1.2px, transparent 1.2px)",
+              backgroundSize: "18px 18px",
+            }}
+          />
+          <span className="absolute inset-x-0 top-1/2 flex -translate-y-1/2 flex-col items-center gap-2">
+            <Store aria-hidden className="h-11 w-11 text-white/35" />
+            <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/35">
+              Filial
+            </span>
+          </span>
         </div>
       )}
 
@@ -127,13 +163,13 @@ function BranchCard({ branch }: { branch: Branch }) {
             href={googleMapsUrl(branch)}
             label="Google Maps"
             className="bg-brand-600 text-white hover:bg-brand-700"
-            dotClassName="bg-white"
+            pinColor="#EA4335"
           />
           <MapLink
             href={yandexMapsUrl(branch)}
             label="Yandex Maps"
             className="border border-white/20 bg-black/40 text-white backdrop-blur-sm hover:bg-black/60"
-            dotClassName="bg-red-500"
+            pinColor="#FC3F1D"
           />
         </div>
       </div>
@@ -141,16 +177,39 @@ function BranchCard({ branch }: { branch: Branch }) {
   );
 }
 
+/**
+ * The provider's pin, drawn inline. The real logos are trademarked artwork we
+ * cannot ship, and loading them from the provider would put an external
+ * request on every card — the pin in their colour reads the same at this size.
+ */
+function ProviderPin({ color }: { color: string }) {
+  return (
+    <svg
+      aria-hidden
+      viewBox="0 0 24 24"
+      className="h-4 w-4 shrink-0"
+      fill="none"
+    >
+      <circle cx="12" cy="12" r="11" fill="white" />
+      <path
+        d="M12 5.5c-2.6 0-4.7 2.1-4.7 4.7 0 3.5 4.7 8.3 4.7 8.3s4.7-4.8 4.7-8.3c0-2.6-2.1-4.7-4.7-4.7Z"
+        fill={color}
+      />
+      <circle cx="12" cy="10.2" r="1.7" fill="white" />
+    </svg>
+  );
+}
+
 function MapLink({
   href,
   label,
   className,
-  dotClassName,
+  pinColor,
 }: {
   href: string;
   label: string;
   className: string;
-  dotClassName: string;
+  pinColor: string;
 }) {
   return (
     <a
@@ -159,11 +218,7 @@ function MapLink({
       rel="noopener noreferrer"
       className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors ${className}`}
     >
-      {/* Stands in for the provider's logo, which we cannot ship as an asset. */}
-      <span
-        aria-hidden
-        className={`h-2.5 w-2.5 shrink-0 rounded-full ${dotClassName}`}
-      />
+      <ProviderPin color={pinColor} />
       {label}
       <ArrowUpRight aria-hidden className="h-3.5 w-3.5" />
     </a>
