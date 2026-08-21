@@ -36,12 +36,12 @@ export default async function CareerHero() {
           </div>
         </div>
 
-        <div className="relative aspect-[4/3] lg:aspect-auto lg:h-full">
+        <div className="relative aspect-[4/3] overflow-hidden lg:aspect-auto lg:h-full">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={STOCK_PHOTOS.teamMeeting}
             alt={`${storeName} jamoasi`}
-            className="h-full w-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover"
           />
           <span className="absolute right-4 top-4 flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-sm font-extrabold text-brand-700 shadow-lg">
             <Leaf aria-hidden className="h-4 w-4 fill-current" />

@@ -36,12 +36,12 @@ export default function FeatureGrid() {
           key={f.title}
           className="overflow-hidden rounded-2xl border border-border bg-surface"
         >
-          <div className="relative aspect-[4/3]">
+          <div className="relative aspect-[4/3] overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={f.image}
               alt={f.title}
-              className="h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-cover"
             />
             <span className="absolute bottom-3 left-3 flex h-9 w-9 items-center justify-center rounded-full bg-white text-brand-600 shadow-md">
               <f.icon aria-hidden className="h-5 w-5" />

@@ -42,12 +42,12 @@ export default function FeaturedNewsCarousel() {
           </Link>
         </div>
 
-        <div className="relative order-1 aspect-[16/10] lg:order-2 lg:aspect-auto lg:h-80">
+        <div className="relative order-1 aspect-[16/10] overflow-hidden lg:order-2 lg:aspect-auto lg:h-80">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={item.image}
             alt={withStoreName(item.title, storeName)}
-            className="h-full w-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover"
           />
         </div>
       </div>

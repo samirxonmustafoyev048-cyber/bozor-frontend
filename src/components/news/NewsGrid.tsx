@@ -60,14 +60,18 @@ export default function NewsGrid() {
               key={item.id}
               className="flex flex-col overflow-hidden rounded-2xl border border-border bg-surface"
             >
-              <div className="relative aspect-[4/3]">
+              <div className="relative aspect-[4/3] overflow-hidden">
                 <span
                   className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-[10px] font-bold text-white ${NEWS_CATEGORY_COLOR[item.category]}`}
                 >
                   {NEWS_CATEGORY_LABEL[item.category]}
                 </span>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
               </div>
               <div className="flex flex-1 flex-col p-4">
                 <p className="text-xs text-muted">{item.date}</p>
