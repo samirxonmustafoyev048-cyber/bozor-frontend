@@ -22,8 +22,12 @@ export default function FilterSidebar({
   query?: string;
   formAction: string;
 }) {
+  // Sticky and capped to the space under the sticky header, with its own
+  // scrollbar: the category list used to push the page down, so reaching the
+  // price filter meant scrolling past the products. self-start stops the flex
+  // row from stretching it to the height of the grid.
   return (
-    <aside className="flex w-full flex-col gap-6 sm:w-56 sm:shrink-0">
+    <aside className="flex w-full flex-col gap-6 sm:sticky sm:top-28 sm:max-h-[calc(100vh-8rem)] sm:w-56 sm:shrink-0 sm:self-start sm:overflow-y-auto sm:pr-1">
       <div>
         <h3 className="text-sm font-semibold text-foreground">
           Kategoriyalar
