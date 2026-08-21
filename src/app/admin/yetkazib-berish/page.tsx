@@ -10,6 +10,7 @@ import {
   Wallet2,
   MoreVertical,
   Maximize,
+  Minimize,
   MapPin,
   Plus,
   Users,
@@ -49,6 +50,7 @@ export default function DeliveryDashboardPage() {
   const [error, setError] = useState(false);
   const [activeTab, setActiveTab] = useState<FilterTab>("barchasi");
   const mapCardRef = useRef<HTMLDivElement>(null);
+  const [mapFullscreen, setMapFullscreen] = useState(false);
 
   // Placing a branch runs in two steps: pick the spot on the map, then name it.
   const [picking, setPicking] = useState(false);
@@ -64,6 +66,16 @@ export default function DeliveryDashboardPage() {
   }, [auth]);
 
   useEffect(loadStats, [loadStats]);
+
+  // Escape and the browser's own control also leave fullscreen, so the layout
+  // follows the document rather than the button that asked for it.
+  useEffect(() => {
+    function onChange() {
+      setMapFullscreen(document.fullscreenElement === mapCardRef.current);
+    }
+    document.addEventListener("fullscreenchange", onChange);
+    return () => document.removeEventListener("fullscreenchange", onChange);
+  }, []);
 
   function handlePick(lat: number, lng: number) {
     setPicking(false);
@@ -195,7 +207,13 @@ export default function DeliveryDashboardPage() {
       <div className="grid gap-4 lg:grid-cols-3">
         <div
           ref={mapCardRef}
-          className="overflow-hidden rounded-2xl border border-border bg-surface lg:col-span-2"
+          // Fullscreen hands the card the whole screen; without the column
+          // layout the map keeps its 20rem box and the rest goes blank.
+          className={`overflow-hidden border-border bg-surface lg:col-span-2 ${
+            mapFullscreen
+              ? "flex h-full flex-col"
+              : "rounded-2xl border"
+          }`}
         >
           <div className="flex items-center justify-between p-5 pb-0 sm:p-6 sm:pb-0">
             <h3 className="font-bold text-foreground">Yetkazib berish xaritasi</h3>
@@ -217,12 +235,20 @@ export default function DeliveryDashboardPage() {
                 onClick={toggleMapFullscreen}
                 className="flex items-center gap-1.5 rounded-lg border border-border px-2.5 py-1.5 text-xs font-medium text-foreground/80 hover:bg-brand-50"
               >
-                <Maximize aria-hidden className="h-3.5 w-3.5" />
-                To&apos;liq ekran
+                {mapFullscreen ? (
+                  <Minimize aria-hidden className="h-3.5 w-3.5" />
+                ) : (
+                  <Maximize aria-hidden className="h-3.5 w-3.5" />
+                )}
+                {mapFullscreen ? "Chiqish" : "To'liq ekran"}
               </button>
             </div>
           </div>
-          <div className="relative mt-4 h-72 sm:h-80">
+          <div
+            className={`relative mt-4 ${
+              mapFullscreen ? "min-h-0 flex-1" : "h-72 sm:h-80"
+            }`}
+          >
             <div className="pointer-events-none absolute left-3 top-3 z-10 rounded-xl border border-border bg-surface/95 p-3 text-xs shadow-md backdrop-blur-sm">
               <p className="mb-1.5 flex items-center gap-1.5 font-semibold text-foreground">
                 <Users aria-hidden className="h-3.5 w-3.5 text-brand-600" />

@@ -7,6 +7,7 @@ import {
   Marker,
   Popup,
   Polyline,
+  useMap,
   useMapEvents,
 } from "react-leaflet";
 import L from "leaflet";
@@ -29,6 +30,21 @@ interface Branch {
   address: string;
   lat: number | null;
   lng: number | null;
+}
+
+/**
+ * Leaflet caches the container size and only redraws when told. Without this
+ * the map keeps its old dimensions after the card is resized — going
+ * fullscreen would leave the tiles filling just the original box.
+ */
+function ResizeHandler() {
+  const map = useMap();
+  useEffect(() => {
+    const observer = new ResizeObserver(() => map.invalidateSize());
+    observer.observe(map.getContainer());
+    return () => observer.disconnect();
+  }, [map]);
+  return null;
 }
 
 /**
@@ -85,6 +101,7 @@ export default function DeliveryMap({
       scrollWheelZoom={false}
       className={`h-full w-full ${onPick ? "cursor-crosshair" : ""}`}
     >
+      <ResizeHandler />
       {onPick && <ClickPicker onPick={onPick} />}
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
