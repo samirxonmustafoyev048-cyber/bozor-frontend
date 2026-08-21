@@ -16,6 +16,7 @@ import CartIndicator from "@/components/cart/CartIndicator";
 import CartSummary from "@/components/cart/CartSummary";
 import WishlistIndicator from "@/components/product/WishlistIndicator";
 import UserMenu from "@/components/layout/UserMenu";
+import { getStoreName, splitStoreName } from "@/lib/store-name";
 
 const navItems = [
   { label: "Aksiyalar", href: "/katalog?chegirma=true", icon: BadgePercent },
@@ -26,7 +27,9 @@ const navItems = [
   { label: "Yangiliklar", href: "/yangiliklar", icon: Newspaper },
 ];
 
-export default function Header() {
+export default async function Header() {
+  const [firstWord, rest] = splitStoreName(await getStoreName());
+
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-surface">
       {/* Main bar */}
@@ -37,8 +40,8 @@ export default function Header() {
           </span>
           <span>
             <span className="block text-lg font-extrabold leading-none tracking-tight sm:text-xl">
-              <span className="text-brand-600">Olma</span>{" "}
-              <span className="text-sky-600">Market</span>
+              <span className="text-brand-600">{firstWord}</span>{" "}
+              <span className="text-sky-600">{rest}</span>
             </span>
             <span className="hidden text-[10px] text-muted sm:block">
               Toza, sifatli va qulay

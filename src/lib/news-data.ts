@@ -17,7 +17,7 @@ export const featuredNews: NewsItem = {
   id: "yangi-logotip",
   category: "Yangiliklar",
   date: "1 May, 2024",
-  title: "Olma Market yangi logotip va brend identitetini taqdim etdi!",
+  title: "{store} yangi logotip va brend identitetini taqdim etdi!",
   description:
     "Yangi logotipimiz orqali biz yanada zamonaviy, ishonchli va qulay xizmatlarni taqdim etishni maqsad qilganmiz.",
   image: STOCK_PHOTOS.storeAisle,
@@ -73,7 +73,7 @@ export const newsItems: NewsItem[] = [
 ];
 
 export const mostRead: { id: string; title: string; views: number; image: string }[] = [
-  { id: "1", title: "Olma Marketda bahor chegirmalari boshlandi", views: 2400, image: STOCK_PHOTOS.qualityProduce },
+  { id: "1", title: "{store}da bahor chegirmalari boshlandi", views: 2400, image: STOCK_PHOTOS.qualityProduce },
   { id: "2", title: "Yetkazib berish vaqtlari yangicha tizimda ishlaydi", views: 1800, image: STOCK_PHOTOS.deliveryTruck },
   { id: "3", title: "Mobil ilova orqali buyurtma qilish bo'yicha qo'llanma", views: 1600, image: STOCK_PHOTOS.mobileCheckout },
   { id: "4", title: "Sifatli mahsulot – sog'lom hayot kaliti", views: 1300, image: STOCK_PHOTOS.vegetableBasket },

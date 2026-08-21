@@ -20,6 +20,7 @@ import {
   User,
   type LucideIcon,
 } from "lucide-react";
+import { getStoreName, splitStoreName } from "@/lib/store-name";
 
 const badges: { icon: LucideIcon; title: string; subtitle: string }[] = [
   { icon: BadgeCheck, title: "100%", subtitle: "Sifat kafolati" },
@@ -77,7 +78,10 @@ const fruits: {
   },
 ];
 
-export default function HeroBanner() {
+export default async function HeroBanner() {
+  const storeName = await getStoreName();
+  const [firstWord, rest] = splitStoreName(storeName);
+
   return (
     <div className="relative overflow-hidden rounded-3xl bg-white">
       {/* Background build-up, back to front: a green field anchored to the
@@ -109,8 +113,8 @@ export default function HeroBanner() {
           </span>
 
           <h1 className="mt-4 text-3xl font-extrabold leading-[1.12] text-foreground sm:text-4xl lg:text-[2.9rem]">
-            <span className="text-brand-600">Olma</span>{" "}
-            <span className="text-sky-600">Market</span> –
+            <span className="text-brand-600">{firstWord}</span>{" "}
+            <span className="text-sky-600">{rest}</span> –
             <br className="hidden sm:block" /> Xarid qilishning eng oson
             yo&apos;li!
           </h1>
@@ -204,7 +208,7 @@ export default function HeroBanner() {
               <div className="flex items-center justify-between bg-brand-600 px-2 py-1.5">
                 <span className="flex items-center gap-1 text-[9px] font-bold text-white">
                   <Apple aria-hidden className="h-2.5 w-2.5" />
-                  Olma Market
+                  {storeName}
                 </span>
                 <Bell aria-hidden className="h-2.5 w-2.5 text-white" />
               </div>

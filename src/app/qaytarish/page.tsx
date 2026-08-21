@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import { RotateCcw } from "lucide-react";
 import InfoPage, { Bullets, Section } from "@/components/info/InfoPage";
+import { getStoreName } from "@/lib/store-name";
 
-export const metadata: Metadata = {
-  title: "Qaytarish siyosati | Olma Market",
-  description:
-    "Olma Marketdan olingan mahsulotni qaytarish va pulni qaytarib olish tartibi.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const storeName = await getStoreName();
+  return {
+    title: "Qaytarish siyosati",
+    description:
+      `${storeName}dan olingan mahsulotni qaytarish va pulni qaytarib olish tartibi.`,
+  };
+}
 
 export default function ReturnsPage() {
   return (

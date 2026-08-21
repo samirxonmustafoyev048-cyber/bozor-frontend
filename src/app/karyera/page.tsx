@@ -4,13 +4,19 @@ import CareerStats from "@/components/careers/CareerStats";
 import JobListings from "@/components/careers/JobListings";
 import WhyUsPanel from "@/components/careers/WhyUsPanel";
 import TeamTestimonial from "@/components/careers/TeamTestimonial";
+import { getStoreName } from "@/lib/store-name";
 
-export const metadata: Metadata = {
-  title: "Karyera — Olma Market",
-  description: "Olma Market jamoasiga qo'shiling va birga o'samiz!",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const storeName = await getStoreName();
+  return {
+    title: "Karyera",
+    description: `${storeName} jamoasiga qo'shiling va birga o'samiz!`,
+  };
+}
 
-export default function CareerPage() {
+export default async function CareerPage() {
+  const storeName = await getStoreName();
+
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 py-6 sm:px-6 sm:py-8">
       <div>
@@ -18,7 +24,7 @@ export default function CareerPage() {
           Karyera
         </h1>
         <p className="mt-1 text-sm text-muted">
-          Olma Market jamoasiga qo&apos;shiling va birga o&apos;samiz!
+          {storeName} jamoasiga qo&apos;shiling va birga o&apos;samiz!
         </p>
       </div>
 

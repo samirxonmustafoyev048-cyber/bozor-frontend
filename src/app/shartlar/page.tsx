@@ -1,24 +1,30 @@
 import type { Metadata } from "next";
 import { FileText } from "lucide-react";
 import InfoPage, { Bullets, Section } from "@/components/info/InfoPage";
+import { getStoreName } from "@/lib/store-name";
 
-export const metadata: Metadata = {
-  title: "Foydalanish shartlari | Olma Market",
-  description:
-    "Olma Market onlayn do'konidan foydalanish qoidalari, buyurtma berish va tomonlarning majburiyatlari.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const storeName = await getStoreName();
+  return {
+    title: "Foydalanish shartlari",
+    description:
+      `${storeName} onlayn do'konidan foydalanish qoidalari, buyurtma berish va tomonlarning majburiyatlari.`,
+  };
+}
 
-export default function TermsPage() {
+export default async function TermsPage() {
+  const storeName = await getStoreName();
+
   return (
     <InfoPage
       icon={FileText}
       title="Foydalanish shartlari"
-      intro="Olma Market saytidan foydalanish orqali siz quyidagi shartlarga rozilik bildirasiz."
+      intro={`${storeName} saytidan foydalanish orqali siz quyidagi shartlarga rozilik bildirasiz.`}
       updatedAt="07.08.2026"
     >
       <Section title="1. Umumiy qoidalar">
         <p>
-          Olma Market — oziq-ovqat va maishiy mahsulotlarni onlayn buyurtma
+          {storeName} — oziq-ovqat va maishiy mahsulotlarni onlayn buyurtma
           qilish va yetkazib berish xizmati. Saytda ro&apos;yxatdan
           o&apos;tish yoki buyurtma berish shu shartlarni qabul qilganingizni
           bildiradi.

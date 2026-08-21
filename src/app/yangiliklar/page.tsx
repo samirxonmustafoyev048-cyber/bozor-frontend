@@ -3,13 +3,19 @@ import FeaturedNewsCarousel from "@/components/news/FeaturedNewsCarousel";
 import NewsGrid from "@/components/news/NewsGrid";
 import NewsSidebar from "@/components/news/NewsSidebar";
 import NewsletterBar from "@/components/news/NewsletterBar";
+import { getStoreName } from "@/lib/store-name";
 
-export const metadata: Metadata = {
-  title: "Yangiliklar — Olma Market",
-  description: "Olma Marketdagi barcha yangiliklar va e'lonlar",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const storeName = await getStoreName();
+  return {
+    title: "Yangiliklar",
+    description: `${storeName}dagi barcha yangiliklar va e'lonlar`,
+  };
+}
 
-export default function NewsPage() {
+export default async function NewsPage() {
+  const storeName = await getStoreName();
+
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 py-6 sm:px-6 sm:py-8">
       <div>
@@ -17,7 +23,7 @@ export default function NewsPage() {
           Yangiliklar
         </h1>
         <p className="mt-1 text-sm text-muted">
-          Olma Marketdagi barcha yangiliklar va e&apos;lonlar
+          {storeName}dagi barcha yangiliklar va e&apos;lonlar
         </p>
       </div>
 

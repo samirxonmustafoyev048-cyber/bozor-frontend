@@ -3,12 +3,16 @@ import { MapPin, ArrowUpRight, Store, Map } from "lucide-react";
 import { getBranches } from "@/lib/api";
 import { googleMapsUrl, yandexMapsUrl } from "@/lib/maps";
 import type { Branch } from "@/types/product";
+import { getStoreName } from "@/lib/store-name";
 
-export const metadata: Metadata = {
-  title: "Filiallar — Olma Market",
-  description:
-    "O'zbekiston bo'ylab joylashgan Olma Market filiallari: manzillar va xaritada yo'nalish.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const storeName = await getStoreName();
+  return {
+    title: "Filiallar",
+    description:
+      `O'zbekiston bo'ylab joylashgan ${storeName} filiallari: manzillar va xaritada yo'nalish.`,
+  };
+}
 
 // Branch names, addresses and photos are edited from the admin panel, so a
 // five-minute window made a fresh edit look like it had not saved. A minute
@@ -16,7 +20,10 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function BranchesPage() {
-  const branches = await getBranches({ revalidate: 60 });
+  const [branches, storeName] = await Promise.all([
+    getBranches({ revalidate: 60 }),
+    getStoreName(),
+  ]);
 
   return (
     <section className="relative overflow-hidden bg-[#0b2417] py-12 sm:py-16">
@@ -41,10 +48,10 @@ export default async function BranchesPage() {
           Bizning filiallarimiz
         </p>
         <h1 className="mt-2 text-3xl font-extrabold leading-tight text-white sm:text-4xl">
-          Sizga eng yaqin Olma Marketni toping
+          Sizga eng yaqin {storeName}ni toping
         </h1>
         <p className="mt-3 max-w-md text-sm leading-relaxed text-white/60">
-          O&apos;zbekiston bo&apos;ylab joylashgan Olma Market filiallaridan
+          O&apos;zbekiston bo&apos;ylab joylashgan {storeName} filiallaridan
           o&apos;zingizga eng qulayini tanlang.
         </p>
 

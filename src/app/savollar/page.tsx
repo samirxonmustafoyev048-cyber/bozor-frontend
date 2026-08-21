@@ -4,7 +4,7 @@ import { HelpCircle } from "lucide-react";
 import InfoPage from "@/components/info/InfoPage";
 
 export const metadata: Metadata = {
-  title: "Ko'p so'raladigan savollar | Olma Market",
+  title: "Ko'p so'raladigan savollar",
   description:
     "Buyurtma, yetkazib berish, to'lov va qaytarish bo'yicha eng ko'p so'raladigan savollarga javoblar.",
 };

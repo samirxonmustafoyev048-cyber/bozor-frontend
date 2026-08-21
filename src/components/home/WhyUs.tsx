@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { STOCK_PHOTOS } from "@/lib/stock-photos";
+import { getStoreName } from "@/lib/store-name";
 
 const points = [
   "1000+ mahsulot turi",
@@ -8,12 +9,14 @@ const points = [
   "O'zbekiston bo'ylab yetkazish",
 ];
 
-export default function WhyUs() {
+export default async function WhyUs() {
+  const storeName = await getStoreName();
+
   return (
     <section className="grid items-center gap-6 overflow-hidden rounded-3xl bg-gradient-to-br from-brand-50 to-white p-6 sm:p-8 lg:grid-cols-2 lg:gap-10">
       <div>
         <h2 className="text-2xl font-bold text-foreground sm:text-3xl">
-          Nega <span className="text-brand-600">Olma Market</span>?
+          Nega <span className="text-brand-600">{storeName}</span>?
         </h2>
         <p className="mt-3 max-w-md text-sm leading-relaxed text-muted">
           Biz sizga eng sifatli mahsulotlarni qulay narxlarda taqdim etamiz.
@@ -46,7 +49,7 @@ export default function WhyUs() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={STOCK_PHOTOS.customerService}
-          alt="Olma Market xaridorlari"
+          alt={`${storeName} xaridorlari`}
           loading="lazy"
           decoding="async"
           className="h-56 w-full object-cover sm:h-72"

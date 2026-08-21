@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import { STOCK_PHOTOS } from "@/lib/stock-photos";
+import { useStoreName } from "@/context/StoreNameContext";
+import { withStoreName } from "@/lib/store-name";
 
 const testimonials = [
   {
     quote:
-      "Olma Marketda ishlash menga katta tajriba va rivojlanish imkonini berdi. Bu yerda har bir fikr e'tiborga olinadi va qo'llab-quvvatlanadi.",
+      "{store}da ishlash menga katta tajriba va rivojlanish imkonini berdi. Bu yerda har bir fikr e'tiborga olinadi va qo'llab-quvvatlanadi.",
     name: "Malika Yusupova",
     role: "Marketing menejeri",
   },
@@ -26,6 +28,7 @@ const testimonials = [
 
 export default function TeamTestimonial() {
   const [active, setActive] = useState(0);
+  const storeName = useStoreName();
   const t = testimonials[active];
 
   return (
@@ -33,7 +36,7 @@ export default function TeamTestimonial() {
       <h2 className="text-sm font-bold text-foreground">
         Jamoamiz nima deydi?
       </h2>
-      <p className="mt-3 text-sm italic text-muted">&ldquo;{t.quote}&rdquo;</p>
+      <p className="mt-3 text-sm italic text-muted">&ldquo;{withStoreName(t.quote, storeName)}&rdquo;</p>
       <div className="mt-4 flex items-center gap-3">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img

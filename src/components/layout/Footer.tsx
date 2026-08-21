@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Send, Camera, ThumbsUp, Heart, Phone, Mail, MapPin } from "lucide-react";
 import { getSettings } from "@/lib/api";
+import { FALLBACK_STORE_NAME } from "@/lib/store-name";
 
 const columns = [
   {
@@ -31,13 +32,14 @@ const columns = [
 
 export default async function Footer() {
   const settings = await getSettings({ revalidate: 300 }).catch(() => null);
+  const storeName = settings?.storeName?.trim() || FALLBACK_STORE_NAME;
 
   return (
     <footer className="mt-auto border-t border-border bg-surface">
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-4 py-10 sm:px-6 md:grid-cols-6">
         <div className="col-span-2">
           <span className="text-xl font-extrabold tracking-tight text-brand-700">
-            Olma Market
+            {storeName}
           </span>
           <p className="mt-2 max-w-xs text-sm text-muted">
             Kundalik oziq-ovqat va maishiy mahsulotlarni tez va qulay
@@ -122,7 +124,10 @@ export default async function Footer() {
 
       <div className="border-t border-border">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 py-4 text-xs text-muted sm:flex-row sm:px-6">
-          <p>© {new Date().getFullYear()} Olma Market. Barcha huquqlar himoyalangan.</p>
+          <p>
+            © {new Date().getFullYear()} {storeName}. Barcha huquqlar
+            himoyalangan.
+          </p>
           <p className="flex items-center gap-1">
             Ishlab chiqildi O&apos;zbekiston uchun
             <Heart aria-hidden className="h-3.5 w-3.5 fill-current text-brand-600" />

@@ -1,8 +1,11 @@
 import Link from "next/link";
 import { Eye, Send, Camera, ThumbsUp, Video, Megaphone } from "lucide-react";
 import { mostRead, newsCategories, formatViews } from "@/lib/news-data";
+import { getStoreName, withStoreName } from "@/lib/store-name";
 
-export default function NewsSidebar() {
+export default async function NewsSidebar() {
+  const storeName = await getStoreName();
+
   return (
     <aside className="flex flex-col gap-6">
       <div className="rounded-2xl border border-border bg-surface p-5">
@@ -21,12 +24,12 @@ export default function NewsSidebar() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={item.image}
-                alt={item.title}
+                alt={withStoreName(item.title, storeName)}
                 className="h-11 w-11 shrink-0 rounded-lg object-cover"
               />
               <div className="min-w-0">
                 <p className="line-clamp-2 text-xs font-semibold text-foreground">
-                  {item.title}
+                  {withStoreName(item.title, storeName)}
                 </p>
                 <span className="mt-0.5 flex items-center gap-1 text-[11px] text-muted">
                   <Eye aria-hidden className="h-3 w-3" />

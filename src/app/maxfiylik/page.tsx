@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import { ShieldCheck } from "lucide-react";
 import InfoPage, { Bullets, Section } from "@/components/info/InfoPage";
+import { getStoreName } from "@/lib/store-name";
 
-export const metadata: Metadata = {
-  title: "Maxfiylik siyosati | Olma Market",
-  description:
-    "Olma Market shaxsiy ma'lumotlaringizni qanday to'playdi, ishlatadi va himoya qiladi.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const storeName = await getStoreName();
+  return {
+    title: "Maxfiylik siyosati",
+    description:
+      `${storeName} shaxsiy ma'lumotlaringizni qanday to'playdi, ishlatadi va himoya qiladi.`,
+  };
+}
 
 export default function PrivacyPage() {
   return (

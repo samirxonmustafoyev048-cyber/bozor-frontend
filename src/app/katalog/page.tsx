@@ -6,7 +6,7 @@ import { getCategories, getProducts } from "@/lib/api";
 import { parseCatalogFilters, type CatalogSearchParams } from "@/lib/catalog-params";
 
 export const metadata: Metadata = {
-  title: "Katalog — Olma Market",
+  title: "Katalog",
 };
 
 export default async function CatalogPage({

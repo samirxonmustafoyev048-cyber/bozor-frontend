@@ -5,10 +5,13 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { newsItems, featuredNews, type NewsItem } from "@/lib/news-data";
 import { NEWS_CATEGORY_COLOR, NEWS_CATEGORY_LABEL } from "@/lib/news-category-style";
+import { useStoreName } from "@/context/StoreNameContext";
+import { withStoreName } from "@/lib/store-name";
 
 const slides: NewsItem[] = [featuredNews, ...newsItems.slice(0, 3)];
 
 export default function FeaturedNewsCarousel() {
+  const storeName = useStoreName();
   const [active, setActive] = useState(0);
   const item = slides[active];
 
@@ -27,7 +30,7 @@ export default function FeaturedNewsCarousel() {
             <span className="text-muted">{item.date}</span>
           </div>
           <h2 className="mt-3 text-2xl font-extrabold leading-tight text-foreground sm:text-3xl">
-            {item.title}
+            {withStoreName(item.title, storeName)}
           </h2>
           <p className="mt-3 max-w-md text-sm text-muted">{item.description}</p>
           <Link
@@ -41,7 +44,11 @@ export default function FeaturedNewsCarousel() {
 
         <div className="relative order-1 aspect-[16/10] lg:order-2 lg:aspect-auto lg:h-80">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
+          <img
+            src={item.image}
+            alt={withStoreName(item.title, storeName)}
+            className="h-full w-full object-cover"
+          />
         </div>
       </div>
 

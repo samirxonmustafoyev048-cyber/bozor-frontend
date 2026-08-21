@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { Apple, ScanLine, Boxes, Settings, Store, type LucideIcon } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import UserMenu from "@/components/layout/UserMenu";
+import { useStoreName } from "@/context/StoreNameContext";
+import { splitStoreName } from "@/lib/store-name";
 import type { Role } from "@/types/product";
 
 interface Panel {
@@ -30,6 +32,7 @@ const PANELS: Panel[] = [
 export default function StaffBar() {
   const pathname = usePathname();
   const { auth } = useAuth();
+  const [firstWord, rest] = splitStoreName(useStoreName());
 
   const panels = auth
     ? PANELS.filter((panel) => panel.roles.includes(auth.user.role))
@@ -43,8 +46,8 @@ export default function StaffBar() {
             <Apple aria-hidden className="h-4 w-4" />
           </span>
           <span className="hidden text-base font-extrabold leading-none tracking-tight sm:block">
-            <span className="text-brand-600">Olma</span>{" "}
-            <span className="text-sky-600">Market</span>
+            <span className="text-brand-600">{firstWord}</span>{" "}
+            <span className="text-sky-600">{rest}</span>
           </span>
         </Link>
 

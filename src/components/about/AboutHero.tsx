@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Leaf, ArrowRight, Award, ShieldCheck, Headset } from "lucide-react";
 import { STOCK_PHOTOS } from "@/lib/stock-photos";
+import { getStoreName } from "@/lib/store-name";
 
 const values = [
   { icon: Award, title: "Sifat", subtitle: "Faqat eng yaxshi mahsulotlar" },
@@ -8,7 +9,9 @@ const values = [
   { icon: Headset, title: "Xizmat", subtitle: "Tez va samimiy xizmat ko'rsatish" },
 ];
 
-export default function AboutHero() {
+export default async function AboutHero() {
+  const storeName = await getStoreName();
+
   return (
     <section className="grid gap-16 lg:grid-cols-2 lg:items-center">
       <div className="relative z-10">
@@ -17,10 +20,10 @@ export default function AboutHero() {
           Biz haqimizda
         </span>
         <h1 className="mt-4 text-3xl font-extrabold leading-tight text-foreground sm:text-4xl lg:text-5xl">
-          Olma Market – sifatli mahsulotlar va ishonchli xizmat
+          {storeName} – sifatli mahsulotlar va ishonchli xizmat
         </h1>
         <p className="mt-4 max-w-md text-sm text-muted sm:text-base">
-          Olma Market 2023-yilda tashkil etilgan bo&apos;lib, maqsadimiz — har
+          {storeName} 2023-yilda tashkil etilgan bo&apos;lib, maqsadimiz — har
           bir mijozga eng sifatli mahsulotlarni qulay narxda va tez yetkazib
           berish orqali taqdim etish. Biz sizning vaqtingizni qadrlaymiz va
           har doim sifat hamda xizmatni birinchi o&apos;ringa qo&apos;yamiz.
@@ -39,12 +42,12 @@ export default function AboutHero() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={STOCK_PHOTOS.storeAisle}
-            alt="Olma Market do'koni"
+            alt={`${storeName} do'koni`}
             className="h-full w-full object-cover"
           />
           <span className="absolute right-4 top-4 flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-sm font-extrabold text-brand-700 shadow-lg">
             <Leaf aria-hidden className="h-4 w-4 fill-current" />
-            Olma Market
+            {storeName}
           </span>
         </div>
 

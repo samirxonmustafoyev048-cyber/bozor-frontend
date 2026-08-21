@@ -3,12 +3,16 @@ import { CreditCard, Banknote, Wallet2, ShieldCheck } from "lucide-react";
 import InfoPage, { Bullets, Section } from "@/components/info/InfoPage";
 import { getSettings } from "@/lib/api";
 import { formatSom } from "@/lib/format";
+import { getStoreName } from "@/lib/store-name";
 
-export const metadata: Metadata = {
-  title: "To'lov usullari | Olma Market",
-  description:
-    "Olma Marketda naqd pul, bank kartasi, Payme va Click orqali to'lash imkoniyatlari.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const storeName = await getStoreName();
+  return {
+    title: "To'lov usullari",
+    description:
+      `${storeName}da naqd pul, bank kartasi, Payme va Click orqali to'lash imkoniyatlari.`,
+  };
+}
 
 const methods = [
   {

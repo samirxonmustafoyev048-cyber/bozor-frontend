@@ -23,6 +23,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { useStoreName } from "@/context/StoreNameContext";
+import { splitStoreName } from "@/lib/store-name";
 
 interface NavItem {
   label: string;
@@ -44,6 +46,7 @@ export default function AdminSidebar({
 }) {
   const pathname = usePathname();
   const { auth } = useAuth();
+  const [firstWord, rest] = splitStoreName(useStoreName());
 
   const boshqaruv: NavItem[] = [
     { label: "Bosh panel", href: "/admin", icon: Home },
@@ -119,8 +122,8 @@ export default function AdminSidebar({
           <Apple aria-hidden className="h-5 w-5" />
         </span>
         <span className="text-lg font-extrabold tracking-tight">
-          <span className="text-brand-600">Olma</span>{" "}
-          <span className="text-sky-600">Market</span>
+          <span className="text-brand-600">{firstWord}</span>{" "}
+          <span className="text-sky-600">{rest}</span>
         </span>
       </Link>
 

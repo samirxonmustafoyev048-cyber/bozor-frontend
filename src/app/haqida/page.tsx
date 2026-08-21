@@ -2,14 +2,20 @@ import type { Metadata } from "next";
 import AboutHero from "@/components/about/AboutHero";
 import StatsBar from "@/components/about/StatsBar";
 import FeatureGrid from "@/components/about/FeatureGrid";
+import { getStoreName } from "@/lib/store-name";
 
-export const metadata: Metadata = {
-  title: "Biz haqimizda — Olma Market",
-  description:
-    "Olma Market — sifatli mahsulotlar, qulay narxlar va ishonchli yetkazib berish xizmati.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const storeName = await getStoreName();
+  return {
+    title: "Biz haqimizda",
+    description:
+      `${storeName} — sifatli mahsulotlar, qulay narxlar va ishonchli yetkazib berish xizmati.`,
+  };
+}
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const storeName = await getStoreName();
+
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-12 px-4 py-10 sm:px-6 sm:py-14">
       <AboutHero />
@@ -20,7 +26,7 @@ export default function AboutPage() {
         <span aria-hidden className="text-2xl text-brand-300">
           &ldquo;
         </span>
-        Olma Market – Sifatli mahsulot, qulay narx va ishonchli xizmat bir
+        {storeName} – Sifatli mahsulot, qulay narx va ishonchli xizmat bir
         joyda!
         <span aria-hidden className="text-2xl text-brand-300">
           &rdquo;

@@ -19,7 +19,7 @@ export async function generateMetadata({
   try {
     const product = await getProductBySlug(slug, { revalidate: 60 });
     return {
-      title: `${product.name} — Olma Market`,
+      title: `${product.name}`,
       description: product.description,
       openGraph: {
         title: product.name,
@@ -27,7 +27,7 @@ export async function generateMetadata({
       },
     };
   } catch {
-    return { title: "Mahsulot — Olma Market" };
+    return { title: "Mahsulot" };
   }
 }
 

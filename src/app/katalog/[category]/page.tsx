@@ -16,9 +16,9 @@ export async function generateMetadata({
   const { category } = await params;
   try {
     const found = await getCategoryBySlug(category, { revalidate: 300 });
-    return { title: `${found.name} — Olma Market` };
+    return { title: `${found.name}` };
   } catch {
-    return { title: "Katalog — Olma Market" };
+    return { title: "Katalog" };
   }
 }
 

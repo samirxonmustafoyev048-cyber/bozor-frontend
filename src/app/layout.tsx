@@ -6,6 +6,8 @@ import SiteChrome from "@/components/layout/SiteChrome";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import { AuthProvider } from "@/context/AuthContext";
+import { StoreNameProvider } from "@/context/StoreNameContext";
+import { getStoreName } from "@/lib/store-name";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,43 +20,56 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
-  ),
-  title: {
-    default: "Olma Market — onlayn oziq-ovqat do'koni",
-    template: "%s — Olma Market",
-  },
-  description:
-    "Kundalik oziq-ovqat va maishiy mahsulotlarni onlayn buyurtma qiling, tez va qulay yetkazib berish xizmatidan foydalaning.",
-  openGraph: {
-    type: "website",
-    locale: "uz_UZ",
-    siteName: "Olma Market",
-  },
-};
+/**
+ * The shop name comes from Sozlamalar, so the tab title has to be built at
+ * request time rather than declared as a constant. `template` appends it to
+ * every page's own title — pages set only their part.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const storeName = await getStoreName();
 
-export default function RootLayout({
+  return {
+    metadataBase: new URL(
+      process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
+    ),
+    title: {
+      default: `${storeName} — onlayn oziq-ovqat do'koni`,
+      template: `%s — ${storeName}`,
+    },
+    description:
+      "Kundalik oziq-ovqat va maishiy mahsulotlarni onlayn buyurtma qiling, tez va qulay yetkazib berish xizmatidan foydalaning.",
+    openGraph: {
+      type: "website",
+      locale: "uz_UZ",
+      siteName: storeName,
+    },
+  };
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const storeName = await getStoreName();
+
   return (
     <html
       lang="uz"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <AuthProvider>
-          <CartProvider>
-            <WishlistProvider>
-              <SiteChrome header={<Header />} footer={<Footer />}>
-                {children}
-              </SiteChrome>
-            </WishlistProvider>
-          </CartProvider>
-        </AuthProvider>
+        <StoreNameProvider value={storeName}>
+          <AuthProvider>
+            <CartProvider>
+              <WishlistProvider>
+                <SiteChrome header={<Header />} footer={<Footer />}>
+                  {children}
+                </SiteChrome>
+              </WishlistProvider>
+            </CartProvider>
+          </AuthProvider>
+        </StoreNameProvider>
       </body>
     </html>
   );
