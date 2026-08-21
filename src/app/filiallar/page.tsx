@@ -4,6 +4,7 @@ import { getBranches } from "@/lib/api";
 import { googleMapsUrl, yandexMapsUrl } from "@/lib/maps";
 import type { Branch } from "@/types/product";
 import { getStoreName } from "@/lib/store-name";
+import { assignBranchPhotos } from "@/lib/branch-photos";
 
 export async function generateMetadata(): Promise<Metadata> {
   const storeName = await getStoreName();
@@ -24,6 +25,7 @@ export default async function BranchesPage() {
     getBranches({ revalidate: 60 }),
     getStoreName(),
   ]);
+  const photos = assignBranchPhotos(branches);
 
   return (
     <section className="relative overflow-hidden bg-[#0b2417] py-12 sm:py-16">
@@ -82,8 +84,8 @@ export default async function BranchesPage() {
           </p>
         ) : (
           <div className="mt-8 grid gap-5 md:grid-cols-2">
-            {branches.map((branch) => (
-              <BranchCard key={branch.id} branch={branch} />
+            {branches.map((branch, i) => (
+              <BranchCard key={branch.id} branch={branch} photo={photos[i]} />
             ))}
           </div>
         )}
@@ -104,13 +106,13 @@ export default async function BranchesPage() {
   );
 }
 
-function BranchCard({ branch }: { branch: Branch }) {
+function BranchCard({ branch, photo }: { branch: Branch; photo: string }) {
   return (
     <article className="group relative overflow-hidden rounded-2xl border border-white/10 transition-colors hover:border-white/25">
-      {branch.imageUrl ? (
+      {photo ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={branch.imageUrl}
+          src={photo}
           alt={`${branch.name} binosi`}
           loading="lazy"
           decoding="async"
