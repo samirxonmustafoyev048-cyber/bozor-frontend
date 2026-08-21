@@ -3,7 +3,11 @@
 import { useEffect, useState } from "react";
 import { Save, Check } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
-import { getSettings, adminUpdateSettings, type StoreSettings } from "@/lib/api";
+import {
+  getSettings,
+  adminUpdateSettings,
+  type StoreSettings,
+} from "@/lib/api";
 
 type FormState = Pick<
   StoreSettings,
@@ -83,93 +87,106 @@ export default function AdminSettingsPage() {
         </p>
       </div>
 
-      <form
-        onSubmit={handleSubmit}
-        className="flex max-w-2xl flex-col gap-6"
-      >
-        <div className="rounded-2xl border border-border bg-surface p-5 sm:p-6">
-          <h2 className="font-bold text-foreground">Do&apos;kon ma&apos;lumotlari</h2>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            <label className="flex flex-col gap-1.5 text-sm">
-              Do&apos;kon nomi
-              <input
-                required
-                value={form.storeName}
-                onChange={(e) => setForm({ ...form, storeName: e.target.value })}
-                className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
-              />
-            </label>
-            <label className="flex flex-col gap-1.5 text-sm">
-              Yetkazib berish narxi (so&apos;m)
-              <input
-                required
-                type="number"
-                min={0}
-                value={form.deliveryFee}
-                onChange={(e) =>
-                  setForm({ ...form, deliveryFee: Number(e.target.value) })
-                }
-                className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
-              />
-            </label>
-            <label className="flex flex-col gap-1.5 text-sm">
-              Aloqa telefoni
-              <input
-                required
-                value={form.contactPhone}
-                onChange={(e) => setForm({ ...form, contactPhone: e.target.value })}
-                className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
-              />
-            </label>
-            <label className="flex flex-col gap-1.5 text-sm">
-              Aloqa emaili
-              <input
-                required
-                type="email"
-                value={form.contactEmail}
-                onChange={(e) => setForm({ ...form, contactEmail: e.target.value })}
-                className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
-              />
-            </label>
+      <form onSubmit={handleSubmit} className="max-w-6xl">
+        <div className="grid items-start gap-5 lg:grid-cols-2">
+          <div className="rounded-2xl border border-border bg-surface p-5 sm:p-6">
+            <h2 className="font-bold text-foreground">
+              Do&apos;kon ma&apos;lumotlari
+            </h2>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <label className="flex flex-col gap-1.5 text-sm">
+                Do&apos;kon nomi
+                <input
+                  required
+                  value={form.storeName}
+                  onChange={(e) =>
+                    setForm({ ...form, storeName: e.target.value })
+                  }
+                  className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
+                />
+              </label>
+              <label className="flex flex-col gap-1.5 text-sm">
+                Yetkazib berish narxi (so&apos;m)
+                <input
+                  required
+                  type="number"
+                  min={0}
+                  value={form.deliveryFee}
+                  onChange={(e) =>
+                    setForm({ ...form, deliveryFee: Number(e.target.value) })
+                  }
+                  className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
+                />
+              </label>
+              <label className="flex flex-col gap-1.5 text-sm">
+                Aloqa telefoni
+                <input
+                  required
+                  value={form.contactPhone}
+                  onChange={(e) =>
+                    setForm({ ...form, contactPhone: e.target.value })
+                  }
+                  className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
+                />
+              </label>
+              <label className="flex flex-col gap-1.5 text-sm">
+                Aloqa emaili
+                <input
+                  required
+                  type="email"
+                  value={form.contactEmail}
+                  onChange={(e) =>
+                    setForm({ ...form, contactEmail: e.target.value })
+                  }
+                  className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
+                />
+              </label>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-border bg-surface p-5 sm:p-6">
+            <h2 className="font-bold text-foreground">Ijtimoiy tarmoqlar</h2>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <label className="flex flex-col gap-1.5 text-sm">
+                Telegram
+                <input
+                  placeholder="https://t.me/..."
+                  value={form.telegramUrl ?? ""}
+                  onChange={(e) =>
+                    setForm({ ...form, telegramUrl: e.target.value })
+                  }
+                  className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
+                />
+              </label>
+              <label className="flex flex-col gap-1.5 text-sm">
+                Instagram
+                <input
+                  placeholder="https://instagram.com/..."
+                  value={form.instagramUrl ?? ""}
+                  onChange={(e) =>
+                    setForm({ ...form, instagramUrl: e.target.value })
+                  }
+                  className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
+                />
+              </label>
+              <label className="flex flex-col gap-1.5 text-sm">
+                Facebook
+                <input
+                  placeholder="https://facebook.com/..."
+                  value={form.facebookUrl ?? ""}
+                  onChange={(e) =>
+                    setForm({ ...form, facebookUrl: e.target.value })
+                  }
+                  className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
+                />
+              </label>
+            </div>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-border bg-surface p-5 sm:p-6">
-          <h2 className="font-bold text-foreground">Ijtimoiy tarmoqlar</h2>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            <label className="flex flex-col gap-1.5 text-sm">
-              Telegram
-              <input
-                placeholder="https://t.me/..."
-                value={form.telegramUrl ?? ""}
-                onChange={(e) => setForm({ ...form, telegramUrl: e.target.value })}
-                className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
-              />
-            </label>
-            <label className="flex flex-col gap-1.5 text-sm">
-              Instagram
-              <input
-                placeholder="https://instagram.com/..."
-                value={form.instagramUrl ?? ""}
-                onChange={(e) => setForm({ ...form, instagramUrl: e.target.value })}
-                className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
-              />
-            </label>
-            <label className="flex flex-col gap-1.5 text-sm">
-              Facebook
-              <input
-                placeholder="https://facebook.com/..."
-                value={form.facebookUrl ?? ""}
-                onChange={(e) => setForm({ ...form, facebookUrl: e.target.value })}
-                className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-brand-500"
-              />
-            </label>
-          </div>
-        </div>
+        {error && <p className="mt-4 text-sm text-danger-600">{error}</p>}
 
-        {error && <p className="text-sm text-danger-600">{error}</p>}
-
-        <div className="flex items-center gap-3">
+        <div className="mt-6 flex items-center gap-3">
           <button
             type="submit"
             disabled={saving}
