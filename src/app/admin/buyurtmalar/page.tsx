@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Check } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { useAdminBadges } from "@/context/AdminBadgesContext";
 import { adminGetOrders, adminUpdateOrderStatus } from "@/lib/api";
 import { formatSom, formatDate } from "@/lib/format";
 import type { Order, OrderStatus } from "@/types/product";
@@ -19,6 +20,7 @@ const STATUS_OPTIONS: { value: OrderStatus; label: string }[] = [
 
 export default function AdminOrdersPage() {
   const { auth } = useAuth();
+  const { refresh: refreshBadges } = useAdminBadges();
   const [orders, setOrders] = useState<Order[]>([]);
   const [actionError, setActionError] = useState<string | null>(null);
 
@@ -37,6 +39,7 @@ export default function AdminOrdersPage() {
     try {
       await adminUpdateOrderStatus(auth.accessToken, orderId, status);
       loadOrders();
+      refreshBadges();
     } catch (err) {
       setActionError(errorMessage(err));
     }
