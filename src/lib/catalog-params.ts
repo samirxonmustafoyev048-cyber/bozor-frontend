@@ -29,7 +29,9 @@ export function parseCatalogFilters(
     category,
     minPrice: min ? Number(min) : undefined,
     maxPrice: max ? Number(max) : undefined,
-    discountOnly: first(searchParams.chegirma) === "true",
+    // Left undefined rather than false when the box is unticked, so the
+    // filter never reaches the API as a parameter it has to interpret.
+    discountOnly: first(searchParams.chegirma) === "true" ? true : undefined,
     query: first(searchParams.q),
     sort: SORT_VALUES.includes(sort as SortOption) ? (sort as SortOption) : "popular",
   };

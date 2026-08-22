@@ -8,7 +8,7 @@ import ProductImage from "@/components/product/ProductImage";
 import { ApiError, getProductBySlug, getRelatedProducts } from "@/lib/api";
 import { discountPercent, formatSom } from "@/lib/format";
 
-export const revalidate = 60;
+// The page reads the product fresh on every request, so no page-level window.
 
 export async function generateMetadata({
   params,
@@ -17,7 +17,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   try {
-    const product = await getProductBySlug(slug, { revalidate: 60 });
+    const product = await getProductBySlug(slug);
     return {
       title: `${product.name}`,
       description: product.description,
@@ -40,7 +40,7 @@ export default async function ProductPage({
 
   let product;
   try {
-    product = await getProductBySlug(slug, { revalidate: 60 });
+    product = await getProductBySlug(slug);
   } catch (err) {
     if (err instanceof ApiError && err.status === 404) {
       notFound();
@@ -48,7 +48,7 @@ export default async function ProductPage({
     throw err;
   }
 
-  const related = await getRelatedProducts(slug, { revalidate: 60 });
+  const related = await getRelatedProducts(slug);
   const hasDiscount = !!product.discountPrice;
 
   const jsonLd = {

@@ -46,18 +46,17 @@ export default async function CategoryPage({
 
   const [categories, result] = await Promise.all([
     getCategories({ revalidate: 300 }),
-    getProducts(
-      {
-        category,
-        minPrice: filters.minPrice,
-        maxPrice: filters.maxPrice,
-        discountOnly: filters.discountOnly,
-        q: filters.query,
-        sort: filters.sort,
-        pageSize: 100,
-      },
-      { revalidate: 60 }
-    ),
+    // Read fresh, like /katalog: a product added in the admin panel should
+    // appear in its category without waiting for a cache window to pass.
+    getProducts({
+      category,
+      minPrice: filters.minPrice,
+      maxPrice: filters.maxPrice,
+      discountOnly: filters.discountOnly,
+      q: filters.query,
+      sort: filters.sort,
+      pageSize: 100,
+    }),
   ]);
 
   return (

@@ -19,17 +19,16 @@ export default async function CatalogPage({
 
   const [categories, result] = await Promise.all([
     getCategories({ revalidate: 300 }),
-    getProducts(
-      {
-        minPrice: filters.minPrice,
-        maxPrice: filters.maxPrice,
-        discountOnly: filters.discountOnly,
-        q: filters.query,
-        sort: filters.sort,
-        pageSize: 100,
-      },
-      { revalidate: 60 }
-    ),
+    // No revalidate: the product list is read fresh so a newly added product
+    // appears for customers immediately rather than up to a minute later.
+    getProducts({
+      minPrice: filters.minPrice,
+      maxPrice: filters.maxPrice,
+      discountOnly: filters.discountOnly,
+      q: filters.query,
+      sort: filters.sort,
+      pageSize: 100,
+    }),
   ]);
 
   return (
