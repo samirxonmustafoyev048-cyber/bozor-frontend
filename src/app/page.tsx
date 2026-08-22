@@ -54,12 +54,18 @@ export default async function Home() {
 
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-10 px-4 py-6 sm:px-6 sm:py-8">
-      {/* The strip reads as the banner's base, so it sits tight against it
-          rather than picking up the page's section spacing. */}
-      <div className="flex flex-col gap-3">
-        <HeroBanner />
-        <FeatureStrip />
-      </div>
+      {/* A published banner takes the top slot: the artwork already carries a
+          headline, a call to action and its own strip of promises, so the
+          built-in hero underneath it would only repeat itself. With no banner
+          the page opens the way it always has. */}
+      {banners.length > 0 ? (
+        <BannerRow banners={banners} />
+      ) : (
+        <div className="flex flex-col gap-3">
+          <HeroBanner />
+          <FeatureStrip />
+        </div>
+      )}
 
       <ProductRow
         title="Bugungi aksiyalar"
@@ -75,8 +81,6 @@ export default async function Home() {
         href="/katalog"
         products={popular.items}
       />
-
-      <BannerRow banners={banners} />
 
       <WhyUs />
       <HowItWorks />
